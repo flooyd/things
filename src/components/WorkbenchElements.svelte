@@ -7,14 +7,13 @@
   let width = 0;
   let height = 0;
   let element = null;
-  let mounted = false;
 
   $: element ? (width = element.getClientRects()[0].width) : null;
   $: element ? (height = element.getClientRects()[0].height) : null;
 
   const addElement = (type) => {
     //switch on type, if type is div, add div, if type is button, add button, etc...format {type: "string"}
-    $elements = [...$elements, { type: type }];
+    $elements = [...$elements, { type: type, style: { background: "red" } }];
     console.log($elements);
   };
 </script>

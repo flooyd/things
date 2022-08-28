@@ -6,6 +6,6 @@
 
 <div class="element">
   {#if element.type === "div"}
-    <Div />
+    <Div style={element.style} />
   {/if}
 </div>

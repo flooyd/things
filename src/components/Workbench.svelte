@@ -4,6 +4,7 @@
   import { okay } from "../stores/settings";
   import Element from "./elements/Element.svelte";
   import { onMount } from "svelte";
+  import randomHexColor from "random-hex-color";
 
   let collectionName = "Sample Collection";
   let heightOffset = 241;
@@ -14,13 +15,19 @@
     //switch on type
   };
 
-  onMount(() => {
-    console.log("hi");
-    for (let i = 0; i < 300; i++) {
-      $elements.push({ type: "div" });
+  const populateElements = () => {
+    for (let i = 0; i < 1000; i++) {
+      $elements.push({ type: "div", style: { background: randomHexColor() } });
     }
-    console.log($elements);
     $elements = $elements;
+  };
+
+  onMount(() => {
+    populateElements();
+    setInterval(() => {
+      $elements = [];
+      populateElements();
+    }, 50);
   });
 </script>
 
@@ -71,5 +78,6 @@
     display: flex;
     flex-wrap: wrap;
     gap: 2px;
+    overflow-y: auto;
   }
 </style>

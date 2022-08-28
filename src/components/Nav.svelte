@@ -11,7 +11,7 @@
   let tags = ["nav", "button", "input", "select", "etc..."];
 
   if (tag) {
-    console.log(tag);
+    tag;
   }
 
   onMount(() => {
@@ -30,7 +30,7 @@
     }, 250);
   });
 
-  $: console.log(tag);
+  $: tag;
 
   //https://svelte.dev/tutorial/custom-js-transitions
   function typewriter(node, { speed = 1 }) {
