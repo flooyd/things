@@ -1,11 +1,28 @@
 <script>
   import WorkbenchElements from "./WorkbenchElements.svelte";
+  import { elements } from "../stores/elements";
   import { okay } from "../stores/settings";
+  import Div from "./elements/Div.svelte";
+  import Element from "./elements/Element.svelte";
+  import { onMount } from "svelte";
 
   let collectionName = "Sample Collection";
   let heightOffset = 241;
 
   $: $okay ? (heightOffset = 167) : (heightOffset = 241);
+
+  const getElement = (type) => {
+    //switch on type
+  };
+
+  onMount(() => {
+    console.log("hi");
+    for (let i = 0; i < 300; i++) {
+      $elements.push({ type: "div" });
+    }
+    console.log($elements);
+    $elements = $elements;
+  });
 </script>
 
 <div class="workbench" style="height: calc(100vh - {heightOffset}px);">
@@ -14,6 +31,11 @@
   </div>
   <div class="toolbar">
     <WorkbenchElements />
+  </div>
+  <div class="view">
+    {#each $elements as element}
+      <Element {element} />
+    {/each}
   </div>
 </div>
 
@@ -41,5 +63,14 @@
     justify-content: left;
     gap: 13px;
     padding: 10px 13px;
+  }
+
+  .view {
+    margin-top: 20px;
+    background: lightgreen;
+    height: calc(100% - 146px);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
   }
 </style>

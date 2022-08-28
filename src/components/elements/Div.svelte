@@ -1,9 +1,10 @@
 <script>
-  import Element from "./Element.svelte";
   import { getId } from "./util";
+
+  let id = getId();
 </script>
 
-<div id={getId()} class="element" />
+<div id class="element" />
 
 <style>
   .element {

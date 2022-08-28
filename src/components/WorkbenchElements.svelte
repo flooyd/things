@@ -1,9 +1,6 @@
-<script>
-  import {
-    elementsOpen,
-    elementsInside,
-    elementsButtonInside,
-  } from "../stores/tooltip.js";
+<script lang="ts">
+  import { elementsOpen } from "../stores/tooltip.js";
+  import { elements } from "../stores/elements";
   import { fade } from "svelte/transition";
   let x = 0;
   let y = 0;
@@ -14,9 +11,12 @@
 
   $: element ? (width = element.getClientRects()[0].width) : null;
   $: element ? (height = element.getClientRects()[0].height) : null;
-  width = 100;
 
-  $: console.log($elementsOpen, $elementsInside, $elementsButtonInside);
+  const addElement = (type) => {
+    //switch on type, if type is div, add div, if type is button, add button, etc...format {type: "string"}
+    $elements = [...$elements, { type: type }];
+    console.log($elements);
+  };
 </script>
 
 <div
@@ -36,12 +36,8 @@
   <span class="hoverable-icon"><i class="fa-solid fa-code" /></span>
   <span class="hoverable-label">elements</span>
   {#if width && height && $elementsOpen}
-    <div
-      transition:fade={{ duration: 75 }}
-      class="tooltip"
-      style="min-width: {width - 6}px; min-height: {height}px;"
-    >
-      <div class="tooltip-item">div</div>
+    <div transition:fade={{ duration: 75 }} class="tooltip">
+      <div class="tooltip-item" on:click={() => addElement("div")}>div</div>
       <div class="tooltip-item">span</div>
       <div class="tooltip-item">p</div>
       <div class="tooltip-item">a</div>
@@ -89,8 +85,7 @@
     display: flex;
     align-items: center;
     justify-content: left;
-    gap: 16px;
-    width: 330px;
+    gap: 13px;
     flex-wrap: wrap;
     padding: 13px;
     color: var(--cultured);
