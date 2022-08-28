@@ -3,6 +3,7 @@
   import tab from "../stores/tab";
 
   const tabs = ["Collection", "Workbench"];
+  $tab = "Workbench";
 </script>
 
 <div class="toolbar">

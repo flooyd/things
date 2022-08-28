@@ -1,5 +1,5 @@
 <script>
-  import { fade, fly } from "svelte/transition";
+  import { fly } from "svelte/transition";
   import { onMount } from "svelte";
 
   let mounted = false;
@@ -10,7 +10,7 @@
 </script>
 
 {#if mounted}
-  <div in:fly={{ delay: 1750, duration: 500, y: -25 }} class="intro">
+  <div in:fly={{ delay: 1750, duration: 250, y: -75 }} class="intro">
     <div>
       Create highly interactive, customizable, animated, and responsive
       components, controls, forms, tables, and more.

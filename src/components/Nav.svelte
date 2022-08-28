@@ -58,7 +58,7 @@
 
 <div class="nav">
   {#if !tag}
-    <div in:fly={{ duration: 500, x: -250 }} class="title">
+    <div in:fly={{ duration: 500, x: -500 }} class="title">
       Thing{"<s>"}
     </div>
   {:else if tag === "Thing<etc...>"}

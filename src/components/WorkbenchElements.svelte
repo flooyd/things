@@ -1,4 +1,9 @@
 <script>
+  import {
+    elementsOpen,
+    elementsInside,
+    elementsButtonInside,
+  } from "../stores/tooltip.js";
   import { fade } from "svelte/transition";
   let x = 0;
   let y = 0;
@@ -10,6 +15,8 @@
   $: element ? (width = element.getClientRects()[0].width) : null;
   $: element ? (height = element.getClientRects()[0].height) : null;
   width = 100;
+
+  $: console.log($elementsOpen, $elementsInside, $elementsButtonInside);
 </script>
 
 <div
@@ -19,12 +26,18 @@
   bind:clientWidth={width}
   bind:this={element}
   class="item hoverable"
+  on:mouseenter={() => {
+    $elementsOpen = true;
+  }}
+  on:mouseleave={() => {
+    $elementsOpen = false;
+  }}
 >
   <span class="hoverable-icon"><i class="fa-solid fa-code" /></span>
   <span class="hoverable-label">elements</span>
-  {#if width && height}
+  {#if width && height && $elementsOpen}
     <div
-      transition:fade={{ delay: 1750, duration: 500 }}
+      transition:fade={{ duration: 75 }}
       class="tooltip"
       style="min-width: {width - 6}px; min-height: {height}px;"
     >
@@ -68,9 +81,10 @@
 
   .tooltip {
     position: absolute;
-    top: 32px;
+    top: 30px;
     left: -2px;
     background: var(--rich-black-fogra-29);
+    border-bottom: 3px solid var(--shadow-blue);
     border-radius: 4px;
     display: flex;
     align-items: center;

@@ -1,8 +1,13 @@
 <script>
   import WorkbenchElements from "./WorkbenchElements.svelte";
+
+  let collectionName = "Sample Collection";
 </script>
 
 <div class="workbench">
+  <div class="collectionName">
+    <h1>{collectionName}</h1>
+  </div>
   <div class="toolbar">
     <WorkbenchElements />
   </div>
@@ -15,6 +20,11 @@
     margin: 0px 0px;
     color: black;
     height: calc(100vh - 200px);
+  }
+
+  .collectionName {
+    font-size: 25px;
+    color: var(--oxford-blue);
   }
 
   .toolbar {
