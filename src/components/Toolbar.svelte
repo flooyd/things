@@ -22,7 +22,7 @@
     font-size: 25px;
     color: var(--shadow-blue);
     background: var(--rich-black-fogra-29);
-    margin-top: 10px;
+    padding-top: 10px;
     margin-bottom: 10px;
     margin-left: 20px;
     font-weight: bold;

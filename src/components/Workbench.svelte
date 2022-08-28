@@ -1,10 +1,14 @@
 <script>
   import WorkbenchElements from "./WorkbenchElements.svelte";
+  import { okay } from "../stores/settings";
 
   let collectionName = "Sample Collection";
+  let heightOffset = 241;
+
+  $: $okay ? (heightOffset = 167) : (heightOffset = 241);
 </script>
 
-<div class="workbench">
+<div class="workbench" style="height: calc(100vh - {heightOffset}px);">
   <div class="collectionName">
     <h1>{collectionName}</h1>
   </div>
@@ -19,11 +23,11 @@
     padding: 20px;
     margin: 0px 0px;
     color: black;
-    height: calc(100vh - 200px);
   }
 
   .collectionName {
-    font-size: 25px;
+    font-size: 31px;
+    margin-bottom: 13px;
     color: var(--oxford-blue);
   }
 

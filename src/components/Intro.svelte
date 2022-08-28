@@ -1,6 +1,7 @@
 <script>
-  import { fly } from "svelte/transition";
+  import { fade } from "svelte/transition";
   import { onMount } from "svelte";
+  import { okay } from "../stores/settings";
 
   let mounted = false;
 
@@ -9,14 +10,14 @@
   });
 </script>
 
-{#if mounted}
-  <div in:fly={{ delay: 1750, duration: 250, y: -75 }} class="intro">
+{#if mounted && !$okay}
+  <div in:fade={{ duration: 200 }} out:fade={{ duration: 200 }} class="intro">
     <div>
-      Create highly interactive, customizable, animated, and responsive
-      components, controls, forms, tables, and more.
+      Create highly interactive, customizable, animated controls, forms, tables,
+      and more things.
     </div>
     <div class="okay">
-      <button>Okay</button>
+      <button on:click={() => ($okay = true)}>Okay</button>
     </div>
   </div>
 {/if}

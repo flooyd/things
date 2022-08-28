@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
-  import { fade, fly } from "svelte/transition";
+  import { fade } from "svelte/transition";
+  import { okay } from "../stores/settings";
 
   let timer = null;
   let mounted = false;
@@ -58,8 +59,15 @@
 
 <div class="nav">
   {#if !tag}
-    <div in:fly={{ duration: 500, x: -500 }} class="title">
+    <div in:fade class="title">
       Thing{"<s>"}
+    </div>
+    <div class="options">
+      {#if $okay}
+        <button on:click={() => ($okay = false)}>Show Intro</button>
+      {/if}
+      <div>About</div>
+      <div>Settings</div>
     </div>
   {:else if tag === "Thing<etc...>"}
     <div transition:typewriter class="title">{tag}</div>
@@ -76,9 +84,23 @@
     color: var(--platinum);
     background: var(--rich-black-fogra-29);
     height: 60px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
   }
 
   .title {
     font-size: 39px;
+  }
+
+  .options {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+  }
+
+  .options div:hover {
+    color: var(--shadow-blue);
+    cursor: pointer;
   }
 </style>
