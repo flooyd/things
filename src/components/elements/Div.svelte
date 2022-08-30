@@ -5,13 +5,14 @@
   let id = getId();
 </script>
 
-<div id class="element" style="background: {style.background}" />
+<div
+  id
+  class="element"
+  style="background: {style.background}; width: {style.width}px; height: {style.height}px"
+/>
 
 <style>
   .element {
-    position: relative;
-    width: 100px;
-    height: 100px;
     border: 1px solid black;
   }
 </style>

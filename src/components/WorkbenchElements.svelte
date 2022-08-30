@@ -84,10 +84,11 @@
     display: flex;
     align-items: center;
     justify-content: left;
-    gap: 13px;
+    gap: 31px;
     flex-wrap: wrap;
-    padding: 13px;
+    padding: 13px 20px;
     color: var(--cultured);
+    width: 300px;
   }
 
   .tooltip-item:hover {

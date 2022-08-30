@@ -3,8 +3,6 @@
   import { elements } from "../stores/elements";
   import { okay } from "../stores/settings";
   import Element from "./elements/Element.svelte";
-  import { onMount } from "svelte";
-  import randomHexColor from "random-hex-color";
 
   let collectionName = "Sample Collection";
   let heightOffset = 241;
@@ -15,20 +13,7 @@
     //switch on type
   };
 
-  const populateElements = () => {
-    for (let i = 0; i < 1000; i++) {
-      $elements.push({ type: "div", style: { background: randomHexColor() } });
-    }
-    $elements = $elements;
-  };
-
-  onMount(() => {
-    populateElements();
-    setInterval(() => {
-      $elements = [];
-      populateElements();
-    }, 50);
-  });
+  $elements.push({ type: "div", style: { background: "lightyellow" } });
 </script>
 
 <div class="workbench" style="height: calc(100vh - {heightOffset}px);">
@@ -73,7 +58,7 @@
 
   .view {
     margin-top: 20px;
-    background: lightgreen;
+    border: 1px solid var(--oxford-blue);
     height: calc(100% - 146px);
     display: flex;
     flex-wrap: wrap;
