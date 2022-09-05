@@ -89,6 +89,7 @@
     padding: 13px 20px;
     color: var(--cultured);
     width: 300px;
+    z-index: 100;
   }
 
   .tooltip-item:hover {
