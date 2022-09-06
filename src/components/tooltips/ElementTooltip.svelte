@@ -1,13 +1,28 @@
 <script>
   import { fade } from "svelte/transition";
+
+  import { okay } from "../../stores/settings";
+
   export let element;
   export let handleEdit;
+  export let locked;
 
-  $: width = element.style.width;
-  $: height = element.style.height;
+  let top = null;
+
+  $: top = $okay ? "199px" : "273px";
 </script>
 
-<div transition:fade={{ duration: 100 }} class="elementTooltip">
+<div
+  on:click={(e) => {
+    e.stopPropagation();
+  }}
+  transition:fade={{ duration: 50 }}
+  class={locked ? "elementTooltip" : "elementTooltip unlocked"}
+  style={`left: calc(100vw - 440px); top: ${top}`}
+>
+  {#if !locked}
+    <div class="notLocked">Click Element to Lock</div>
+  {/if}
   <div class="infoGroup">
     <label for="type" class="infoLabel">Element type</label>
     <input
@@ -136,17 +151,21 @@
     flex-direction: column;
     gap: 8px;
     position: absolute;
-    top: 119px;
+    right: auto;
     width: fit-content;
     min-width: 400px;
     height: fit-content;
     background: white;
     border: 3px solid var(--oxford-blue);
+    border-right: none;
+    border-top: none;
     font-size: 13px;
     padding: 8px;
-    max-height: 350px;
     overflow-y: auto;
     border-radius: 5px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-top-left-radius: 0px;
     z-index: 200;
   }
 
@@ -160,5 +179,14 @@
 
   .infoGroup:hover {
     background: var(--shadow-blue);
+  }
+
+  .unlocked {
+    opacity: 0.9;
+  }
+
+  .notLocked {
+    font-weight: bold;
+    font-size: 20px;
   }
 </style>

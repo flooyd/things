@@ -34,7 +34,7 @@
   <span class="hoverable-icon"><i class="fa-solid fa-code" /></span>
   <span class="hoverable-label">elements</span>
   {#if width && height && $elementsOpen}
-    <div transition:fade={{ duration: 75 }} class="tooltip">
+    <div transition:fade={{ duration: 50 }} class="tooltip">
       <div class="tooltip-item" on:click={() => addElement("div")}>div</div>
       <div class="tooltip-item">span</div>
       <div class="tooltip-item">p</div>

@@ -1,12 +1,11 @@
 <script>
-  import { getId } from "./util";
   export let styleString;
-  export let content;
-
-  let id = getId();
+  export let content = "";
+  export let id;
 </script>
 
-<div id style={styleString}>
+<div {id} style={styleString}>
+  {id}
   {content}
 </div>
 

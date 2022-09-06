@@ -11,7 +11,7 @@
 </script>
 
 {#if mounted && !$okay}
-  <div in:fade={{ duration: 200 }} out:fade={{ duration: 200 }} class="intro">
+  <div in:fade={{ duration: 50 }} out:fade={{ duration: 50 }} class="intro">
     <div>
       Create highly interactive, customizable, animated controls, forms, tables,
       and more things.

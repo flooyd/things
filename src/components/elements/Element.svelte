@@ -1,17 +1,20 @@
 <script>
   import { onMount } from "svelte";
-  import { fade } from "svelte/transition";
-  import ElementTooltip from "../tooltips/ElementTooltip.svelte";
+  import { getId } from "./util";
 
+  import ElementTooltip from "../tooltips/ElementTooltip.svelte";
   import Div from "./Div.svelte";
 
+  import { elementTooltipId } from "../../stores/globals";
+
   export let element;
-  let x,
-    y,
-    height,
-    width,
-    styleString,
-    showTooltip = null;
+
+  let styleString,
+    showTooltip,
+    elementClicked,
+    thisElement = null;
+
+  const id = getId().replace("undefined-", "");
 
   onMount(() => {
     element.style.width = "100px";
@@ -23,13 +26,16 @@
     element.style.border = "3px solid var(--oxford-blue)";
     element.style.boxShadow = "5px 8px 5px 1px var(--oxford-blue)";
     element.style.fontSize = "16px";
-    element.style.content = "";
     element.style.color = "black";
+
+    element.content = "";
   });
+
   const handleEdit = (property, value) => {
     if (property === "content") {
       return (element.content = value);
     }
+
     element.style[property] = value;
     element = element;
   };
@@ -45,36 +51,34 @@
   font-size: ${element.style.fontSize};
   color: ${element.style.color};
   `;
-  $: console.log(x, y);
-  $: console.log(element.style);
 </script>
 
 {#if styleString}
   <div
+    bind:this={thisElement}
     class="element"
-    bind:offsetHeight={y}
-    bind:offsetWidth={x}
-    bind:clientHeight={height}
-    bind:clientWidth={width}
     on:mouseenter={() => {
       showTooltip = true;
+      $elementTooltipId = id;
     }}
     on:mouseleave={() => {
       showTooltip = false;
     }}
+    on:click={(e) => {
+      elementClicked = !elementClicked;
+    }}
   >
     {#if element.type === "div"}
-      <Div {styleString} content={element.content} />
+      <Div {id} {styleString} content={element.content} />
     {/if}
-    {#if showTooltip}
-      <ElementTooltip {element} {handleEdit} />
+    {#if (showTooltip && $elementTooltipId === id) || (elementClicked && $elementTooltipId === id)}
+      <ElementTooltip {element} {handleEdit} locked={elementClicked} />
     {/if}
   </div>
 {/if}
 
 <style>
   .element {
-    position: relative;
     height: fit-content;
   }
 </style>
