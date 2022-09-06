@@ -14,7 +14,6 @@
   const addElement = (type) => {
     //switch on type, if type is div, add div, if type is button, add button, etc...format {type: "string"}
     $elements = [...$elements, { type: type, style: { background: "red" } }];
-    console.log($elements);
   };
 </script>
 

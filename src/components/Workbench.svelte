@@ -13,7 +13,11 @@
     //switch on type
   };
 
-  $elements.push({ type: "div", style: { background: "lightyellow" } });
+  $elements.push({
+    type: "div",
+    style: {},
+    content: "",
+  });
 </script>
 
 <div class="workbench" style="height: calc(100vh - {heightOffset}px);">
@@ -64,5 +68,6 @@
     flex-wrap: wrap;
     gap: 2px;
     overflow-y: auto;
+    padding: 20px;
   }
 </style>
