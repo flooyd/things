@@ -6,8 +6,10 @@
   export let element;
   export let handleEdit;
   export let locked;
+  export let handleMouseLeave;
 
   let top = null;
+  let open = true;
 
   $: top = $okay ? "199px" : "273px";
 </script>
@@ -16,12 +18,16 @@
   on:click={(e) => {
     e.stopPropagation();
   }}
+  on:mouseleave={() => {
+    $: handleMouseLeave();
+    open = false;
+  }}
   transition:fade={{ duration: 50 }}
   class={locked ? "elementTooltip" : "elementTooltip unlocked"}
   style={`left: calc(100vw - 440px); top: ${top}`}
 >
-  {#if !locked}
-    <div class="notLocked">Click Element to Lock</div>
+  {#if !locked && open}
+    <div class="notLocked">Click Element to Edit</div>
   {/if}
   <div class="infoGroup">
     <label for="type" class="infoLabel">Element type</label>
@@ -31,6 +37,42 @@
       class="infoInput"
       disabled
       value={element.type}
+    />
+  </div>
+  <div class="infoGroup">
+    <label for="id" class="infoLabel">Element id</label>
+    <input
+      name="id"
+      type="text"
+      class="infoInput"
+      disabled
+      value={element.id}
+    />
+  </div>
+  <div class="infoGroup">
+    <label for="name" class="infoLabel">name</label>
+    <input
+      autocomplete="off"
+      name="name"
+      type="text"
+      class="infoInput"
+      value={element.name}
+      on:input={(e) => {
+        handleEdit("name", e.target.value);
+      }}
+    />
+  </div>
+  <div class="infoGroup">
+    <label for="display" class="infoLabel">Display</label>
+    <input
+      autocomplete="off"
+      name="display"
+      type="text"
+      class="infoInput"
+      value={element.style.display}
+      on:input={(e) => {
+        handleEdit("display", e.target.value);
+      }}
     />
   </div>
   <div class="infoGroup">
@@ -84,6 +126,46 @@
     />
   </div>
   <div class="infoGroup">
+    <label for="marginTop" class="infoLabel">Margin Top</label>
+    <input
+      name="marginTop"
+      type="text"
+      class="infoInput"
+      value={element.style.marginTop}
+      on:input={(e) => handleEdit("marginTop", e.target.value)}
+    />
+  </div>
+  <div class="infoGroup">
+    <label for="marginBottom" class="infoLabel">Margin Bottom</label>
+    <input
+      name="marginBottom"
+      type="text"
+      class="infoInput"
+      value={element.style.marginBottom}
+      on:input={(e) => handleEdit("marginBottom", e.target.value)}
+    />
+  </div>
+  <div class="infoGroup">
+    <label for="marginLeft" class="infoLabel">Margin Left</label>
+    <input
+      name="marginLeft"
+      type="text"
+      class="infoInput"
+      value={element.style.marginLeft}
+      on:input={(e) => handleEdit("marginLeft", e.target.value)}
+    />
+  </div>
+  <div class="infoGroup">
+    <label for="marginRight" class="infoLabel">Margin Right</label>
+    <input
+      name="marginRight"
+      type="text"
+      class="infoInput"
+      value={element.style.marginRight}
+      on:input={(e) => handleEdit("marginRight", e.target.value)}
+    />
+  </div>
+  <div class="infoGroup">
     <label for="padding" class="infoLabel">Padding</label>
     <input
       name="padding"
@@ -91,6 +173,46 @@
       class="infoInput"
       value={element.style.padding}
       on:input={(e) => handleEdit("padding", e.target.value)}
+    />
+  </div>
+  <div class="infoGroup">
+    <label for="paddingTop" class="infoLabel">Padding Top</label>
+    <input
+      name="paddingTop"
+      type="text"
+      class="infoInput"
+      value={element.style.paddingTop}
+      on:input={(e) => handleEdit("paddingTop", e.target.value)}
+    />
+  </div>
+  <div class="infoGroup">
+    <label for="paddingBottom" class="infoLabel">Padding Bottom</label>
+    <input
+      name="paddingBottom"
+      type="text"
+      class="infoInput"
+      value={element.style.paddingBottom}
+      on:input={(e) => handleEdit("paddingBottom", e.target.value)}
+    />
+  </div>
+  <div class="infoGroup">
+    <label for="paddingLeft" class="infoLabel">Padding Left</label>
+    <input
+      name="paddingLeft"
+      type="text"
+      class="infoInput"
+      value={element.style.paddingLeft}
+      on:input={(e) => handleEdit("paddingLeft", e.target.value)}
+    />
+  </div>
+  <div class="infoGroup">
+    <label for="paddingRight" class="infoLabel">Padding Right</label>
+    <input
+      name="paddingRight"
+      type="text"
+      class="infoInput"
+      value={element.style.paddingRight}
+      on:input={(e) => handleEdit("paddingRight", e.target.value)}
     />
   </div>
   <div class="infoGroup">

@@ -3,13 +3,10 @@
   import Nav from "./components/Nav.svelte";
   import Toolbar from "./components/Toolbar.svelte";
   import WorkBench from "./components/WorkBench.svelte";
-  import { width, height, firebase, analytics } from "./stores/globals";
-
-  $: console.log("global width, height", $width, $height);
-
-  // Import the functions you need from the SDKs you need
+  import { width, height, client, db } from "./stores/globals";
   import { initializeApp } from "firebase/app";
-  import { getAnalytics } from "firebase/analytics";
+  import { collection, getDocs, getFirestore } from "firebase/firestore";
+  import { onMount } from "svelte";
   // TODO: Add SDKs for Firebase products that you want to use
   // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -25,12 +22,12 @@
     measurementId: "G-ENLDR35L4P",
   };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  let fbAnalytics = getAnalytics(app);
-
-  $firebase = app;
-  $analytics = fbAnalytics;
+  onMount(async () => {
+    $client = await initializeApp(firebaseConfig);
+    const db = getFirestore($client);
+    const querySnapshot = await getDocs(collection(db, "things"));
+    querySnapshot.forEach((doc) => {});
+  });
 </script>
 
 <Nav />

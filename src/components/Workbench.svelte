@@ -61,13 +61,10 @@
   }
 
   .view {
+    margin: 0px -20px;
     margin-top: 20px;
-    border: 1px solid var(--oxford-blue);
     height: calc(100% - 146px);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2px;
     overflow-y: auto;
-    padding: 20px;
+    background: blue;
   }
 </style>
