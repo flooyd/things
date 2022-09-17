@@ -1,39 +1,66 @@
 <script>
-  import { fade } from "svelte/transition";
-  import { height } from "../../stores/globals";
+  import { fade, fly } from "svelte/transition";
+  import { onMount } from "svelte";
+  import {
+    height,
+    awaitingFirebase,
+    elementTooltipId,
+    mouseInTooltip,
+  } from "../../stores/globals";
 
   import { okay } from "../../stores/settings";
-  import { deleteElement } from "../../util";
+  import { deleteElement, copyElement } from "../../util";
 
   export let element;
   export let handleEdit;
-  export let locked;
-  export let handleMouseLeave;
 
   let top = null;
-  let open = true;
+  let message = "Hold down 'f' to move mouse here.";
 
   $: top = $okay ? "199px" : "273px";
 
-  //create string array of all infogroups
-  let infoGroups = ["gap", "justifyContent", "alignItems", "flexDirection"];
+  let infoGroups = [
+    "gap",
+    "justifyContent",
+    "alignItems",
+    "flexDirection",
+    "flexWrap",
+  ];
 </script>
 
 <div
   on:click={(e) => {
     e.stopPropagation();
   }}
-  on:mouseleave={() => {
-    $: handleMouseLeave();
-    open = false;
+  on:mouseleave={(e) => {
+    e.stopPropagation();
+    $mouseInTooltip = false;
+    $elementTooltipId = null;
   }}
-  transition:fade={{ duration: 50 }}
+  on:mouseenter={(e) => {
+    e.stopPropagation();
+    $mouseInTooltip = true;
+    message =
+      "Edits for most fields are saved and updated instantly. Otherwise, click the save button to save and update changes.";
+  }}
+  in:fade={{ duration: 100 }}
   class="elementTooltip"
-  style={`left: calc(100vw - 470px); top: calc(20px); max-height: calc(${$height}px - 80px);`}
+  style={`left: calc(100vw - 433px); top: calc(3px);`}
 >
+  <div class="message">{message}</div>
+
   <div class="toolbar">
-    <button on:click={() => deleteElement(element.id)} class="redButton"
-      >Delete Element</button
+    <button
+      on:click={() => copyElement(element.id)}
+      type="button"
+      disabled={$awaitingFirebase}
+      class="blueButton">Copy Element</button
+    >
+    <button
+      on:click={() => deleteElement(element.id)}
+      type="button"
+      disabled={$awaitingFirebase}
+      class="redButton">Delete Element</button
     >
   </div>
   <div class="infoGroup">
@@ -85,6 +112,7 @@
   <div class="infoGroup">
     <label for="width" class="infoLabel">Width</label>
     <input
+      autocomplete="off"
       name="width"
       type="text"
       class="infoInput"
@@ -95,6 +123,7 @@
   <div class="infoGroup">
     <label for="height" class="infoLabel">Height</label>
     <input
+      autocomplete="off"
       name="height"
       type="text"
       class="infoInput"
@@ -105,6 +134,7 @@
   <div class="infoGroup">
     <label for="background" class="infoLabel">Background</label>
     <input
+      autocomplete="off"
       name="background"
       type="text"
       class="infoInput"
@@ -115,6 +145,7 @@
   <div class="infoGroup">
     <label for="border" class="infoLabel">Border</label>
     <input
+      autocomplete="off"
       name="border"
       type="text"
       class="infoInput"
@@ -125,6 +156,7 @@
   <div class="infoGroup">
     <label for="margin" class="infoLabel">Margin</label>
     <input
+      autocomplete="off"
       name="margin"
       type="text"
       class="infoInput"
@@ -135,6 +167,7 @@
   <div class="infoGroup">
     <label for="marginTop" class="infoLabel">Margin Top</label>
     <input
+      autocomplete="off"
       name="marginTop"
       type="text"
       class="infoInput"
@@ -145,6 +178,7 @@
   <div class="infoGroup">
     <label for="marginBottom" class="infoLabel">Margin Bottom</label>
     <input
+      autocomplete="off"
       name="marginBottom"
       type="text"
       class="infoInput"
@@ -155,6 +189,7 @@
   <div class="infoGroup">
     <label for="marginLeft" class="infoLabel">Margin Left</label>
     <input
+      autocomplete="off"
       name="marginLeft"
       type="text"
       class="infoInput"
@@ -165,6 +200,7 @@
   <div class="infoGroup">
     <label for="marginRight" class="infoLabel">Margin Right</label>
     <input
+      autocomplete="off"
       name="marginRight"
       type="text"
       class="infoInput"
@@ -175,6 +211,7 @@
   <div class="infoGroup">
     <label for="padding" class="infoLabel">Padding</label>
     <input
+      autocomplete="off"
       name="padding"
       type="text"
       class="infoInput"
@@ -185,6 +222,7 @@
   <div class="infoGroup">
     <label for="paddingTop" class="infoLabel">Padding Top</label>
     <input
+      autocomplete="off"
       name="paddingTop"
       type="text"
       class="infoInput"
@@ -195,6 +233,7 @@
   <div class="infoGroup">
     <label for="paddingBottom" class="infoLabel">Padding Bottom</label>
     <input
+      autocomplete="off"
       name="paddingBottom"
       type="text"
       class="infoInput"
@@ -205,6 +244,7 @@
   <div class="infoGroup">
     <label for="paddingLeft" class="infoLabel">Padding Left</label>
     <input
+      autocomplete="off"
       name="paddingLeft"
       type="text"
       class="infoInput"
@@ -215,6 +255,7 @@
   <div class="infoGroup">
     <label for="paddingRight" class="infoLabel">Padding Right</label>
     <input
+      autocomplete="off"
       name="paddingRight"
       type="text"
       class="infoInput"
@@ -225,6 +266,7 @@
   <div class="infoGroup">
     <label for="borderRadius" class="infoLabel">Border radius</label>
     <input
+      autocomplete="off"
       name="borderRadius"
       type="text"
       class="infoInput"
@@ -235,6 +277,7 @@
   <div class="infoGroup">
     <label for="boxShadow" class="infoLabel">Box shadow</label>
     <input
+      autocomplete="off"
       name="boxShadow"
       type="text"
       class="infoInput"
@@ -245,6 +288,7 @@
   <div class="infoGroup">
     <label for="text" class="infoLabel">Content</label>
     <input
+      autocomplete="off"
       name="text"
       type="text"
       class="infoInput"
@@ -255,6 +299,7 @@
   <div class="infoGroup">
     <label for="color" class="infoLabel">Color</label>
     <input
+      autocomplete="off"
       name="color"
       type="text"
       class="infoInput"
@@ -265,6 +310,7 @@
   <div class="infoGroup">
     <label for="fontSize" class="infoLabel">Font size</label>
     <input
+      autocomplete="off"
       name="fontSize"
       type="text"
       class="infoInput"
@@ -275,6 +321,7 @@
   <div class="infoGroup">
     <label for="childOf" class="infoLabel">Child Of</label>
     <input
+      autocomplete="off"
       name="childOf"
       type="text"
       class="infoInput"
@@ -297,6 +344,7 @@
     <div class="infoGroup">
       <label for={infoGroup} class="infoLabel">{infoGroup}</label>
       <input
+        autocomplete="off"
         name={infoGroup}
         type="text"
         class="infoInput"
@@ -312,12 +360,12 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    position: absolute;
+    position: fixed;
     right: auto;
     width: fit-content;
     min-width: 400px;
     height: fit-content;
-    max-height: 500px;
+    max-height: calc(100vh - 100px);
     background: white;
     border: 3px solid var(--oxford-blue);
     font-size: 13px;
@@ -338,5 +386,12 @@
 
   .infoGroup:hover {
     background: var(--shadow-blue);
+  }
+
+  .message {
+    height: 40px;
+    border: 1px solid var(--oxford-blue);
+    border-radius: 5px;
+    padding: 8px;
   }
 </style>

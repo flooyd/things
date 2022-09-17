@@ -2,15 +2,17 @@
   import { doc, getDoc, updateDoc } from "firebase/firestore";
   import { fly, fade } from "svelte/transition";
   import { onMount } from "svelte";
-  import { db } from "../../stores/globals";
+  import { db, elementTooltipId } from "../../stores/globals";
   import Element from "./Element.svelte";
+
   export let styleString;
   export let content = "";
   export let id;
   export let parentOf;
+  export let key;
 
   let elements = [];
-  let ready = false;
+  let hoverBorder = "3px solid red";
 
   onMount(() => {
     if (parentOf) {
@@ -19,27 +21,25 @@
         const document = await getDoc(docRef);
         elements.push({ ...document.data(), id: document.id });
         elements = elements;
-        if (index === arr.length - 1) {
-          ready = true;
-        }
       });
     }
   });
+
+  $: if ($elementTooltipId === key) {
+    hoverBorder = "hoverBorder";
+  } else {
+    hoverBorder = "";
+  }
 </script>
 
-<div
-  transition:fade={{
-    x: Math.random() * 10000,
-    y: Math.random() * 10000,
-    duration: 300,
-  }}
-  {id}
-  style={styleString}
->
+<div transition:fade {id} style={styleString} class={hoverBorder}>
   {#each elements as element}
     <Element {element} />{/each}
   {content}
 </div>
 
 <style>
+  .hoverBorder {
+    border: 3px solid yellow !important;
+  }
 </style>

@@ -3,7 +3,7 @@
   import { elements } from "../stores/elements";
   import { fade } from "svelte/transition";
   import { addDoc, collection, getDoc } from "firebase/firestore";
-  import { db } from "../stores/globals.js";
+  import { db, awaitingFirebase } from "../stores/globals.js";
   import { addElement } from "../util.js";
   let x = 0;
   let y = 0;
@@ -33,7 +33,11 @@
   <span class="hoverable-label">elements</span>
   {#if width && height && $elementsOpen}
     <div transition:fade={{ duration: 50 }} class="tooltip">
-      <div class="tooltip-item" on:click={() => addElement("div")}>div</div>
+      <button
+        disabled={$awaitingFirebase}
+        class="tooltip-item"
+        on:click={() => addElement("div")}>div</button
+      >
       <div class="tooltip-item">span</div>
       <div class="tooltip-item">p</div>
       <div class="tooltip-item">a</div>
@@ -87,9 +91,5 @@
     color: var(--cultured);
     width: 300px;
     z-index: 100;
-  }
-
-  .tooltip-item:hover {
-    color: var(--shadow-blue);
   }
 </style>

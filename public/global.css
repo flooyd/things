@@ -161,3 +161,8 @@ button:hover {
 .redButton:hover {
   background: red;
 }
+
+.blueButton:hover {
+  background: blue;
+  color: white;
+}

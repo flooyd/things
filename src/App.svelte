@@ -3,7 +3,15 @@
   import Nav from "./components/Nav.svelte";
   import Toolbar from "./components/Toolbar.svelte";
   import WorkBench from "./components/WorkBench.svelte";
-  import { width, height, client, db, controlDown } from "./stores/globals";
+  import {
+    width,
+    height,
+    client,
+    db,
+    altDown,
+    elementTooltipId,
+    mouseInTooltip,
+  } from "./stores/globals";
   import { initializeApp } from "firebase/app";
   import { collection, getDocs, getFirestore } from "firebase/firestore";
   import { onMount } from "svelte";
@@ -29,13 +37,13 @@
     $client = await initializeApp(firebaseConfig);
     $db = getFirestore($client);
     onkeydown = (e) => {
-      if (e.key === "Control") {
-        $controlDown = true;
+      if (e.key === "f") {
+        $altDown = true;
       }
     };
     onkeyup = (e) => {
-      if (e.key === "Control") {
-        $controlDown = false;
+      if (e.key === "f") {
+        $altDown = false;
       }
     };
     ready = true;

@@ -6,7 +6,12 @@
   import ElementTooltip from "../tooltips/ElementTooltip.svelte";
   import Div from "./Div.svelte";
 
-  import { elementTooltipId, db, controlDown } from "../../stores/globals";
+  import {
+    elementTooltipId,
+    db,
+    altDown,
+    mouseInTooltip,
+  } from "../../stores/globals";
   import { elements } from "../../stores/elements";
 
   export let element;
@@ -17,7 +22,7 @@
     docRef,
     ready = null;
 
-  const id = getId("div").replace("undefined-", "");
+  const id = getId("div");
 
   onMount(() => {
     docRef = doc($db, "things", element.id);
@@ -28,7 +33,7 @@
     element.margin = element.margin ? element.margin : "0px auto";
     element.padding = element.padding ? element.padding : "0px";
     element.borderRadius = element.borderRadius ? element.borderRadius : "0px";
-    element.border = element.border ? element.border : "none";
+    element.border = element.border ? element.border : "";
     element.boxShadow = element.boxShadow ? element.boxShadow : "none";
     element.fontSize = element.fontSize ? element.fontSize : "16px";
     element.color = element.color ? element.color : "white";
@@ -52,6 +57,7 @@
     element.flexDirection = element.flexDirection
       ? element.flexDirection
       : "row";
+    element.flexWrap = element.flexWrap ? element.flexWrap : "nowrap";
     element.parentOf = $elements
       .filter((e) => e.childOf === element.id)
       .map((e) => e.id);
@@ -87,6 +93,7 @@
   justify-content: ${element.justifyContent};
   align-items: ${element.alignItems};
   flex-direction: ${element.flexDirection};
+  flex-wrap: ${element.flexWrap};
   `;
 </script>
 
@@ -94,46 +101,55 @@
   <div
     class="element"
     style="width: ${element.width}; height: ${element.height};"
-    on:mouseenter={() => {
-      if (!$controlDown) {
+    on:mouseover={(e) => {
+      e.stopPropagation();
+      if (!$altDown && !$mouseInTooltip) {
         showTooltip = true;
         $elementTooltipId = id;
       }
     }}
-    on:mouseleave={() => {
-      if (!$controlDown) {
+    on:focus={(e) => {
+      e.stopPropagation();
+      if (!$altDown && !$mouseInTooltip) {
+        showTooltip = true;
+        $elementTooltipId = id;
+      }
+    }}
+    on:mouseout={(e) => {
+      e.stopPropagation();
+      if (!$altDown && !$mouseInTooltip) {
         showTooltip = false;
         $elementTooltipId = null;
       }
     }}
-    on:click={(e) => {
-      elementClicked = !elementClicked;
+    on:blur={(e) => {
+      e.stopPropagation();
+      if (!$altDown && !$mouseInTooltip) {
+        showTooltip = false;
+        $elementTooltipId = null;
+      }
     }}
   >
     {#if element.type === "div"}
       <Div
         id={element.id}
+        key={id}
         {styleString}
         content={element.content}
         parentOf={element.parentOf}
       />
     {/if}
-    {#if (showTooltip && $elementTooltipId === id) || (elementClicked && $elementTooltipId === id)}
-      <ElementTooltip
-        {element}
-        {handleEdit}
-        handleMouseLeave={() => {
-          elementClicked = false;
-        }}
-        locked={elementClicked}
-      />
-    {/if}
   </div>
+
+  {#if showTooltip && $elementTooltipId === id}
+    <ElementTooltip {element} {handleEdit} />
+  {/if}
 {/if}
 
 <style>
   .element {
     height: fit-content;
     width: fit-content;
+    cursor: pointer;
   }
 </style>
