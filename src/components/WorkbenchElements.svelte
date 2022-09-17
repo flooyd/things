@@ -2,6 +2,9 @@
   import { elementsOpen } from "../stores/tooltip.js";
   import { elements } from "../stores/elements";
   import { fade } from "svelte/transition";
+  import { addDoc, collection, getDoc } from "firebase/firestore";
+  import { db } from "../stores/globals.js";
+  import { addElement } from "../util.js";
   let x = 0;
   let y = 0;
   let width = 0;
@@ -10,11 +13,6 @@
 
   $: element ? (width = element.getClientRects()[0].width) : null;
   $: element ? (height = element.getClientRects()[0].height) : null;
-
-  const addElement = (type) => {
-    //switch on type, if type is div, add div, if type is button, add button, etc...format {type: "string"}
-    $elements = [...$elements, { type: type, style: { background: "red" } }];
-  };
 </script>
 
 <div

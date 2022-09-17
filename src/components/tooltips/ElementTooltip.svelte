@@ -1,7 +1,9 @@
 <script>
   import { fade } from "svelte/transition";
+  import { height } from "../../stores/globals";
 
   import { okay } from "../../stores/settings";
+  import { deleteElement } from "../../util";
 
   export let element;
   export let handleEdit;
@@ -12,6 +14,9 @@
   let open = true;
 
   $: top = $okay ? "199px" : "273px";
+
+  //create string array of all infogroups
+  let infoGroups = ["gap", "justifyContent", "alignItems", "flexDirection"];
 </script>
 
 <div
@@ -23,12 +28,14 @@
     open = false;
   }}
   transition:fade={{ duration: 50 }}
-  class={locked ? "elementTooltip" : "elementTooltip unlocked"}
-  style={`left: calc(100vw - 440px); top: ${top}`}
+  class="elementTooltip"
+  style={`left: calc(100vw - 470px); top: calc(20px); max-height: calc(${$height}px - 80px);`}
 >
-  {#if !locked && open}
-    <div class="notLocked">Click Element to Edit</div>
-  {/if}
+  <div class="toolbar">
+    <button on:click={() => deleteElement(element.id)} class="redButton"
+      >Delete Element</button
+    >
+  </div>
   <div class="infoGroup">
     <label for="type" class="infoLabel">Element type</label>
     <input
@@ -69,7 +76,7 @@
       name="display"
       type="text"
       class="infoInput"
-      value={element.style.display}
+      value={element.display}
       on:input={(e) => {
         handleEdit("display", e.target.value);
       }}
@@ -81,7 +88,7 @@
       name="width"
       type="text"
       class="infoInput"
-      value={element.style.width}
+      value={element.width}
       on:input={(e) => handleEdit("width", e.target.value)}
     />
   </div>
@@ -91,7 +98,7 @@
       name="height"
       type="text"
       class="infoInput"
-      value={element.style.height}
+      value={element.height}
       on:input={(e) => handleEdit("height", e.target.value)}
     />
   </div>
@@ -101,7 +108,7 @@
       name="background"
       type="text"
       class="infoInput"
-      value={element.style.background}
+      value={element.background}
       on:input={(e) => handleEdit("background", e.target.value)}
     />
   </div>
@@ -111,7 +118,7 @@
       name="border"
       type="text"
       class="infoInput"
-      value={element.style.border}
+      value={element.border}
       on:input={(e) => handleEdit("border", e.target.value)}
     />
   </div>
@@ -121,7 +128,7 @@
       name="margin"
       type="text"
       class="infoInput"
-      value={element.style.margin}
+      value={element.margin}
       on:input={(e) => handleEdit("margin", e.target.value)}
     />
   </div>
@@ -131,7 +138,7 @@
       name="marginTop"
       type="text"
       class="infoInput"
-      value={element.style.marginTop}
+      value={element.marginTop}
       on:input={(e) => handleEdit("marginTop", e.target.value)}
     />
   </div>
@@ -141,7 +148,7 @@
       name="marginBottom"
       type="text"
       class="infoInput"
-      value={element.style.marginBottom}
+      value={element.marginBottom}
       on:input={(e) => handleEdit("marginBottom", e.target.value)}
     />
   </div>
@@ -151,7 +158,7 @@
       name="marginLeft"
       type="text"
       class="infoInput"
-      value={element.style.marginLeft}
+      value={element.marginLeft}
       on:input={(e) => handleEdit("marginLeft", e.target.value)}
     />
   </div>
@@ -161,7 +168,7 @@
       name="marginRight"
       type="text"
       class="infoInput"
-      value={element.style.marginRight}
+      value={element.marginRight}
       on:input={(e) => handleEdit("marginRight", e.target.value)}
     />
   </div>
@@ -171,7 +178,7 @@
       name="padding"
       type="text"
       class="infoInput"
-      value={element.style.padding}
+      value={element.padding}
       on:input={(e) => handleEdit("padding", e.target.value)}
     />
   </div>
@@ -181,7 +188,7 @@
       name="paddingTop"
       type="text"
       class="infoInput"
-      value={element.style.paddingTop}
+      value={element.paddingTop}
       on:input={(e) => handleEdit("paddingTop", e.target.value)}
     />
   </div>
@@ -191,7 +198,7 @@
       name="paddingBottom"
       type="text"
       class="infoInput"
-      value={element.style.paddingBottom}
+      value={element.paddingBottom}
       on:input={(e) => handleEdit("paddingBottom", e.target.value)}
     />
   </div>
@@ -201,7 +208,7 @@
       name="paddingLeft"
       type="text"
       class="infoInput"
-      value={element.style.paddingLeft}
+      value={element.paddingLeft}
       on:input={(e) => handleEdit("paddingLeft", e.target.value)}
     />
   </div>
@@ -211,7 +218,7 @@
       name="paddingRight"
       type="text"
       class="infoInput"
-      value={element.style.paddingRight}
+      value={element.paddingRight}
       on:input={(e) => handleEdit("paddingRight", e.target.value)}
     />
   </div>
@@ -221,7 +228,7 @@
       name="borderRadius"
       type="text"
       class="infoInput"
-      value={element.style.borderRadius}
+      value={element.borderRadius}
       on:input={(e) => handleEdit("borderRadius", e.target.value)}
     />
   </div>
@@ -231,7 +238,7 @@
       name="boxShadow"
       type="text"
       class="infoInput"
-      value={element.style.boxShadow}
+      value={element.boxShadow}
       on:input={(e) => handleEdit("boxShadow", e.target.value)}
     />
   </div>
@@ -251,7 +258,7 @@
       name="color"
       type="text"
       class="infoInput"
-      value={element.style.color}
+      value={element.color}
       on:input={(e) => handleEdit("color", e.target.value)}
     />
   </div>
@@ -261,10 +268,43 @@
       name="fontSize"
       type="text"
       class="infoInput"
-      value={element.style.fontSize}
+      value={element.fontSize}
       on:input={(e) => handleEdit("fontSize", e.target.value)}
     />
   </div>
+  <div class="infoGroup">
+    <label for="childOf" class="infoLabel">Child Of</label>
+    <input
+      name="childOf"
+      type="text"
+      class="infoInput"
+      value={element.childOf}
+      on:input={(e) => handleEdit("childOf", e.target.value)}
+    />
+  </div>
+  <div class="infoGroup">
+    <label for="parentOf" class="infoLabel">Parent Of</label>
+    <input
+      name="parentOf"
+      type="text"
+      class="infoInput"
+      value={element.parentOf}
+      disabled
+      on:input={(e) => handleEdit("parentOf", e.target.value)}
+    />
+  </div>
+  {#each infoGroups as infoGroup}
+    <div class="infoGroup">
+      <label for={infoGroup} class="infoLabel">{infoGroup}</label>
+      <input
+        name={infoGroup}
+        type="text"
+        class="infoInput"
+        value={element[infoGroup]}
+        on:input={(e) => handleEdit(infoGroup, e.target.value)}
+      />
+    </div>
+  {/each}
 </div>
 
 <style>
@@ -277,17 +317,14 @@
     width: fit-content;
     min-width: 400px;
     height: fit-content;
+    max-height: 500px;
     background: white;
     border: 3px solid var(--oxford-blue);
-    border-right: none;
-    border-top: none;
     font-size: 13px;
-    padding: 8px;
+    padding: 16px;
     overflow-y: auto;
     border-radius: 5px;
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
-    border-top-left-radius: 0px;
+    color: black;
     z-index: 200;
   }
 
@@ -301,14 +338,5 @@
 
   .infoGroup:hover {
     background: var(--shadow-blue);
-  }
-
-  .unlocked {
-    opacity: 0.9;
-  }
-
-  .notLocked {
-    font-weight: bold;
-    font-size: 20px;
   }
 </style>

@@ -1,38 +1,69 @@
 <script lang="ts">
-  import WorkbenchElements from "./WorkbenchElements.svelte";
+  import {
+    addDoc,
+    collection,
+    getDocs,
+    getFirestore,
+  } from "firebase/firestore";
+  import { element } from "svelte/internal";
+
   import { elements } from "../stores/elements";
+  import { width, height, client, db } from "../stores/globals";
   import { okay } from "../stores/settings";
+
   import Element from "./elements/Element.svelte";
+  import WorkbenchElements from "./WorkbenchElements.svelte";
 
   let collectionName = "Sample Collection";
   let heightOffset = 241;
+  let ready = false;
 
   $: $okay ? (heightOffset = 167) : (heightOffset = 241);
 
-  const getElement = (type) => {
-    //switch on type
+  const fetchElements = async () => {
+    const thingsCollection = await collection($db, "things");
+    const querySnapshot = await getDocs(thingsCollection);
+    $elements = querySnapshot.docs.map((doc) => {
+      return { ...doc.data(), id: doc.id };
+    });
+
+    //for each element, set parentOf = [] if it doesn't exist
+    $elements.forEach((element) => {
+      if (!element.parentOf) {
+        element.parentOf = [];
+      }
+      const childElements = $elements.filter((child) => {
+        return child.childOf === element.id;
+      });
+
+      childElements.forEach((child) => {
+        element.parentOf = [...element.parentOf, child.id];
+      });
+    });
+    $elements = $elements;
+    ready = true;
   };
 
-  $elements.push({
-    type: "div",
-    style: {},
-    content: "",
-  });
+  fetchElements();
 </script>
 
-<div class="workbench" style="height: calc(100vh - {heightOffset}px);">
-  <div class="collectionName">
-    <h1>{collectionName}</h1>
+{#if ready}
+  <div class="workbench" style="height: calc(100vh - {heightOffset}px);">
+    <div class="collectionName">
+      <h1>{collectionName}</h1>
+    </div>
+    <div class="toolbar">
+      <WorkbenchElements />
+    </div>
+    <div class="view" bind:clientHeight={$height} bind:clientWidth={$width}>
+      {#each $elements as element}
+        {#if element.childOf?.length === 0 || !element.childOf}
+          <Element {element} />
+        {/if}
+      {/each}
+    </div>
   </div>
-  <div class="toolbar">
-    <WorkbenchElements />
-  </div>
-  <div class="view">
-    {#each $elements as element}
-      <Element {element} />
-    {/each}
-  </div>
-</div>
+{/if}
 
 <style>
   .workbench {
@@ -63,8 +94,7 @@
   .view {
     margin: 0px -20px;
     margin-top: 20px;
-    height: calc(100% - 146px);
+    height: calc(100% - 101px);
     overflow-y: auto;
-    background: blue;
   }
 </style>

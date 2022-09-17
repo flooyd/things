@@ -5,5 +5,5 @@ export const height = writable(0);
 export const client = writable(null);
 export const db = writable(null);
 export const elementTooltipId = writable(null);
-
-width.subscribe((value) => value);
+export const elementsHovered = writable([]);
+export const controlDown = writable(false);

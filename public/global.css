@@ -148,9 +148,16 @@ button {
   height: 29px;
   width: fit-content;
   padding: 2px 8px;
+  background: white;
+  border: 3px solid black;
+  border-radius: 5px;
 }
 
 button:hover {
   background: var(--shadow-blue);
   cursor: pointer;
+}
+
+.redButton:hover {
+  background: red;
 }

@@ -3,10 +3,11 @@
   import Nav from "./components/Nav.svelte";
   import Toolbar from "./components/Toolbar.svelte";
   import WorkBench from "./components/WorkBench.svelte";
-  import { width, height, client, db } from "./stores/globals";
+  import { width, height, client, db, controlDown } from "./stores/globals";
   import { initializeApp } from "firebase/app";
   import { collection, getDocs, getFirestore } from "firebase/firestore";
   import { onMount } from "svelte";
+  import { elements } from "./stores/elements";
   // TODO: Add SDKs for Firebase products that you want to use
   // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -22,20 +23,33 @@
     measurementId: "G-ENLDR35L4P",
   };
 
+  let ready = false;
+
   onMount(async () => {
     $client = await initializeApp(firebaseConfig);
-    const db = getFirestore($client);
-    const querySnapshot = await getDocs(collection(db, "things"));
-    querySnapshot.forEach((doc) => {});
+    $db = getFirestore($client);
+    onkeydown = (e) => {
+      if (e.key === "Control") {
+        $controlDown = true;
+      }
+    };
+    onkeyup = (e) => {
+      if (e.key === "Control") {
+        $controlDown = false;
+      }
+    };
+    ready = true;
   });
 </script>
 
 <Nav />
-<main bind:clientHeight={$height} bind:clientWidth={$width}>
-  <Intro />
-  <Toolbar />
-  <WorkBench />
-</main>
+{#if ready}
+  <main>
+    <Intro />
+    <Toolbar />
+    <WorkBench />
+  </main>
+{/if}
 
 <style>
   main {
