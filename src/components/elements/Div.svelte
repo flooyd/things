@@ -40,6 +40,8 @@
 
 <style>
   .hoverBorder {
-    border: 3px solid yellow !important;
+    background: white !important;
+    color: black !important;
+    box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75) !important;
   }
 </style>
