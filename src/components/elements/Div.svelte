@@ -12,6 +12,7 @@
   export let key;
 
   let elements = [];
+  let unique = {};
   let hoverBorder = "3px solid red";
 
   onMount(() => {
@@ -32,11 +33,13 @@
   }
 </script>
 
-<div transition:fade {id} style={styleString} class={hoverBorder}>
-  {#each elements as element}
-    <Element {element} />{/each}
-  {content}
-</div>
+{#key unique}
+  <div in:fade {id} style={styleString} class={hoverBorder}>
+    {#each elements as element}
+      <Element {element} />{/each}
+    {content ? content : ""}
+  </div>
+{/key}
 
 <style>
   .hoverBorder {

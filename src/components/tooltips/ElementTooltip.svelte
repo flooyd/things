@@ -7,6 +7,7 @@
     elementTooltipId,
     mouseInTooltip,
   } from "../../stores/globals";
+  import { elements } from "../../stores/elements";
 
   import { okay } from "../../stores/settings";
   import { deleteElement, copyElement } from "../../util";
@@ -45,7 +46,6 @@
   }}
   in:fade={{ duration: 100 }}
   class="elementTooltip"
-  style={`left: calc(100vw - 433px); top: calc(3px);`}
 >
   <div class="message">{message}</div>
 
@@ -57,8 +57,12 @@
       class="blueButton">Copy Element</button
     >
     <button
-      on:click={() => deleteElement(element.id)}
       type="button"
+      on:click={async (e) => {
+        $elementTooltipId = null;
+        $mouseInTooltip = false;
+        await deleteElement(element.id);
+      }}
       disabled={$awaitingFirebase}
       class="redButton">Delete Element</button
     >
@@ -374,6 +378,8 @@
     border-radius: 5px;
     color: black;
     z-index: 200;
+    left: calc(100vw - 433px);
+    top: calc(3px);
   }
 
   .infoGroup {

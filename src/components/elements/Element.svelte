@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { getId } from "../../util";
+  import { fade } from "svelte/transition";
   import { doc, getDoc, updateDoc } from "firebase/firestore";
 
   import ElementTooltip from "../tooltips/ElementTooltip.svelte";
@@ -27,6 +28,15 @@
   onMount(() => {
     docRef = doc($db, "things", element.id);
 
+    ready = true;
+  });
+
+  const handleEdit = (property, value) => {
+    element[property] = value;
+    docRef ? updateDoc(docRef, element) : null;
+  };
+
+  $: if (element) {
     element.width = element.width ? element.width : "400px";
     element.height = element.height ? element.height : "300px";
     element.background = element.background ? element.background : "black";
@@ -61,14 +71,7 @@
     element.parentOf = $elements
       .filter((e) => e.childOf === element.id)
       .map((e) => e.id);
-
-    ready = true;
-  });
-
-  const handleEdit = (property, value) => {
-    element[property] = value;
-    docRef ? updateDoc(docRef, element) : null;
-  };
+  }
 
   $: styleString = `width: ${element.width}; 
   height: ${element.height}; 
@@ -101,6 +104,7 @@
   <div
     class="element"
     style="width: ${element.width}; height: ${element.height};"
+    out:fade
     on:mouseover={(e) => {
       e.stopPropagation();
       if (!$altDown && !$mouseInTooltip) {

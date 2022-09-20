@@ -8,17 +8,21 @@
   import { element } from "svelte/internal";
 
   import { elements } from "../stores/elements";
-  import { width, height, client, db } from "../stores/globals";
-  import { okay } from "../stores/settings";
+  import {
+    width,
+    height,
+    client,
+    db,
+    awaitingFirebase,
+  } from "../stores/globals";
 
   import Element from "./elements/Element.svelte";
   import WorkbenchElements from "./WorkbenchElements.svelte";
+  import WorkbenchStores from "./WorkbenchStores.svelte";
 
   let collectionName = "Sample Collection";
-  let heightOffset = 241;
+  let heightOffset = 167;
   let ready = false;
-
-  $: $okay ? (heightOffset = 167) : (heightOffset = 241);
 
   const fetchElements = async () => {
     const thingsCollection = await collection($db, "things");
@@ -54,9 +58,10 @@
     </div>
     <div class="toolbar">
       <WorkbenchElements />
+      <WorkbenchStores />
     </div>
     <div class="view" bind:clientHeight={$height} bind:clientWidth={$width}>
-      {#each $elements as element}
+      {#each $elements as element (element.id)}
         {#if element.childOf?.length === 0 || !element.childOf}
           <Element {element} />
         {/if}

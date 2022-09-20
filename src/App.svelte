@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Intro from "./components/Intro.svelte";
   import Nav from "./components/Nav.svelte";
   import Toolbar from "./components/Toolbar.svelte";
   import WorkBench from "./components/WorkBench.svelte";
@@ -11,11 +10,13 @@
     altDown,
     elementTooltipId,
     mouseInTooltip,
+    storesTooltipOpen,
   } from "./stores/globals";
   import { initializeApp } from "firebase/app";
   import { collection, getDocs, getFirestore } from "firebase/firestore";
   import { onMount } from "svelte";
   import { elements } from "./stores/elements";
+  import StoresTooltip from "./components/tooltips/StoresTooltip.svelte";
   // TODO: Add SDKs for Firebase products that you want to use
   // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -53,10 +54,12 @@
 <Nav />
 {#if ready}
   <main>
-    <Intro />
     <Toolbar />
     <WorkBench />
   </main>
+{/if}
+{#if ready && $storesTooltipOpen}
+  <StoresTooltip />
 {/if}
 
 <style>

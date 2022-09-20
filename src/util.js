@@ -1,6 +1,13 @@
 import { v4 as uuidv4 } from "uuid";
 //import collection, addDoc
-import { collection, addDoc, getDoc, deleteDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDoc,
+  deleteDoc,
+  getDocs,
+  doc,
+} from "firebase/firestore";
 import {
   db as dbStore,
   awaitingFirebase,
@@ -31,13 +38,31 @@ export const addElement = async (type) => {
   updateAwaitingFirebase(false);
 };
 
+const fetchElements = async () => {
+  updateAwaitingFirebase(true);
+  const db = get(dbStore);
+  const thingsCol = await collection(db, "things");
+  const querySnapshot = await getDocs(thingsCol);
+  let elements = [];
+  querySnapshot.forEach((doc) => {
+    let element = doc.data();
+    element = { ...element, id: doc.id };
+    elements.push(element);
+  });
+  updateElements(elements);
+  updateAwaitingFirebase(false);
+};
+
 export const deleteElement = async (id) => {
   updateAwaitingFirebase(true);
   const db = get(dbStore);
   const elements = get(elementsStore);
-  const docRef = doc(db, "things", id);
-  await deleteDoc(docRef);
-  updateElements(elements.filter((element) => element.id !== id));
+  await deleteDoc(doc(db, "things", id));
+  let newElements = [];
+  JSON.parse(JSON.stringify(elements.filter((e) => e.id !== id))).forEach((e) =>
+    newElements.push(e)
+  );
+  updateElements(newElements);
   updateAwaitingFirebase(false);
 };
 

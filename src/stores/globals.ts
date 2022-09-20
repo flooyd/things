@@ -9,6 +9,7 @@ export const mouseInTooltip = writable(false);
 export const elementsHovered = writable([]);
 export const altDown = writable(false);
 export const awaitingFirebase = writable(false);
+export const storesTooltipOpen = writable(false);
 
 //export update function for elements
 export function updateAwaitingFirebase(newValue) {
