@@ -19,6 +19,7 @@
   import Element from "./elements/Element.svelte";
   import WorkbenchElements from "./WorkbenchElements.svelte";
   import WorkbenchStores from "./WorkbenchStores.svelte";
+  import WorkbenchFunctions from "./WorkbenchFunctions.svelte";
 
   let collectionName = "Sample Collection";
   let heightOffset = 167;
@@ -59,6 +60,7 @@
     <div class="toolbar">
       <WorkbenchElements />
       <WorkbenchStores />
+      <WorkbenchFunctions />
     </div>
     <div class="view" bind:clientHeight={$height} bind:clientWidth={$width}>
       {#each $elements as element (element.id)}

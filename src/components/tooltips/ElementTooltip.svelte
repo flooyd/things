@@ -8,8 +8,6 @@
     mouseInTooltip,
   } from "../../stores/globals";
   import { elements } from "../../stores/elements";
-
-  import { okay } from "../../stores/settings";
   import { deleteElement, copyElement } from "../../util";
 
   export let element;
@@ -17,8 +15,6 @@
 
   let top = null;
   let message = "Hold down 'f' to move mouse here.";
-
-  $: top = $okay ? "199px" : "273px";
 
   let infoGroups = [
     "gap",

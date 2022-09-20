@@ -1,7 +1,6 @@
 <script>
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
-  import { okay } from "../stores/settings";
 
   let timer = null;
   let mounted = false;
@@ -63,9 +62,6 @@
       Thing{"<s>"}
     </div>
     <div class="options">
-      {#if $okay}
-        <button on:click={() => ($okay = false)}>Show Intro</button>
-      {/if}
       <div>About</div>
       <div>Settings</div>
     </div>

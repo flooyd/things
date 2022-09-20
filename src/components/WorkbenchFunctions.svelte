@@ -1,10 +1,13 @@
 <script>
-  import { storesTooltipOpen } from "../stores/globals";
+  import { storesTooltipOpen, functionsTooltipOpen } from "../stores/globals";
 </script>
 
-<div on:click={() => ($storesTooltipOpen = !$storesTooltipOpen)} class="item">
+<div
+  on:click={() => ($functionsTooltipOpen = !$functionsTooltipOpen)}
+  class="item"
+>
   <span><i class="" /></span>
-  <span>stores</span>
+  <span>functions</span>
 </div>
 
 <style>

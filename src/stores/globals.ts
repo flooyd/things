@@ -10,6 +10,7 @@ export const elementsHovered = writable([]);
 export const altDown = writable(false);
 export const awaitingFirebase = writable(false);
 export const storesTooltipOpen = writable(false);
+export const functionsTooltipOpen = writable(false);
 
 //export update function for elements
 export function updateAwaitingFirebase(newValue) {
