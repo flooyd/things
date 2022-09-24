@@ -14,6 +14,7 @@
     client,
     db,
     awaitingFirebase,
+    global,
   } from "../stores/globals";
 
   import Element from "./elements/Element.svelte";
@@ -50,11 +51,17 @@
   };
 
   fetchElements();
+  $: $global.current === "b" ? console.log($global.b) : null;
 </script>
 
 {#if ready}
   <div class="workbench" style="height: calc(100vh - {heightOffset}px);">
-    <div class="collectionName">
+    <div
+      on:click={() => {
+        $global.b = 3;
+      }}
+      class="collectionName"
+    >
       <h1>{collectionName}</h1>
     </div>
     <div class="toolbar">

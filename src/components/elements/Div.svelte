@@ -34,7 +34,7 @@
 </script>
 
 {#key unique}
-  <div in:fade {id} style={styleString} class={hoverBorder}>
+  <div in:fade {id} style={styleString} class={`${hoverBorder} thingDiv`}>
     {#each elements as element}
       <Element {element} />{/each}
     {content ? content : ""}

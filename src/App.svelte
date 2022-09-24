@@ -11,6 +11,7 @@
     elementTooltipId,
     mouseInTooltip,
     storesTooltipOpen,
+    global,
   } from "./stores/globals";
   import { initializeApp } from "firebase/app";
   import { collection, getDocs, getFirestore } from "firebase/firestore";
@@ -49,6 +50,10 @@
     };
     ready = true;
   });
+  $global.a = 1;
+  $global.b = 2;
+
+  $: $global.current === "a" ? console.log($global.a) : null;
 </script>
 
 <Nav />
