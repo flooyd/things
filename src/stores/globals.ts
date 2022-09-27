@@ -13,6 +13,7 @@ export const storesTooltipOpen = writable(false);
 export const functionsTooltipOpen = writable(false);
 export const fullscreen = writable(false);
 export const hideUI = writable(false);
+export const mousePosition = writable({ x: 0, y: 0 });
 export const global = writable<any>({});
 
 //export update function for elements

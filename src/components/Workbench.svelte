@@ -4,14 +4,7 @@
   import { fly } from "svelte/transition";
 
   import { elements } from "../stores/elements";
-  import {
-    width,
-    height,
-    db,
-    global,
-    hideUI,
-    fullscreen,
-  } from "../stores/globals";
+  import { db, global, hideUI, fullscreen } from "../stores/globals";
 
   import Element from "./elements/Element.svelte";
   import WorkbenchElements from "./WorkbenchElements.svelte";
@@ -68,7 +61,7 @@
         </div>
       </div>
     {/if}
-    <div class="view" bind:clientHeight={$height} bind:clientWidth={$width}>
+    <div class="view">
       {#each $elements as element (element.id)}
         {#if element.childOf?.length === 0 || !element.childOf}
           <Element {element} />

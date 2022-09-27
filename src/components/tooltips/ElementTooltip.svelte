@@ -6,6 +6,8 @@
     awaitingFirebase,
     elementTooltipId,
     mouseInTooltip,
+    width,
+    mousePosition,
   } from "../../stores/globals";
   import { elements } from "../../stores/elements";
   import { deleteElement, copyElement } from "../../util";
@@ -13,8 +15,10 @@
   export let element;
   export let handleEdit;
 
-  let top = null;
-  let message = "Hold down 'f' to move mouse here.";
+  let style =
+    $mousePosition.x > $width / 2 ? "left: -3px" : "left: calc(100vw - 433px)";
+  let message =
+    "Edits for most fields are saved and updated instantly. Otherwise, click the save button to save and update changes.";
 
   let infoGroups = [
     "gap",
@@ -29,19 +33,9 @@
   on:click={(e) => {
     e.stopPropagation();
   }}
-  on:mouseleave={(e) => {
-    e.stopPropagation();
-    $mouseInTooltip = false;
-    $elementTooltipId = null;
-  }}
-  on:mouseenter={(e) => {
-    e.stopPropagation();
-    $mouseInTooltip = true;
-    message =
-      "Edits for most fields are saved and updated instantly. Otherwise, click the save button to save and update changes.";
-  }}
   in:fade={{ duration: 100 }}
   class="elementTooltip"
+  {style}
 >
   <div class="message">{message}</div>
 
@@ -62,6 +56,13 @@
       disabled={$awaitingFirebase}
       class="redButton">Delete Element</button
     >
+    <button
+      class="blueButton"
+      type="button"
+      on:click={() => ($elementTooltipId = null)}
+    >
+      Close
+    </button>
   </div>
   <div class="infoGroup">
     <label for="type" class="infoLabel">Element type</label>
@@ -361,9 +362,7 @@
     flex-direction: column;
     gap: 8px;
     position: fixed;
-    right: auto;
-    width: fit-content;
-    min-width: 400px;
+    width: 400px;
     height: fit-content;
     max-height: calc(100vh - 100px);
     background: white;
@@ -374,7 +373,6 @@
     border-radius: 5px;
     color: black;
     z-index: 200;
-    left: calc(100vw - 433px);
     top: -3px;
   }
 

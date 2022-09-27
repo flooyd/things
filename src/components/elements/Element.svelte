@@ -103,32 +103,11 @@
   <div
     class="element"
     out:fade
-    on:mouseover={(e) => {
+    on:click={(e) => {
       e.stopPropagation();
       if (!$altDown && !$mouseInTooltip) {
         showTooltip = true;
         $elementTooltipId = id;
-      }
-    }}
-    on:focus={(e) => {
-      e.stopPropagation();
-      if (!$altDown && !$mouseInTooltip) {
-        showTooltip = true;
-        $elementTooltipId = id;
-      }
-    }}
-    on:mouseout={(e) => {
-      e.stopPropagation();
-      if (!$altDown && !$mouseInTooltip) {
-        showTooltip = false;
-        $elementTooltipId = null;
-      }
-    }}
-    on:blur={(e) => {
-      e.stopPropagation();
-      if (!$altDown && !$mouseInTooltip) {
-        showTooltip = false;
-        $elementTooltipId = null;
       }
     }}
   >

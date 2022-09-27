@@ -9,6 +9,8 @@
     storesTooltipOpen,
     fullscreen,
     hideUI,
+    mousePosition,
+    width,
   } from "./stores/globals";
   import { initializeApp } from "firebase/app";
   import { getFirestore } from "firebase/firestore";
@@ -59,13 +61,20 @@
 
     ready = true;
   });
+
+  $: console.log($mousePosition);
 </script>
 
 {#if ready}
   {#if !$fullscreen}
     <Nav />
   {/if}
-  <main>
+  <main
+    on:mousemove={(e) => {
+      $mousePosition = { x: e.clientX, y: e.clientY };
+    }}
+    bind:clientWidth={$width}
+  >
     {#if !$fullscreen}
       <Toolbar />
     {/if}
