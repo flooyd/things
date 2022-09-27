@@ -12,6 +12,8 @@
     db,
     altDown,
     mouseInTooltip,
+    hideUI,
+    fullscreen,
   } from "../../stores/globals";
   import { elements } from "../../stores/elements";
 
@@ -100,7 +102,6 @@
 {#if ready}
   <div
     class="element"
-    style="width: ${element.width}; height: ${element.height};"
     out:fade
     on:mouseover={(e) => {
       e.stopPropagation();
@@ -141,7 +142,16 @@
       />
     {/if}
   </div>
-
+  {#if $elementTooltipId === id}
+    <ElementTooltip
+      {element}
+      on:edit={handleEdit}
+      on:delete={() => {
+        $elements = $elements.filter((e) => e.id !== element.id);
+        $elementTooltipId = null;
+      }}
+    />
+  {/if}
   {#if showTooltip && $elementTooltipId === id}
     <ElementTooltip {element} {handleEdit} />
   {/if}

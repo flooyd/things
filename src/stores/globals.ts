@@ -11,6 +11,8 @@ export const altDown = writable(false);
 export const awaitingFirebase = writable(false);
 export const storesTooltipOpen = writable(false);
 export const functionsTooltipOpen = writable(false);
+export const fullscreen = writable(false);
+export const hideUI = writable(false);
 export const global = writable<any>({});
 
 //export update function for elements

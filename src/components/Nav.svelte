@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
-  import { fade } from "svelte/transition";
+  import { fly, fade } from "svelte/transition";
+  import { typewriter } from "../util.js";
 
   let timer = null;
   let mounted = false;
@@ -30,36 +31,13 @@
   });
 
   $: tag;
-
-  //https://svelte.dev/tutorial/custom-js-transitions
-  function typewriter(node, { speed = 1 }) {
-    const valid =
-      node.childNodes.length === 1 &&
-      node.childNodes[0].nodeType === Node.TEXT_NODE;
-
-    if (!valid) {
-      throw new Error(
-        `This transition only works on elements with a single text node child`
-      );
-    }
-
-    const text = node.textContent;
-    const duration = text.length / (speed * 0.01);
-
-    return {
-      duration,
-      tick: (t) => {
-        const i = Math.trunc(text.length * t);
-        node.textContent = text.slice(0, i);
-      },
-    };
-  }
 </script>
 
-<div class="nav">
+<div transition:fly={{ x: 0, y: -100 }} class="nav">
   {#if !tag}
     <div in:fade class="title">
       Thing{"<s>"}
+      <span in:typewriter={{ speed: 5 }}>{"Escape for Full Screen"}</span>
     </div>
     <div class="options">
       <div>About</div>
@@ -88,6 +66,13 @@
 
   .title {
     font-size: 39px;
+    display: flex;
+    gap: 13px;
+    align-items: center;
+  }
+
+  span {
+    font-size: 13px;
   }
 
   .options {

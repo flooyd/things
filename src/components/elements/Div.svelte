@@ -31,10 +31,33 @@
   } else {
     hoverBorder = "";
   }
+
+  /*
+    let things = document.getElementsByClassName("thingDiv");
+
+  const setChildOfAll = () => {
+    Object.keys(things).forEach((key) => {
+      if (things[key].id === "I7ELF8xQ6uFHR1DvZsKY") return;
+      things[key].childOf = "I7ELF8xQ6uFHR1DvZsKY";
+    });
+  };
+
+  const doRandomStuff = () => {
+    Object.keys(things).forEach((key) => {
+      if (things[key].id === "I7ELF8xQ6uFHR1DvZsKY") return;
+      
+      things[key].style.width = randomWidth(75, 100);
+      things[key].style.height = randomHeight(50,50);
+      
+    });
+  };
+
+  createInterval(doRandomStuff, 500);
+  */
 </script>
 
 {#key unique}
-  <div in:fade {id} style={styleString} class={`${hoverBorder} thingDiv`}>
+  <div in:fade {id} style={styleString} class={`thingDiv`}>
     {#each elements as element}
       <Element {element} />{/each}
     {content ? content : ""}
@@ -42,9 +65,4 @@
 {/key}
 
 <style>
-  .hoverBorder {
-    background: white !important;
-    color: black !important;
-    box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75) !important;
-  }
 </style>

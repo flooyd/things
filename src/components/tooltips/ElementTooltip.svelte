@@ -375,7 +375,7 @@
     color: black;
     z-index: 200;
     left: calc(100vw - 433px);
-    top: calc(3px);
+    top: -3px;
   }
 
   .infoGroup {

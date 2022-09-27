@@ -3,26 +3,19 @@
   import Toolbar from "./components/Toolbar.svelte";
   import WorkBench from "./components/WorkBench.svelte";
   import {
-    width,
-    height,
     client,
     db,
     altDown,
-    elementTooltipId,
-    mouseInTooltip,
     storesTooltipOpen,
-    global,
+    fullscreen,
+    hideUI,
   } from "./stores/globals";
   import { initializeApp } from "firebase/app";
-  import { collection, getDocs, getFirestore } from "firebase/firestore";
+  import { getFirestore } from "firebase/firestore";
   import { onMount } from "svelte";
-  import { elements } from "./stores/elements";
   import StoresTooltip from "./components/tooltips/StoresTooltip.svelte";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+  import { initFunctions } from "./util";
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   const firebaseConfig = {
     apiKey: "AIzaSyAgh1vJII1SXHxdKuf33mnN1IvURsrQJXI",
     authDomain: "things-site.firebaseapp.com",
@@ -38,9 +31,22 @@
   onMount(async () => {
     $client = await initializeApp(firebaseConfig);
     $db = getFirestore($client);
+
     onkeydown = (e) => {
+      console.log(e.key);
       if (e.key === "f") {
-        $altDown = true;
+        return ($altDown = true);
+      }
+
+      if (e.key === "F1") {
+        e.preventDefault();
+        console.log("f1");
+        return ($hideUI = !$hideUI);
+      }
+
+      if (e.key === "Escape") {
+        console.log("escape");
+        return ($fullscreen = !$fullscreen);
       }
     };
     onkeyup = (e) => {
@@ -48,18 +54,21 @@
         $altDown = false;
       }
     };
+
+    initFunctions();
+
     ready = true;
   });
-  $global.a = 1;
-  $global.b = 2;
-
-  $: $global.current === "a" ? console.log($global.a) : null;
 </script>
 
-<Nav />
 {#if ready}
+  {#if !$fullscreen}
+    <Nav />
+  {/if}
   <main>
-    <Toolbar />
+    {#if !$fullscreen}
+      <Toolbar />
+    {/if}
     <WorkBench />
   </main>
 {/if}

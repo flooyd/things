@@ -1,20 +1,16 @@
 <script lang="ts">
-  import {
-    addDoc,
-    collection,
-    getDocs,
-    getFirestore,
-  } from "firebase/firestore";
-  import { element } from "svelte/internal";
+  import { collection, getDocs, getFirestore } from "firebase/firestore";
+  import { typewriter } from "../util.js";
+  import { fly } from "svelte/transition";
 
   import { elements } from "../stores/elements";
   import {
     width,
     height,
-    client,
     db,
-    awaitingFirebase,
     global,
+    hideUI,
+    fullscreen,
   } from "../stores/globals";
 
   import Element from "./elements/Element.svelte";
@@ -23,7 +19,9 @@
   import WorkbenchFunctions from "./WorkbenchFunctions.svelte";
 
   let collectionName = "Sample Collection";
-  let heightOffset = 167;
+  let heightOffset = 127;
+  $: $fullscreen ? (heightOffset = 0) : (heightOffset = 127);
+
   let ready = false;
 
   const fetchElements = async () => {
@@ -51,24 +49,25 @@
   };
 
   fetchElements();
-  $: $global.current === "b" ? console.log($global.b) : null;
 </script>
 
 {#if ready}
   <div class="workbench" style="height: calc(100vh - {heightOffset}px);">
-    <div
-      on:click={() => {
-        $global.b = 3;
-      }}
-      class="collectionName"
-    >
-      <h1>{collectionName}</h1>
-    </div>
-    <div class="toolbar">
-      <WorkbenchElements />
-      <WorkbenchStores />
-      <WorkbenchFunctions />
-    </div>
+    {#if !$hideUI}
+      <div transition:fly={{ x: 0, y: -227 }}>
+        <div class="collectionName">
+          <h1>
+            {collectionName}
+          </h1>
+          <span in:typewriter={{ speed: 5 }}>{"F1 to hide/show"}</span>
+        </div>
+        <div class="toolbar">
+          <WorkbenchElements />
+          <WorkbenchStores />
+          <WorkbenchFunctions />
+        </div>
+      </div>
+    {/if}
     <div class="view" bind:clientHeight={$height} bind:clientWidth={$width}>
       {#each $elements as element (element.id)}
         {#if element.childOf?.length === 0 || !element.childOf}
@@ -82,15 +81,17 @@
 <style>
   .workbench {
     background: var(--cultured);
-    padding: 20px;
     margin: 0px 0px;
     color: black;
   }
 
   .collectionName {
     font-size: 31px;
-    margin-bottom: 13px;
     color: var(--oxford-blue);
+    padding: 13px 20px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
   }
 
   .toolbar {
@@ -103,12 +104,10 @@
     justify-content: left;
     gap: 13px;
     padding: 10px 13px;
+    margin: 0px 20px;
   }
 
-  .view {
-    margin: 0px -20px;
-    margin-top: 20px;
-    height: calc(100% - 101px);
-    overflow-y: auto;
+  span {
+    font-size: 13px;
   }
 </style>

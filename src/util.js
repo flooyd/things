@@ -20,6 +20,29 @@ export const getId = (tag) => {
   return tag + "-" + uuidv4();
 };
 
+export function typewriter(node, { speed = 1 }) {
+  const valid =
+    node.childNodes.length === 1 &&
+    node.childNodes[0].nodeType === Node.TEXT_NODE;
+
+  if (!valid) {
+    throw new Error(
+      `This transition only works on elements with a single text node child`
+    );
+  }
+
+  const text = node.textContent;
+  const duration = text.length / (speed * 0.01);
+
+  return {
+    duration,
+    tick: (t) => {
+      const i = Math.trunc(text.length * t);
+      node.textContent = text.slice(0, i);
+    },
+  };
+}
+
 export const addElement = async (type) => {
   updateAwaitingFirebase(true);
   const db = get(dbStore);
@@ -81,4 +104,61 @@ export const copyElement = async (id) => {
     { ...newElementData.data(), id: newElementData.id },
   ]);
   updateAwaitingFirebase(false);
+};
+
+//function for random hex color
+function randomColor() {
+  return "#" + Math.floor(Math.random() * 16777215).toString(16);
+}
+
+//function for random border
+function randomBorder() {
+  return Math.floor(Math.random() * 10) + "px solid " + randomColor();
+}
+
+//random width string between params x and y (with px at end) for style
+function randomWidth(x, y) {
+  return Math.floor(Math.random() * (y - x) + x) + "px";
+}
+
+//random height string between params x and y (with px at end) for style
+function randomHeight(x, y) {
+  return Math.floor(Math.random() * (y - x) + x) + "px";
+}
+
+//function to create and return an interval
+function createInterval(func, time) {
+  return setInterval(func, time);
+}
+
+//function to create and return a timeout
+function createTimeout(func, time) {
+  return setTimeout(func, time);
+}
+
+//function to end an interval
+function endInterval(interval) {
+  clearInterval(interval);
+}
+
+//function to end a timeout
+function endTimeout(timeout) {
+  clearTimeout(timeout);
+}
+
+//function get random display value either initial or none
+function randomDisplay() {
+  return Math.random() < 0.5 ? "block" : "none";
+}
+
+export const initFunctions = () => {
+  window.randomColor = randomColor;
+  window.randomBorder = randomBorder;
+  window.randomWidth = randomWidth;
+  window.randomHeight = randomHeight;
+  window.createInterval = createInterval;
+  window.createTimeout = createTimeout;
+  window.endInterval = endInterval;
+  window.endTimeout = endTimeout;
+  window.randomDisplay = randomDisplay;
 };
