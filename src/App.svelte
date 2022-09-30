@@ -5,17 +5,18 @@
   import {
     client,
     db,
-    altDown,
     storesTooltipOpen,
     fullscreen,
     hideUI,
     mousePosition,
     width,
+    functionsTooltipOpen,
   } from "./stores/globals";
   import { initializeApp } from "firebase/app";
   import { getFirestore } from "firebase/firestore";
   import { onMount } from "svelte";
   import StoresTooltip from "./components/tooltips/StoresTooltip.svelte";
+  import FunctionsTooltip from "./components/tooltips/FunctionsTooltip.svelte";
   import { initFunctions } from "./util";
 
   const firebaseConfig = {
@@ -36,9 +37,6 @@
 
     onkeydown = (e) => {
       console.log(e.key);
-      if (e.key === "f") {
-        return ($altDown = true);
-      }
 
       if (e.key === "F1") {
         e.preventDefault();
@@ -49,11 +47,6 @@
       if (e.key === "Escape") {
         console.log("escape");
         return ($fullscreen = !$fullscreen);
-      }
-    };
-    onkeyup = (e) => {
-      if (e.key === "f") {
-        $altDown = false;
       }
     };
 
@@ -83,6 +76,9 @@
 {/if}
 {#if ready && $storesTooltipOpen}
   <StoresTooltip />
+{/if}
+{#if ready && $functionsTooltipOpen}
+  <FunctionsTooltip />
 {/if}
 
 <style>

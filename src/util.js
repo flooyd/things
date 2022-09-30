@@ -162,3 +162,15 @@ export const initFunctions = () => {
   window.endTimeout = endTimeout;
   window.randomDisplay = randomDisplay;
 };
+
+export const functions = {
+  mount: "runs when the component is mounted",
+  afterUpdate: "runs after the component is updated",
+  beforeUpdate: "runs before the component is updated",
+  beforeDestroy: "runs before the component is destroyed",
+  afterDestroy: "runs after the component is destroyed",
+  log: "logs a message to the console",
+  logError: "logs an error to the console",
+  logWarning: "logs a warning to the console",
+  logInfo: "logs an info message to the console",
+};

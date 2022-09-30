@@ -5,15 +5,15 @@ export const height = writable(0);
 export const client = writable(null);
 export const db = writable(null);
 export const elementTooltipId = writable(null);
-export const mouseInTooltip = writable(false);
 export const elementsHovered = writable([]);
-export const altDown = writable(false);
 export const awaitingFirebase = writable(false);
 export const storesTooltipOpen = writable(false);
 export const functionsTooltipOpen = writable(false);
 export const fullscreen = writable(false);
 export const hideUI = writable(false);
 export const mousePosition = writable({ x: 0, y: 0 });
+export const parentOfChildPendingDeletion = writable(null);
+export const childPendingDeletion = writable(null);
 export const global = writable<any>({});
 
 //export update function for elements

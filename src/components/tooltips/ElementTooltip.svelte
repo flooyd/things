@@ -1,15 +1,13 @@
 <script>
-  import { fade, fly } from "svelte/transition";
-  import { onMount } from "svelte";
+  import { fade } from "svelte/transition";
   import {
-    height,
     awaitingFirebase,
     elementTooltipId,
-    mouseInTooltip,
     width,
     mousePosition,
+    childPendingDeletion,
+    parentOfChildPendingDeletion,
   } from "../../stores/globals";
-  import { elements } from "../../stores/elements";
   import { deleteElement, copyElement } from "../../util";
 
   export let element;
@@ -49,9 +47,11 @@
     <button
       type="button"
       on:click={async (e) => {
+        e.stopPropagation();
         $elementTooltipId = null;
-        $mouseInTooltip = false;
         await deleteElement(element.id);
+        $childPendingDeletion = element.id;
+        $parentOfChildPendingDeletion = element.childOf;
       }}
       disabled={$awaitingFirebase}
       class="redButton">Delete Element</button

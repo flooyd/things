@@ -7,14 +7,7 @@
   import ElementTooltip from "../tooltips/ElementTooltip.svelte";
   import Div from "./Div.svelte";
 
-  import {
-    elementTooltipId,
-    db,
-    altDown,
-    mouseInTooltip,
-    hideUI,
-    fullscreen,
-  } from "../../stores/globals";
+  import { elementTooltipId, db } from "../../stores/globals";
   import { elements } from "../../stores/elements";
 
   export let element;
@@ -105,10 +98,8 @@
     out:fade
     on:click={(e) => {
       e.stopPropagation();
-      if (!$altDown && !$mouseInTooltip) {
-        showTooltip = true;
-        $elementTooltipId = id;
-      }
+      showTooltip = true;
+      $elementTooltipId = id;
     }}
   >
     {#if element.type === "div"}

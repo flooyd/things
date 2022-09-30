@@ -2,7 +2,12 @@
   import { doc, getDoc, updateDoc } from "firebase/firestore";
   import { fly, fade } from "svelte/transition";
   import { onMount } from "svelte";
-  import { db, elementTooltipId } from "../../stores/globals";
+  import {
+    db,
+    elementTooltipId,
+    parentOfChildPendingDeletion,
+    childPendingDeletion,
+  } from "../../stores/globals";
   import Element from "./Element.svelte";
 
   export let styleString;
@@ -25,6 +30,14 @@
       });
     }
   });
+
+  $: if ($parentOfChildPendingDeletion === id) {
+    console.log("parentOfChildPendingDeletion", $parentOfChildPendingDeletion);
+    console.log("childPendingDeletion", $childPendingDeletion);
+    elements = elements.filter((e) => e.id !== $childPendingDeletion);
+    $childPendingDeletion = null;
+    $parentOfChildPendingDeletion = null;
+  }
 
   $: if ($elementTooltipId === key) {
     hoverBorder = "hoverBorder";
@@ -57,8 +70,8 @@
 </script>
 
 {#key unique}
-  <div in:fade {id} style={styleString} class={`thingDiv`}>
-    {#each elements as element}
+  <div {id} style={styleString} class={`thingDiv`}>
+    {#each elements as element (element.id)}
       <Element {element} />{/each}
     {content ? content : ""}
   </div>
