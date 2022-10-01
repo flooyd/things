@@ -14,15 +14,11 @@
 
   let styleString,
     showTooltip,
-    elementClicked,
-    docRef,
     ready = null;
 
   const id = getId("div");
 
   onMount(() => {
-    docRef = doc($db, "things", element.id);
-
     element.width = element.width ? element.width : "400px";
     element.height = element.height ? element.height : "300px";
     element.background = element.background ? element.background : "black";
@@ -34,7 +30,7 @@
     element.fontSize = element.fontSize ? element.fontSize : "16px";
     element.color = element.color ? element.color : "white";
     element.content = element.content ? element.content : "";
-    element.id = element.id ? element.id : id;
+    element.id = element._id ? element._id : id;
     element.name = element.name ? element.name : "";
     element.marginBottom = element.marginBottom ? element.marginBottom : "";
     element.marginTop = element.marginTop ? element.marginTop : "";
@@ -62,7 +58,6 @@
 
   const handleEdit = (property, value) => {
     element[property] = value;
-    docRef ? updateDoc(docRef, element) : null;
   };
 
   $: styleString = `width: ${element.width}; 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { collection, getDocs, getFirestore } from "firebase/firestore";
-  import { typewriter } from "../util.js";
-  import { fly } from "svelte/transition";
+  import { typewriter, fetchElements } from "../util.js";
+  import { fly, fade } from "svelte/transition";
 
   import { elements } from "../stores/elements";
   import { db, global, hideUI, fullscreen } from "../stores/globals";
@@ -17,19 +17,15 @@
 
   let ready = false;
 
-  const fetchElements = async () => {
-    const thingsCollection = await collection($db, "things");
-    const querySnapshot = await getDocs(thingsCollection);
-    $elements = querySnapshot.docs.map((doc) => {
-      return { ...doc.data(), id: doc.id };
-    });
+  const getElements = async () => {
+    console.log("getting elements");
+    const fetchedElements = await fetchElements();
 
-    //for each element, set parentOf = [] if it doesn't exist
-    $elements.forEach((element) => {
+    fetchedElements.forEach((element) => {
       if (!element.parentOf) {
         element.parentOf = [];
       }
-      const childElements = $elements.filter((child) => {
+      const childElements = fetchedElements.filter((child) => {
         return child.childOf === element.id;
       });
 
@@ -37,22 +33,29 @@
         element.parentOf = [...element.parentOf, child.id];
       });
     });
-    $elements = $elements;
+
+    console.log("processing elements done");
+
+    $elements = fetchedElements;
     ready = true;
   };
 
-  fetchElements();
+  getElements();
 </script>
 
 {#if ready}
-  <div class="workbench" style="height: calc(100vh - {heightOffset}px);">
+  <div
+    transition:fade={{ duration: 100 }}
+    class="workbench"
+    style="height: calc(100vh - {heightOffset}px);"
+  >
     {#if !$hideUI}
-      <div transition:fly={{ x: 0, y: -227 }}>
+      <div transition:fade={{ duration: 100 }}>
         <div class="collectionName">
           <h1>
             {collectionName}
           </h1>
-          <span in:typewriter={{ speed: 5 }}>{"F1 to hide/show"}</span>
+          <span>{"F1 to hide/show"}</span>
         </div>
         <div class="toolbar">
           <WorkbenchElements />
@@ -62,7 +65,7 @@
       </div>
     {/if}
     <div class="view">
-      {#each $elements as element (element.id)}
+      {#each $elements as element (element._id)}
         {#if element.childOf?.length === 0 || !element.childOf}
           <Element {element} />
         {/if}
@@ -70,12 +73,29 @@
     </div>
   </div>
 {/if}
+{#if !ready}
+  <div class="loading" in:fade>Loading...</div>
+{/if}
 
 <style>
   .workbench {
     background: var(--cultured);
     margin: 0px 0px;
     color: black;
+  }
+
+  .view {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 127px);
+    font-size: 50px;
   }
 
   .collectionName {

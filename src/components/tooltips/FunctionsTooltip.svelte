@@ -8,7 +8,7 @@
     <div class="function">
       <div class="functionHeader">
         <div class="functionName">{item}</div>
-        <div class="functionType">function</div>
+        <div class="functionType">{functions[item]}</div>
       </div>
     </div>
   {/each}

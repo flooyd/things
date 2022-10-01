@@ -45,64 +45,51 @@ export function typewriter(node, { speed = 1 }) {
 
 export const addElement = async (type) => {
   updateAwaitingFirebase(true);
-  const db = get(dbStore);
   const elements = get(elementsStore);
-  //switch on type, if type is div, add div, if type is button, add button, etc...format {type: "string"}
-  const thingsCol = await collection(db, "things");
-  const addedDoc = await addDoc(thingsCol, {
-    type: type,
-    childOf: "",
-    parentOf: "",
+  const addedDoc = await fetch("http://localhost:3000/things", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ type: type }),
   });
-  let newElement = await (await getDoc(addedDoc)).data();
-  newElement = { ...newElement, id: addedDoc.id };
+  const addedDocJson = await addedDoc.json();
+  let newElement = addedDocJson;
 
   updateElements([...elements, newElement]);
   updateAwaitingFirebase(false);
 };
 
-const fetchElements = async () => {
+export const fetchElements = async () => {
   updateAwaitingFirebase(true);
-  const db = get(dbStore);
-  const thingsCol = await collection(db, "things");
-  const querySnapshot = await getDocs(thingsCol);
-  let elements = [];
-  querySnapshot.forEach((doc) => {
-    let element = doc.data();
-    element = { ...element, id: doc.id };
-    elements.push(element);
-  });
-  updateElements(elements);
+  const elements = await fetch("http://localhost:3000/things");
+  const elementsJson = await elements.json();
+  return elementsJson;
   updateAwaitingFirebase(false);
 };
 
 export const deleteElement = async (id) => {
   updateAwaitingFirebase(true);
-  const db = get(dbStore);
   const elements = get(elementsStore);
-  await deleteDoc(doc(db, "things", id));
-  let newElements = [];
-  JSON.parse(JSON.stringify(elements.filter((e) => e.id !== id))).forEach((e) =>
-    newElements.push(e)
-  );
-  updateElements(newElements);
+  const deletedDoc = await fetch("http://localhost:3000/things/" + id, {
+    method: "DELETE",
+  });
+  updateElements(elements.filter((element) => element._id !== id));
   updateAwaitingFirebase(false);
 };
 
-export const copyElement = async (id) => {
+export const copyElement = async (element) => {
   updateAwaitingFirebase(true);
-  const db = get(dbStore);
   const elements = get(elementsStore);
-  const docRef = doc(db, "things", id);
-  const docSnap = await getDoc(docRef);
-  const data = docSnap.data();
-  const thingsCol = await collection(db, "things");
-  const newElement = await addDoc(thingsCol, { ...data });
-  const newElementData = await await getDoc(newElement);
-  updateElements([
-    ...elements,
-    { ...newElementData.data(), id: newElementData.id },
-  ]);
+  const copiedDoc = await fetch("http://localhost:3000/things", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ ...element, _id: undefined }),
+  });
+  const copiedDocJson = await copiedDoc.json();
+
   updateAwaitingFirebase(false);
 };
 
@@ -124,6 +111,11 @@ function randomWidth(x, y) {
 //random height string between params x and y (with px at end) for style
 function randomHeight(x, y) {
   return Math.floor(Math.random() * (y - x) + x) + "px";
+}
+
+//random between range
+export function randomRange(x, y) {
+  return Math.floor(Math.random() * (y - x) + x);
 }
 
 //function to create and return an interval

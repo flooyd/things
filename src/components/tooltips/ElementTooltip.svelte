@@ -25,6 +25,8 @@
     "flexDirection",
     "flexWrap",
   ];
+
+  console.log(element);
 </script>
 
 <div
@@ -39,7 +41,7 @@
 
   <div class="toolbar">
     <button
-      on:click={() => copyElement(element.id)}
+      on:click={() => copyElement(element)}
       type="button"
       disabled={$awaitingFirebase}
       class="blueButton">Copy Element</button
@@ -49,8 +51,8 @@
       on:click={async (e) => {
         e.stopPropagation();
         $elementTooltipId = null;
-        await deleteElement(element.id);
-        $childPendingDeletion = element.id;
+        await deleteElement(element._id);
+        $childPendingDeletion = element._id;
         $parentOfChildPendingDeletion = element.childOf;
       }}
       disabled={$awaitingFirebase}

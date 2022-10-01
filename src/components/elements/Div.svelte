@@ -8,6 +8,7 @@
     parentOfChildPendingDeletion,
     childPendingDeletion,
   } from "../../stores/globals";
+  import { randomRange } from "../../util";
   import Element from "./Element.svelte";
 
   export let styleString;
@@ -70,7 +71,7 @@
 </script>
 
 {#key unique}
-  <div {id} style={styleString} class={`thingDiv`}>
+  <div transition:fade {id} style={styleString} class={`thingDiv`}>
     {#each elements as element (element.id)}
       <Element {element} />{/each}
     {content ? content : ""}
