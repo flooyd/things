@@ -3,6 +3,7 @@
   import Toolbar from "./components/Toolbar.svelte";
   import WorkBench from "./components/WorkBench.svelte";
   import ElementTooltip from "./components/tooltips/ElementTooltip.svelte";
+  import Grid from "./components/Grid.svelte";
   import {
     client,
     db,
@@ -14,6 +15,7 @@
     functionsTooltipOpen,
     clickedElement,
     elementTooltipId,
+    showGrid,
   } from "./stores/globals";
   import { elements } from "./stores/elements";
   import { initializeApp } from "firebase/app";
@@ -70,6 +72,7 @@
       $mousePosition = { x: e.clientX, y: e.clientY };
     }}
     bind:clientWidth={$width}
+    style={$showGrid ? "overflow: hidden;" : ""}
   >
     {#if !$fullscreen}
       <Toolbar />
@@ -84,7 +87,7 @@
   {#if ready && $functionsTooltipOpen}
     <FunctionsTooltip />
   {/if}
-  {#if $elementTooltipId === $clickedElement?.id}
+  {#if ready && $elementTooltipId === $clickedElement?.id}
     <ElementTooltip
       element={$clickedElement}
       {handleEdit}
@@ -93,6 +96,9 @@
         $elementTooltipId = null;
       }}
     />
+  {/if}
+  {#if ready && $showGrid}
+    <Grid />
   {/if}
 </div>
 
@@ -106,11 +112,12 @@
 
   .tooltips {
     display: flex;
-    width: calc(100vw - 20px);
+    width: calc(100vw);
     background: transparent;
     top: 0px;
     pointer-events: none;
     justify-content: right;
     position: fixed;
+    height: 100vh;
   }
 </style>

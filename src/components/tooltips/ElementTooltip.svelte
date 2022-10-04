@@ -7,6 +7,7 @@
     mousePosition,
     childPendingDeletion,
     parentOfChildPendingDeletion,
+    showGrid,
   } from "../../stores/globals";
   import { deleteElement, copyElement } from "../../util";
 
@@ -38,6 +39,13 @@
   <div class="message">{message}</div>
 
   <div class="toolbar">
+    <button
+      on:click={() => ($showGrid = !$showGrid)}
+      class="blueButton"
+      type="button"
+      >{#if $showGrid}Hide{:else}Show{/if} Grid</button
+    >
+
     <button
       on:click={() => copyElement(element)}
       type="button"
@@ -362,7 +370,7 @@
     flex-direction: column;
     gap: 8px;
     width: 400px;
-    height: calc(100vh - 36px);
+    height: calc(100vh - 30px);
     background: white;
     font-size: 13px;
     padding: 16px;

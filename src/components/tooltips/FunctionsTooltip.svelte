@@ -23,7 +23,7 @@
     gap: 8px;
     width: fit-content;
     min-width: 400px;
-    height: calc(100vh - 36px);
+    height: calc(100vh - 20px);
     background: white;
     font-size: 13px;
     padding: 16px;

@@ -10,6 +10,7 @@ export const elementsHovered = writable([]);
 export const awaitingFirebase = writable(false);
 export const storesTooltipOpen = writable(false);
 export const functionsTooltipOpen = writable(false);
+export const showGrid = writable(false);
 export const fullscreen = writable(false);
 export const hideUI = writable(false);
 export const mousePosition = writable({ x: 0, y: 0 });
