@@ -2,13 +2,13 @@
   import { onMount } from "svelte";
   import { getId } from "../../util";
   import { fade } from "svelte/transition";
-  import { doc, getDoc, updateDoc } from "firebase/firestore";
 
   import ElementTooltip from "../tooltips/ElementTooltip.svelte";
   import Div from "./Div.svelte";
 
-  import { elementTooltipId, db } from "../../stores/globals";
+  import { elementTooltipId, clickedElement } from "../../stores/globals";
   import { elements } from "../../stores/elements";
+  import { elementsOpen } from "../../stores/tooltip";
 
   export let element;
 
@@ -56,9 +56,9 @@
     ready = true;
   });
 
-  const handleEdit = (property, value) => {
-    element[property] = value;
-  };
+  $: if ($clickedElement && $clickedElement.id === element.id) {
+    element = $clickedElement;
+  }
 
   $: styleString = `width: ${element.width}; 
   height: ${element.height}; 
@@ -94,7 +94,8 @@
     on:click={(e) => {
       e.stopPropagation();
       showTooltip = true;
-      $elementTooltipId = id;
+      $elementTooltipId = element.id;
+      $clickedElement = element;
     }}
   >
     {#if element.type === "div"}
@@ -107,19 +108,6 @@
       />
     {/if}
   </div>
-  {#if $elementTooltipId === id}
-    <ElementTooltip
-      {element}
-      on:edit={handleEdit}
-      on:delete={() => {
-        $elements = $elements.filter((e) => e.id !== element.id);
-        $elementTooltipId = null;
-      }}
-    />
-  {/if}
-  {#if showTooltip && $elementTooltipId === id}
-    <ElementTooltip {element} {handleEdit} />
-  {/if}
 {/if}
 
 <style>

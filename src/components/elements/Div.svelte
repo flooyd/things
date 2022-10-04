@@ -33,8 +33,6 @@
   });
 
   $: if ($parentOfChildPendingDeletion === id) {
-    console.log("parentOfChildPendingDeletion", $parentOfChildPendingDeletion);
-    console.log("childPendingDeletion", $childPendingDeletion);
     elements = elements.filter((e) => e.id !== $childPendingDeletion);
     $childPendingDeletion = null;
     $parentOfChildPendingDeletion = null;

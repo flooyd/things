@@ -29,7 +29,6 @@
   $: if ($global.current === "alpha") {
     try {
       functionMaker($global.alpha)();
-      console.log("success");
     } catch (e) {
       console.log(e);
     }
@@ -80,28 +79,22 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    position: fixed;
-    right: auto;
     width: fit-content;
     min-width: 400px;
-    height: calc(100vh - 100px);
-    max-height: calc(100vh - 100px);
+    height: calc(100vh - 36px);
     background: white;
-    border: 3px solid var(--oxford-blue);
     font-size: 13px;
     padding: 16px;
     overflow-y: auto;
-    border-radius: 5px;
     color: black;
     z-index: 200;
-    left: calc(100vw - 433px);
-    top: -3px;
     overflow-x: auto;
+    pointer-events: all;
   }
 
   .header {
     font-size: 20px;
-    font-weight: 600;
+    font-weight: bold;
     color: var(--oxford-blue);
   }
 

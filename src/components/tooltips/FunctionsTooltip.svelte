@@ -4,12 +4,14 @@
 </script>
 
 <div class="functionsTooltip" transition:fly={{ x: 500, y: 0, duration: 100 }}>
+  <div class="header">Functions</div>
   {#each Object.keys(functions) as item}
     <div class="function">
-      <div class="functionHeader">
+      <div class="title">
+        <img src="images/function.png" alt="function" />
         <div class="functionName">{item}</div>
-        <div class="functionType">{functions[item]}</div>
       </div>
+      <div class="functionType">{functions[item]}</div>
     </div>
   {/each}
 </div>
@@ -19,22 +21,52 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    position: fixed;
-    right: auto;
     width: fit-content;
     min-width: 400px;
-    height: calc(100vh - 100px);
-    max-height: calc(100vh - 100px);
+    height: calc(100vh - 36px);
     background: white;
-    border: 3px solid var(--oxford-blue);
     font-size: 13px;
     padding: 16px;
     overflow-y: auto;
-    border-radius: 5px;
     color: black;
     z-index: 200;
     left: calc(100vw - 433px);
-    top: -3px;
     overflow-x: auto;
+    pointer-events: all;
+  }
+
+  .function {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 2px solid black;
+  }
+
+  .header {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--oxford-blue);
+  }
+
+  .function:hover {
+    background: var(--oxford-blue);
+    color: white;
+    cursor: pointer;
+  }
+
+  .title {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  img {
+    margin-right: 8px;
+    background: white !important;
+    padding: 5px;
   }
 </style>

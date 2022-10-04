@@ -1,18 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 //import collection, addDoc
-import {
-  collection,
-  addDoc,
-  getDoc,
-  deleteDoc,
-  getDocs,
-  doc,
-} from "firebase/firestore";
-import {
-  db as dbStore,
-  awaitingFirebase,
-  updateAwaitingFirebase,
-} from "./stores/globals";
+import { awaitingFirebase, updateAwaitingFirebase } from "./stores/globals";
 import { elements as elementsStore, updateElements } from "./stores/elements";
 import { get } from "svelte/store";
 
@@ -64,8 +52,8 @@ export const fetchElements = async () => {
   updateAwaitingFirebase(true);
   const elements = await fetch("http://localhost:3000/things");
   const elementsJson = await elements.json();
-  return elementsJson;
   updateAwaitingFirebase(false);
+  return elementsJson;
 };
 
 export const deleteElement = async (id) => {

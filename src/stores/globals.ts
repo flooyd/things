@@ -5,6 +5,7 @@ export const height = writable(0);
 export const client = writable(null);
 export const db = writable(null);
 export const elementTooltipId = writable(null);
+export const clickedElement = writable(null);
 export const elementsHovered = writable([]);
 export const awaitingFirebase = writable(false);
 export const storesTooltipOpen = writable(false);

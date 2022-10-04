@@ -18,7 +18,6 @@
   let ready = false;
 
   const getElements = async () => {
-    console.log("getting elements");
     const fetchedElements = await fetchElements();
 
     fetchedElements.forEach((element) => {
@@ -33,8 +32,6 @@
         element.parentOf = [...element.parentOf, child.id];
       });
     });
-
-    console.log("processing elements done");
 
     $elements = fetchedElements;
     ready = true;
@@ -96,6 +93,8 @@
     align-items: center;
     height: calc(100vh - 127px);
     font-size: 50px;
+    background: var(--platinum);
+    color: black;
   }
 
   .collectionName {

@@ -1,5 +1,5 @@
 <script>
-  import { fade } from "svelte/transition";
+  import { fly } from "svelte/transition";
   import {
     awaitingFirebase,
     elementTooltipId,
@@ -25,15 +25,13 @@
     "flexDirection",
     "flexWrap",
   ];
-
-  console.log(element);
 </script>
 
 <div
   on:click={(e) => {
     e.stopPropagation();
   }}
-  in:fade={{ duration: 100 }}
+  transition:fly={{ x: 500, y: 0, duration: 100 }}
   class="elementTooltip"
   {style}
 >
@@ -363,19 +361,15 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    position: fixed;
     width: 400px;
-    height: fit-content;
-    max-height: calc(100vh - 100px);
+    height: calc(100vh - 36px);
     background: white;
-    border: 3px solid var(--oxford-blue);
     font-size: 13px;
     padding: 16px;
     overflow-y: auto;
-    border-radius: 5px;
     color: black;
     z-index: 200;
-    top: -3px;
+    pointer-events: all;
   }
 
   .infoGroup {

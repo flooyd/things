@@ -4,7 +4,7 @@
   import { typewriter } from "../util.js";
 </script>
 
-<div transition:fade={{ duration: 100 }} class="nav">
+<div class="nav">
   <div class="title">
     Thing{"<s>"}
     <span>{"Escape for Full Screen"}</span>

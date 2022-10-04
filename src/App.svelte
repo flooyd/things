@@ -2,6 +2,7 @@
   import Nav from "./components/Nav.svelte";
   import Toolbar from "./components/Toolbar.svelte";
   import WorkBench from "./components/WorkBench.svelte";
+  import ElementTooltip from "./components/tooltips/ElementTooltip.svelte";
   import {
     client,
     db,
@@ -11,7 +12,10 @@
     mousePosition,
     width,
     functionsTooltipOpen,
+    clickedElement,
+    elementTooltipId,
   } from "./stores/globals";
+  import { elements } from "./stores/elements";
   import { initializeApp } from "firebase/app";
   import { getFirestore } from "firebase/firestore";
   import { onMount } from "svelte";
@@ -31,21 +35,22 @@
 
   let ready = false;
 
+  const handleEdit = (property, value) => {
+    $clickedElement[property] = value;
+    $clickedElement = $clickedElement;
+  };
+
   onMount(async () => {
     $client = await initializeApp(firebaseConfig);
     $db = getFirestore($client);
 
     onkeydown = (e) => {
-      console.log(e.key);
-
       if (e.key === "F1") {
         e.preventDefault();
-        console.log("f1");
         return ($hideUI = !$hideUI);
       }
 
       if (e.key === "Escape") {
-        console.log("escape");
         return ($fullscreen = !$fullscreen);
       }
     };
@@ -54,8 +59,6 @@
 
     ready = true;
   });
-
-  $: console.log($mousePosition);
 </script>
 
 {#if ready}
@@ -74,12 +77,24 @@
     <WorkBench />
   </main>
 {/if}
-{#if ready && $storesTooltipOpen}
-  <StoresTooltip />
-{/if}
-{#if ready && $functionsTooltipOpen}
-  <FunctionsTooltip />
-{/if}
+<div class="tooltips">
+  {#if ready && $storesTooltipOpen}
+    <StoresTooltip />
+  {/if}
+  {#if ready && $functionsTooltipOpen}
+    <FunctionsTooltip />
+  {/if}
+  {#if $elementTooltipId === $clickedElement?.id}
+    <ElementTooltip
+      element={$clickedElement}
+      {handleEdit}
+      on:delete={() => {
+        $elements = $elements.filter((e) => e.id !== $clickedElement.id);
+        $elementTooltipId = null;
+      }}
+    />
+  {/if}
+</div>
 
 <style>
   main {
@@ -87,5 +102,15 @@
     color: var(--cultured);
     background: var(--rich-black-fogra-29);
     height: calc(100vh - 70px);
+  }
+
+  .tooltips {
+    display: flex;
+    width: calc(100vw - 20px);
+    background: transparent;
+    top: 0px;
+    pointer-events: none;
+    justify-content: right;
+    position: fixed;
   }
 </style>
