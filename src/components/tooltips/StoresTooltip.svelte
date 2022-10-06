@@ -42,7 +42,7 @@
 </script>
 
 {#if ready}
-  <div transition:fly={{ x: 500, y: 0, duration: 100 }} class="storesTooltip">
+  <div class="storesTooltip">
     <div class="header">Stores</div>
     <div class="store">
       <div class="storeHeader">

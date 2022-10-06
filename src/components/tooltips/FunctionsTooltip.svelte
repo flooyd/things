@@ -1,12 +1,36 @@
 <script>
-  import { fly } from "svelte/transition";
-  import { functions } from "../../util";
+  import { functions, executables, classesAndObjects, getId } from "../../util";
+  import { clickedElement } from "../../stores/globals";
+
+  const click = (item) => {
+    if ($clickedElement) {
+      console.log($clickedElement);
+      typeof $clickedElement.grid === "object"
+        ? null
+        : ($clickedElement.grid = { functions: [] });
+      if ($clickedElement.grid.functions.find((f) => f.name === item)) return;
+      $clickedElement.grid.functions.push({
+        name: item,
+        x: 0,
+        y: 0,
+        executable: executables.includes(item),
+        class: classesAndObjects[item] || null,
+        id: getId(),
+      });
+    }
+    $clickedElement = $clickedElement;
+  };
 </script>
 
-<div class="functionsTooltip" transition:fly={{ x: 500, y: 0, duration: 100 }}>
+<div class="functionsTooltip">
   <div class="header">Functions</div>
   {#each Object.keys(functions) as item}
-    <div class="function">
+    <div
+      on:click={() => {
+        click(item);
+      }}
+      class="function"
+    >
       <div class="title">
         <img src="images/function.png" alt="function" />
         <div class="functionName">{item}</div>

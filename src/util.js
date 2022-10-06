@@ -4,8 +4,8 @@ import { awaitingFirebase, updateAwaitingFirebase } from "./stores/globals";
 import { elements as elementsStore, updateElements } from "./stores/elements";
 import { get } from "svelte/store";
 
-export const getId = (tag) => {
-  return tag + "-" + uuidv4();
+export const getId = () => {
+  return uuidv4();
 };
 
 export function typewriter(node, { speed = 1 }) {
@@ -153,4 +153,18 @@ export const functions = {
   logError: "logs an error to the console",
   logWarning: "logs a warning to the console",
   logInfo: "logs an info message to the console",
+};
+
+export const executables = ["log", "logError", "logWarning", "logInfo"];
+
+export const classesAndObjects = {
+  log: "console",
+  logError: "console",
+  logWarning: "console",
+  logInfo: "console",
+  mount: "lifecycle",
+  afterUpdate: "lifecycle",
+  beforeUpdate: "lifecycle",
+  beforeDestroy: "lifecycle",
+  afterDestroy: "lifecycle",
 };

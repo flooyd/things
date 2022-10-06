@@ -17,6 +17,7 @@ export const mousePosition = writable({ x: 0, y: 0 });
 export const parentOfChildPendingDeletion = writable(null);
 export const childPendingDeletion = writable(null);
 export const global = writable<any>({});
+export const outArrowClicked = writable(null);
 
 //export update function for elements
 export function updateAwaitingFirebase(newValue) {

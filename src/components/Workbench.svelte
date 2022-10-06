@@ -1,10 +1,17 @@
 <script lang="ts">
-  import { collection, getDocs, getFirestore } from "firebase/firestore";
-  import { typewriter, fetchElements } from "../util.js";
-  import { fly, fade } from "svelte/transition";
+  import { tick } from "svelte";
+  import { fetchElements } from "../util.js";
+  import { fade } from "svelte/transition";
 
   import { elements } from "../stores/elements";
-  import { db, global, hideUI, fullscreen } from "../stores/globals";
+  import {
+    db,
+    global,
+    hideUI,
+    fullscreen,
+    showGrid,
+    clickedElement,
+  } from "../stores/globals";
 
   import Element from "./elements/Element.svelte";
   import WorkbenchElements from "./WorkbenchElements.svelte";
@@ -20,6 +27,8 @@
   const getElements = async () => {
     const fetchedElements = await fetchElements();
 
+    console.log(fetchedElements);
+
     fetchedElements.forEach((element) => {
       if (!element.parentOf) {
         element.parentOf = [];
@@ -34,6 +43,11 @@
     });
 
     $elements = fetchedElements;
+    $clickedElement = $elements.find(
+      (element) => element._id === "633cdf30f37e53add2442a81"
+    );
+    $showGrid = true;
+
     ready = true;
   };
 
