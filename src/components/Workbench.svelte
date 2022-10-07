@@ -43,10 +43,10 @@
     });
 
     $elements = fetchedElements;
-    $clickedElement = $elements.find(
-      (element) => element._id === "633cdf30f37e53add2442a81"
-    );
-    $showGrid = true;
+    // $clickedElement = $elements.find(
+    //   (element) => element._id === "633cdf30f37e53add2442a81"
+    // );
+    // $showGrid = true;
 
     ready = true;
   };
