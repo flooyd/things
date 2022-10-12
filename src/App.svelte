@@ -23,7 +23,6 @@
   import { onMount } from "svelte";
   import StoresTooltip from "./components/tooltips/StoresTooltip.svelte";
   import FunctionsTooltip from "./components/tooltips/FunctionsTooltip.svelte";
-  import { initFunctions } from "./util";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAgh1vJII1SXHxdKuf33mnN1IvURsrQJXI",
@@ -56,8 +55,6 @@
         return ($fullscreen = !$fullscreen);
       }
     };
-
-    initFunctions();
 
     ready = true;
   });

@@ -81,66 +81,61 @@ export const copyElement = async (element) => {
   updateAwaitingFirebase(false);
 };
 
-//function for random hex color
-function randomColor() {
-  return "#" + Math.floor(Math.random() * 16777215).toString(16);
-}
+//fetchFunctions(id) /functions
+export const fetchFunctionsForElement = async (elementId) => {
+  updateAwaitingFirebase(true);
+  const functions = await fetch(
+    "http://localhost:3000/functions/forElement/" + elementId
+  );
+  const functionsJson = await functions.json();
+  updateAwaitingFirebase(false);
+  return functionsJson;
+};
 
-//function for random border
-function randomBorder() {
-  return Math.floor(Math.random() * 10) + "px solid " + randomColor();
-}
+export const addFunction = async (elementId, type) => {
+  updateAwaitingFirebase(true);
+  const functions = await fetch("http://localhost:3000/functions/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ name: type, elementId: elementId }),
+  });
+  const functionsJson = await functions.json();
+  updateAwaitingFirebase(false);
+  return functionsJson;
+};
 
-//random width string between params x and y (with px at end) for style
-function randomWidth(x, y) {
-  return Math.floor(Math.random() * (y - x) + x) + "px";
-}
+//delete function by id
+export const deleteFunctionById = async (functionId) => {
+  updateAwaitingFirebase(true);
+  const functions = await fetch(
+    "http://localhost:3000/functions/" + functionId,
+    {
+      method: "DELETE",
+    }
+  );
+  updateAwaitingFirebase(false);
+};
 
-//random height string between params x and y (with px at end) for style
-function randomHeight(x, y) {
-  return Math.floor(Math.random() * (y - x) + x) + "px";
-}
+//delete all functions by id
+export const deleteAllFunctionsForElement = async (elementId) => {
+  updateAwaitingFirebase(true);
+  const functions = await fetch(
+    "http://localhost:3000/functions/" + elementId,
+    {
+      method: "DELETE",
+    }
+  );
+  updateAwaitingFirebase(false);
+};
 
-//random between range
-export function randomRange(x, y) {
-  return Math.floor(Math.random() * (y - x) + x);
-}
-
-//function to create and return an interval
-function createInterval(func, time) {
-  return setInterval(func, time);
-}
-
-//function to create and return a timeout
-function createTimeout(func, time) {
-  return setTimeout(func, time);
-}
-
-//function to end an interval
-function endInterval(interval) {
-  clearInterval(interval);
-}
-
-//function to end a timeout
-function endTimeout(timeout) {
-  clearTimeout(timeout);
-}
-
-//function get random display value either initial or none
-function randomDisplay() {
-  return Math.random() < 0.5 ? "block" : "none";
-}
-
-export const initFunctions = () => {
-  window.randomColor = randomColor;
-  window.randomBorder = randomBorder;
-  window.randomWidth = randomWidth;
-  window.randomHeight = randomHeight;
-  window.createInterval = createInterval;
-  window.createTimeout = createTimeout;
-  window.endInterval = endInterval;
-  window.endTimeout = endTimeout;
-  window.randomDisplay = randomDisplay;
+export const removeAllFunctions = async () => {
+  updateAwaitingFirebase(true);
+  const functions = await fetch("http://localhost:3000/functions/all", {
+    method: "DELETE",
+  });
+  updateAwaitingFirebase(false);
 };
 
 export const functions = {

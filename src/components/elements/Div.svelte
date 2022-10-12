@@ -8,7 +8,6 @@
     parentOfChildPendingDeletion,
     childPendingDeletion,
   } from "../../stores/globals";
-  import { randomRange } from "../../util";
   import Element from "./Element.svelte";
 
   export let styleString;
@@ -43,29 +42,6 @@
   } else {
     hoverBorder = "";
   }
-
-  /*
-    let things = document.getElementsByClassName("thingDiv");
-
-  const setChildOfAll = () => {
-    Object.keys(things).forEach((key) => {
-      if (things[key].id === "I7ELF8xQ6uFHR1DvZsKY") return;
-      things[key].childOf = "I7ELF8xQ6uFHR1DvZsKY";
-    });
-  };
-
-  const doRandomStuff = () => {
-    Object.keys(things).forEach((key) => {
-      if (things[key].id === "I7ELF8xQ6uFHR1DvZsKY") return;
-      
-      things[key].style.width = randomWidth(75, 100);
-      things[key].style.height = randomHeight(50,50);
-      
-    });
-  };
-
-  createInterval(doRandomStuff, 500);
-  */
 </script>
 
 {#key unique}

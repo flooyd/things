@@ -1,4 +1,5 @@
 <script>
+  import { draggableMoving, functionMoving } from "../stores/globals";
   let moving = false;
   let left = 30;
   let top = 30;
@@ -13,10 +14,13 @@
 
   const start = (e) => {
     moving = true;
+    $draggableMoving = true;
   };
 
-  const stop = (e) => {
+  const stop = async (e) => {
     moving = false;
+    $draggableMoving = false;
+    $functionMoving = null;
   };
 </script>
 

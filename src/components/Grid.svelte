@@ -1,49 +1,121 @@
 <script>
-  import { onMount } from "svelte";
+  import { onMount, afterUpdate } from "svelte";
+  import { tick } from "svelte";
   import {
     storesTooltipOpen,
     functionsTooltipOpen,
     clickedElement,
+    outArrowClicked,
+    inArrowClicked,
+    draggableMoving,
+    functionMoving,
   } from "../stores/globals";
   import Draggable from "./Draggable.svelte";
   import GridFunction from "./GridFunction.svelte";
+  import { fetchFunctionsForElement, removeAllFunctions } from "../util.js";
 
   let element = null;
   let rect = null;
+  let connections = [];
+  let connectionLocations = [];
+  let ready = false;
 
-  onMount(() => {
-    rect = element.getBoundingClientRect();
+  onMount(async () => {
+    $clickedElement.grid = {
+      functions: await fetchFunctionsForElement($clickedElement._id),
+      connections: [],
+    };
+    ready = true;
   });
 
-  setInterval(() => {
+  $: if (element) {
     rect = element.getBoundingClientRect();
-  }, 500);
+  }
+
+  $: if ($inArrowClicked && $outArrowClicked) {
+    connections.push({
+      in: $inArrowClicked,
+      out: $outArrowClicked,
+    });
+    connections = connections;
+    connectionLocations = getConnectionLocations();
+    $inArrowClicked = null;
+    $outArrowClicked = null;
+  }
+
+  const getConnectionLocations = () => {
+    const connectionLocations = [];
+
+    connections.forEach((connection) => {
+      const inArrowLocation =
+        $clickedElement.grid.functions.find((f) => f._id === connection.in).rect
+          ?.inArrowLocation || null;
+
+      const outArrowLocation =
+        $clickedElement.grid.functions.find((f) => f._id === connection.out)
+          .rect?.outArrowLocation || null;
+
+      connectionLocations.push({
+        inArrowLocation,
+        outArrowLocation,
+        key: `${connection.in}-${connection.out}`,
+      });
+    });
+    return connectionLocations;
+  };
+
+  setInterval(() => {
+    if ($draggableMoving && $functionMoving) {
+      connectionLocations = getConnectionLocations();
+    }
+  }, 25);
+
+  setInterval(() => {
+    connectionLocations = getConnectionLocations();
+  }, 1000);
 </script>
 
-<div class="grid" bind:this={element}>
-  <div class="toolbar">
-    <div class="id">
-      {$clickedElement.name
-        ? $clickedElement._id + " - " + $clickedElement.name
-        : $clickedElement._id}
+{#if ready}
+  <div class="grid" bind:this={element}>
+    <div class="toolbar">
+      <div class="id">
+        {$clickedElement.name
+          ? $clickedElement._id + " - " + $clickedElement.name
+          : $clickedElement._id}
+      </div>
+      <button
+        on:click={() => ($storesTooltipOpen = !$storesTooltipOpen)}
+        class="blueButton">stores</button
+      >
+      <button
+        on:click={() => ($functionsTooltipOpen = !$functionsTooltipOpen)}
+        class="blueButton">functions</button
+      >
     </div>
-    <button
-      on:click={() => ($storesTooltipOpen = !$storesTooltipOpen)}
-      class="blueButton">stores</button
-    >
-    <button
-      on:click={() => ($functionsTooltipOpen = !$functionsTooltipOpen)}
-      class="blueButton">functions</button
-    >
-  </div>
-  {#if $clickedElement.grid}
-    {#each $clickedElement.grid.functions as item}
-      <Draggable>
-        <GridFunction gridRect={rect} gridFunction={item} />
-      </Draggable>
+    {#if rect}
+      {#each $clickedElement.grid.functions as item}
+        <Draggable>
+          <GridFunction gridRect={rect} gridFunction={item} />
+        </Draggable>
+      {/each}
+    {/if}
+    {#each connectionLocations as connection (connection.key)}
+      <svg
+        width="100%"
+        height="100%"
+        style="position: absolute; top: 0; left: 0; pointer-events: none;"
+        ><line
+          x1={connection.inArrowLocation.x + 10}
+          y1={connection.inArrowLocation.y + 14}
+          x2={connection.outArrowLocation.x - 10}
+          y2={connection.outArrowLocation.y + 14}
+          stroke="black"
+          stroke-width="3"
+        /></svg
+      >
     {/each}
-  {/if}
-</div>
+  </div>
+{/if}
 
 <style>
   .grid {

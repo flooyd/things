@@ -27,8 +27,6 @@
   const getElements = async () => {
     const fetchedElements = await fetchElements();
 
-    console.log(fetchedElements);
-
     fetchedElements.forEach((element) => {
       if (!element.parentOf) {
         element.parentOf = [];
@@ -43,10 +41,12 @@
     });
 
     $elements = fetchedElements;
-    // $clickedElement = $elements.find(
-    //   (element) => element._id === "633cdf30f37e53add2442a81"
-    // );
-    // $showGrid = true;
+    $clickedElement = $elements.find(
+      (element) => element._id === "633cdf30f37e53add2442a81"
+    );
+
+    await tick();
+    $showGrid = true;
 
     ready = true;
   };

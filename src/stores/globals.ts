@@ -18,6 +18,9 @@ export const parentOfChildPendingDeletion = writable(null);
 export const childPendingDeletion = writable(null);
 export const global = writable<any>({});
 export const outArrowClicked = writable(null);
+export const inArrowClicked = writable(null);
+export const draggableMoving = writable(null);
+export const functionMoving = writable(null);
 
 //export update function for elements
 export function updateAwaitingFirebase(newValue) {

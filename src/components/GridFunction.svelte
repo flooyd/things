@@ -1,6 +1,12 @@
 <script>
-  import { onMount } from "svelte";
-  import { clickedElement, outArrowClicked } from "../stores/globals";
+  import {
+    clickedElement,
+    outArrowClicked,
+    inArrowClicked,
+    draggableMoving,
+    functionMoving,
+  } from "../stores/globals";
+  import { classesAndObjects, executables } from "../util";
 
   export let gridFunction;
   export let gridRect;
@@ -11,6 +17,7 @@
     rect = element.getBoundingClientRect();
     rect.x = rect.x - gridRect.x;
     rect.y = rect.y - gridRect.y;
+
     const inArrowLocation = {
       x: rect.left + 10,
       y: rect.top + rect.height / 2,
@@ -19,43 +26,65 @@
       x: rect.left + rect.width - 10,
       y: rect.top + rect.height / 2,
     };
+
     $clickedElement.grid.functions.find(
-      (f) => f.name === gridFunction.name
+      (f) => f._id === gridFunction._id
     ).rect = {
       x: rect.x,
       y: rect.y,
       inArrowLocation,
       outArrowLocation,
     };
+
     $clickedElement = $clickedElement;
   };
 
-  const handleClickArrow = (type) => {
+  const handleClickArrow = async (type, e) => {
+    e.stopPropagation();
     if (type === "out") {
-      $outArrowClicked = gridFunction.id;
+      $outArrowClicked = gridFunction._id;
+    }
+
+    if (type === "in" && $outArrowClicked) {
+      $inArrowClicked = gridFunction._id;
     }
   };
 
-  $: console.log($outArrowClicked);
+  setInterval(() => {
+    if ($draggableMoving && $functionMoving === gridFunction._id) {
+      setRect();
+    }
+  }, 25);
 </script>
 
 <div
-  on:mouseenter={setRect}
-  on:mouseup={setRect}
+  on:mouseenter={() => {
+    $functionMoving = gridFunction._id;
+  }}
+  on:click={() => {
+    $functionMoving = gridFunction._id;
+  }}
+  on:mousedown={() => {
+    $functionMoving = gridFunction._id;
+  }}
+  on:mouseup={() => {
+    setRect();
+    $functionMoving = null;
+  }}
   class="gridFunction"
   bind:this={element}
 >
   <div class="label">
-    {gridFunction.class}
+    {classesAndObjects[gridFunction.name]}
   </div>
   <div class="top">
-    {#if gridFunction.executable}
-      <div class="inArrow" on:focus on:click={() => handleClickArrow("in")}>
+    {#if executables.includes(gridFunction.name)}
+      <div class="inArrow" on:focus on:click={(e) => handleClickArrow("in", e)}>
         ▶
       </div>
     {/if}
     <div class="gridFunctionName">{gridFunction.name}</div>
-    <div class="outArrow" on:focus on:click={() => handleClickArrow("out")}>
+    <div class="outArrow" on:focus on:click={(e) => handleClickArrow("out", e)}>
       ▶
     </div>
   </div>

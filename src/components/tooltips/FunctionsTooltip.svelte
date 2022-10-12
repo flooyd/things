@@ -1,24 +1,39 @@
 <script>
-  import { functions, executables, classesAndObjects, getId } from "../../util";
+  import { functions, fetchFunctionsForElement, addFunction } from "../../util";
   import { clickedElement } from "../../stores/globals";
+  import { onMount } from "svelte";
 
-  const click = (item) => {
-    if ($clickedElement) {
-      console.log($clickedElement);
-      typeof $clickedElement.grid === "object"
-        ? null
-        : ($clickedElement.grid = { functions: [] });
-      if ($clickedElement.grid.functions.find((f) => f.name === item)) return;
-      $clickedElement.grid.functions.push({
-        name: item,
+  let clickedElementFunctions = [];
+
+  onMount(async () => {
+    clickedElementFunctions = await fetchFunctionsForElement(
+      $clickedElement._id
+    );
+  });
+
+  const click = async (item) => {
+    let createdFunction = await addFunction($clickedElement._id, item);
+    createdFunction = {
+      id: createdFunction._id,
+      name: createdFunction.name,
+      rect: {
         x: 0,
         y: 0,
-        executable: executables.includes(item),
-        class: classesAndObjects[item] || null,
-        id: getId(),
-      });
-    }
-    $clickedElement = $clickedElement;
+        width: 0,
+        height: 0,
+        inArrowLocation: {
+          x: 0,
+          y: 0,
+        },
+        outArrowLocation: {
+          x: 0,
+          y: 0,
+        },
+      },
+    };
+
+    $clickedElement.grid.functions.push(createdFunction);
+    $clickedElement.grid.functions = $clickedElement.grid.functions;
   };
 </script>
 
