@@ -9,8 +9,6 @@
   --shadow-blue: #778da9ff;
   --platinum: #e0e1ddff;
   --cultured: hsla(0, 0%, 97%, 1);
-
-  user-select: none;
 }
 
 html,

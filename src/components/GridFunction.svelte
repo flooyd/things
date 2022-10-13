@@ -13,16 +13,6 @@
   let element = null;
   let rect = null;
   let outArrowOffsetHeight = 0;
-  let inArrowOffsetHeight = 0;
-  let outArrowOffsetWidth = 0;
-  let inArrowOffsetWidth = 0;
-  let outArrowClientHeight = 0;
-  let inArrowClientHeight = 0;
-  let outArrowClientWidth = 0;
-  let inArrowClientWidth = 0;
-
-  $: console.log(outArrowOffsetHeight, "outArrowOffetHeight");
-  $: console.log(outArrowClientHeight, "outArrowClientHeight");
 
   const setRect = () => {
     rect = element.getBoundingClientRect();
@@ -97,13 +87,7 @@
       </div>
     {/if}
     <div class="gridFunctionName">{gridFunction.name}</div>
-    <div
-      bind:offsetHeight={outArrowOffsetHeight}
-      bind:clientHeight={outArrowClientHeight}
-      class="outArrow"
-      on:focus
-      on:click={(e) => handleClickArrow("out", e)}
-    >
+    <div class="outArrow" on:focus on:click={(e) => handleClickArrow("out", e)}>
       ▶
     </div>
   </div>
@@ -119,6 +103,7 @@
     flex-direction: column;
     background: #aaa;
     color: black;
+    z-index: 5000;
   }
 
   .top {

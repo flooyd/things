@@ -225,6 +225,83 @@ export const saveFunction = async (functionId) => {
   }
 };
 
+//get all connections for element
+export const getAllConnectionsForElement = async (elementId) => {
+  console.log("getting all connections for element", elementId);
+  updateAwaitingFirebase(true);
+  const connections = await fetch(
+    "http://localhost:3000/connections/forElement/" + elementId
+  );
+  const connectionsJson = await connections.json();
+  updateAwaitingFirebase(false);
+  return connectionsJson;
+};
+
+//get connection by id
+export const getConnectionById = async (connectionId) => {
+  updateAwaitingFirebase(true);
+  const connections = await fetch(
+    "http://localhost:3000/connections/" + connectionId
+  );
+  const connectionsJson = await connections.json();
+  updateAwaitingFirebase(false);
+  return connectionsJson;
+};
+
+//delete connection by id
+export const deleteConnectionById = async (connectionId) => {
+  updateAwaitingFirebase(true);
+  const connections = await fetch(
+    "http://localhost:3000/connections/" + connectionId,
+    {
+      method: "DELETE",
+    }
+  );
+  updateAwaitingFirebase(false);
+};
+
+//delete all connections by element id
+export const deleteAllConnectionsForElement = async (elementId) => {
+  updateAwaitingFirebase(true);
+  const connections = await fetch(
+    "http://localhost:3000/connections/deleteAll/" + elementId,
+    {
+      method: "DELETE",
+    }
+  );
+  updateAwaitingFirebase(false);
+};
+
+//delete all connections
+export const deleteAllConnections = async () => {
+  updateAwaitingFirebase(true);
+  const connections = await fetch("http://localhost:3000/connections/delete", {
+    method: "DELETE",
+  });
+  updateAwaitingFirebase(false);
+};
+
+//add connection
+export const addConnection = async (connection) => {
+  updateAwaitingFirebase(true);
+  const createdConnection = await fetch("http://localhost:3000/connections/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(connection),
+  });
+  if (createdConnection.ok) {
+    const connectionJson = await createdConnection.json();
+    updateAwaitingFirebase(false);
+    return connectionJson;
+  } else {
+    return null;
+  }
+};
+
+//update connection is not necessary
+
 export const functions = {
   mount: "runs when the component is mounted",
   afterUpdate: "runs after the component is updated",

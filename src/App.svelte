@@ -33,17 +33,6 @@
   };
 
   onMount(async () => {
-    onkeydown = (e) => {
-      if (e.key === "F1") {
-        e.preventDefault();
-        return ($hideUI = !$hideUI);
-      }
-
-      if (e.key === "Escape") {
-        return ($fullscreen = !$fullscreen);
-      }
-    };
-
     ready = true;
   });
 </script>
@@ -57,7 +46,6 @@
       $mousePosition = { x: e.clientX, y: e.clientY };
     }}
     bind:clientWidth={$width}
-    style={$showGrid ? "overflow: hidden;" : ""}
   >
     {#if !$fullscreen}
       <Toolbar />

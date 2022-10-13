@@ -14,7 +14,12 @@
   } from "../stores/globals";
   import Draggable from "./Draggable.svelte";
   import GridFunction from "./GridFunction.svelte";
-  import { fetchFunctionsForElement, saveDirtyFunctions } from "../util.js";
+  import {
+    addConnection,
+    fetchFunctionsForElement,
+    saveDirtyFunctions,
+    getAllConnectionsForElement,
+  } from "../util.js";
   import SelectionTool from "./SelectionTool.svelte";
 
   let element = null;
@@ -23,6 +28,11 @@
   let ready = false;
   let selectionToolStartLocation = null;
   let selectionToolMousePosition = null;
+  let gridHeight = null;
+  let gridWidth = null;
+
+  $: console.log("width", gridWidth);
+  $: console.log("height", gridHeight);
 
   onMount(async () => {
     let functionsForElement = await fetchFunctionsForElement(
@@ -52,15 +62,31 @@
     });
 
     $clickedElement.grid.functions = functionsForElement;
+
+    const connectionsForElement = await getAllConnectionsForElement(
+      $clickedElement._id
+    );
+
+    if (connectionsForElement.length > 0) {
+      $clickedElement.grid.connections = connectionsForElement;
+      connectionLocations = getConnectionLocations();
+    }
+
+    $clickedElement.grid.connections = connectionsForElement;
+
     ready = true;
   });
 
   $: if (element) {
     rect = element.getBoundingClientRect();
+    gridWidth = 5000;
   }
 
   $: if ($inArrowClicked && $outArrowClicked) {
-    //check if connection exists
+    createConnection();
+  }
+
+  const createConnection = async () => {
     let connectionExists = false;
     for (let i = 0; i < $clickedElement.grid.connections.length; i++) {
       if (
@@ -73,11 +99,15 @@
     }
 
     if (!connectionExists) {
-      $clickedElement.grid.connections.push({
+      const createdConnection = await addConnection({
         in: $inArrowClicked,
         out: $outArrowClicked,
         elementId: $clickedElement._id,
       });
+
+      if (createdConnection) {
+        $clickedElement.grid.connections.push(createdConnection);
+      }
 
       connectionLocations = getConnectionLocations();
       $clickedElement = $clickedElement;
@@ -87,7 +117,7 @@
       $inArrowClicked = null;
       $outArrowClicked = null;
     }
-  }
+  };
 
   const getConnectionLocations = () => {
     const connectionLocations = [];
@@ -146,10 +176,6 @@
   }, 25);
 
   setInterval(() => {
-    connectionLocations = getConnectionLocations();
-  }, 1000);
-
-  setInterval(() => {
     rect = element.getBoundingClientRect();
   }, 1000);
 
@@ -159,6 +185,8 @@
       $dirtyFunctions = [];
     }
   }, 1000);
+
+  $: console.log($clickedElement.grid?.connections);
 </script>
 
 <svelte:window
@@ -166,63 +194,66 @@
   on:mouseup={(e) => finalizeSelectionTool(e)}
 />
 {#if ready}
-  <div
-    class="grid"
-    bind:this={element}
-    on:mousedown={(e) => updateSelectionToolProps(e)}
-    transition:fade={{ duration: 75 }}
-  >
-    <div class="toolbar">
-      <button
-        class="id blueButton"
-        on:click={() => {
-          handleClickId();
-        }}
-      >
-        {$clickedElement.name
-          ? $clickedElement._id + " - " + $clickedElement.name
-          : $clickedElement._id}
-      </button>
-      <button
-        on:click={() => ($storesTooltipOpen = !$storesTooltipOpen)}
-        class="blueButton">stores</button
-      >
-      <button
-        on:click={() => ($functionsTooltipOpen = !$functionsTooltipOpen)}
-        class="blueButton">functions</button
-      >
-    </div>
-    {#if rect}
-      {#each $clickedElement.grid.functions as item}
-        <Draggable top={item.rect.y} left={item.rect.x}>
-          <GridFunction gridRect={rect} gridFunction={item} />
-        </Draggable>
+  <div class="scroll-container">
+    <div
+      class="grid"
+      bind:this={element}
+      style={`width: ${gridWidth}px; height: ${gridHeight}px;`}
+      on:mousedown={(e) => updateSelectionToolProps(e)}
+      transition:fade={{ duration: 75 }}
+    >
+      <div class="toolbar">
+        <button
+          class="id blueButton"
+          on:click={() => {
+            handleClickId();
+          }}
+        >
+          {$clickedElement.name
+            ? $clickedElement._id + " - " + $clickedElement.name
+            : $clickedElement._id}
+        </button>
+        <button
+          on:click={() => ($storesTooltipOpen = !$storesTooltipOpen)}
+          class="blueButton">stores</button
+        >
+        <button
+          on:click={() => ($functionsTooltipOpen = !$functionsTooltipOpen)}
+          class="blueButton">functions</button
+        >
+      </div>
+      {#if rect}
+        {#each $clickedElement.grid.functions as item}
+          <Draggable top={item.rect.y} left={item.rect.x}>
+            <GridFunction gridRect={rect} gridFunction={item} />
+          </Draggable>
+        {/each}
+      {/if}
+      {#each connectionLocations as connection (connection.key)}
+        <svg
+          width="100%"
+          height="100%"
+          style="position: absolute; top: 0; left: 0; pointer-events: none;"
+          ><line
+            x1={connection.inArrowLocation.x + 10}
+            y1={connection.inArrowLocation.y + 14}
+            x2={connection.outArrowLocation.x - 10}
+            y2={connection.outArrowLocation.y + 14}
+            stroke="black"
+            stroke-width="5"
+            stroke-linecap="round"
+            stroke-dasharray="2, 2"
+          /></svg
+        >
       {/each}
-    {/if}
-    {#each connectionLocations as connection (connection.key)}
-      <svg
-        width="100%"
-        height="100%"
-        style="position: absolute; top: 0; left: 0; pointer-events: none;"
-        ><line
-          x1={connection.inArrowLocation.x + 10}
-          y1={connection.inArrowLocation.y + 14}
-          x2={connection.outArrowLocation.x - 10}
-          y2={connection.outArrowLocation.y + 14}
-          stroke="black"
-          stroke-width="5"
-          stroke-linecap="round"
-          stroke-dasharray="2, 2"
-        /></svg
-      >
-    {/each}
-    {#if selectionToolStartLocation && selectionToolMousePosition && !$draggableMoving}
-      <SelectionTool
-        gridRect={rect}
-        startLocation={selectionToolStartLocation}
-        mousePosition={selectionToolMousePosition}
-      />
-    {/if}
+      {#if selectionToolStartLocation && selectionToolMousePosition && !$draggableMoving}
+        <SelectionTool
+          gridRect={rect}
+          startLocation={selectionToolStartLocation}
+          mousePosition={selectionToolMousePosition}
+        />
+      {/if}
+    </div>
   </div>
 {/if}
 
@@ -230,8 +261,6 @@
   .grid {
     height: 100vh;
     font-size: 13px;
-    overflow-y: auto;
-    overflow-x: auto;
     color: black;
     z-index: 200;
     pointer-events: all;
@@ -240,6 +269,16 @@
       linear-gradient(to bottom, grey 1px, white 1px);
     background-size: 20px 20px;
     position: relative;
+  }
+
+  .scroll-container {
+    height: 100%;
+    width: 100%;
+    overflow-x: scroll;
+    overfloy-y: scroll;
+    position: absolute;
+    white-space: nowrap;
+    background: transparent;
   }
 
   .toolbar {
@@ -251,6 +290,9 @@
     justify-content: flex-end;
     padding-top: 13px;
     pointer-events: none;
+    position: fixed;
+    top: 0px;
+    left: 0px;
   }
 
   .toolbar button {
