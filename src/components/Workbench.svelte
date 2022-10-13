@@ -1,6 +1,6 @@
 <script lang="ts">
   import { tick } from "svelte";
-  import { fetchElements } from "../util.js";
+  import { deleteAllElements, fetchElements } from "../util.js";
   import { fade } from "svelte/transition";
 
   import { elements } from "../stores/elements";
@@ -42,12 +42,11 @@
 
     $elements = fetchedElements;
     $clickedElement = $elements.find(
-      (element) => element._id === "633cdf30f37e53add2442a81"
+      (element) => element._id === "63479662c5681e6321ce5d86"
     );
 
     await tick();
     $showGrid = true;
-
     ready = true;
   };
 

@@ -1,6 +1,11 @@
 import { v4 as uuidv4 } from "uuid";
 //import collection, addDoc
-import { awaitingFirebase, updateAwaitingFirebase } from "./stores/globals";
+import {
+  updateAwaitingFirebase,
+  dirtyFunctions,
+  clickedElement,
+  updateDirtyFunctions,
+} from "./stores/globals";
 import { elements as elementsStore, updateElements } from "./stores/elements";
 import { get } from "svelte/store";
 
@@ -41,11 +46,14 @@ export const addElement = async (type) => {
     },
     body: JSON.stringify({ type: type }),
   });
-  const addedDocJson = await addedDoc.json();
-  let newElement = addedDocJson;
-
-  updateElements([...elements, newElement]);
-  updateAwaitingFirebase(false);
+  if (addedDoc.ok) {
+    const addedDocJson = await addedDoc.json();
+    let newElement = addedDocJson;
+    updateElements([...elements, newElement]);
+    updateAwaitingFirebase(false);
+  } else {
+    return;
+  }
 };
 
 export const fetchElements = async () => {
@@ -63,6 +71,40 @@ export const deleteElement = async (id) => {
     method: "DELETE",
   });
   updateElements(elements.filter((element) => element._id !== id));
+  updateAwaitingFirebase(false);
+};
+
+export const deleteAllElements = async () => {
+  updateAwaitingFirebase(true);
+  const elements = get(elementsStore);
+  const deletedDoc = await fetch("http://localhost:3000/things/deleteAll", {
+    method: "DELETE",
+  });
+  updateElements([]);
+  updateAwaitingFirebase(false);
+};
+
+export const updateElement = async (element) => {
+  updateAwaitingFirebase(true);
+  const elements = get(elementsStore);
+  const updatedDoc = await fetch("http://localhost:3000/things/", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(element),
+  });
+  const updatedDocJson = await updatedDoc.json();
+  let newElement = updatedDocJson;
+  updateElements(
+    elements.map((element) => {
+      if (element._id === newElement._id) {
+        return newElement;
+      } else {
+        return element;
+      }
+    })
+  );
   updateAwaitingFirebase(false);
 };
 
@@ -101,9 +143,13 @@ export const addFunction = async (elementId, type) => {
     },
     body: JSON.stringify({ name: type, elementId: elementId }),
   });
-  const functionsJson = await functions.json();
-  updateAwaitingFirebase(false);
-  return functionsJson;
+  if (functions.ok) {
+    const functionsJson = await functions.json();
+    updateAwaitingFirebase(false);
+    return functionsJson;
+  } else {
+    return;
+  }
 };
 
 //delete function by id
@@ -136,6 +182,47 @@ export const removeAllFunctions = async () => {
     method: "DELETE",
   });
   updateAwaitingFirebase(false);
+};
+
+export const addDirtyFunction = async (functionId) => {
+  const dirtyFunctionsArray = get(dirtyFunctions);
+  if (dirtyFunctionsArray.includes(functionId) || functionId === null) {
+    return;
+  }
+  updateDirtyFunctions([...dirtyFunctionsArray, functionId]);
+};
+
+export const saveDirtyFunctions = async () => {
+  const dirtyFunctionsArray = get(dirtyFunctions);
+  dirtyFunctionsArray.forEach(async (func) => {
+    await saveFunction(func);
+  });
+};
+
+export const saveFunction = async (functionId) => {
+  const functions = get(clickedElement).grid.functions;
+  const functionToSave = functions.find((func) => func._id === functionId);
+  const functionFlattend = {
+    _id: functionToSave._id,
+    name: functionToSave.name,
+    elementId: functionToSave.elementId,
+    rectX: functionToSave.rect.x,
+    rectY: functionToSave.rect.y,
+    inArrowX: functionToSave.rect.inArrowLocation.x,
+    inArrowYLocations: [functionToSave.rect.inArrowLocation.y],
+    outArrowX: functionToSave.rect.outArrowLocation.x,
+    outArrowYLocations: [functionToSave.rect.outArrowLocation.y],
+  };
+  const updatedDoc = await fetch("http://localhost:3000/functions/", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(functionFlattend),
+  });
+  if (updatedDoc) {
+    return await updatedDoc.json();
+  }
 };
 
 export const functions = {

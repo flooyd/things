@@ -5,8 +5,6 @@
   import ElementTooltip from "./components/tooltips/ElementTooltip.svelte";
   import Grid from "./components/Grid.svelte";
   import {
-    client,
-    db,
     storesTooltipOpen,
     fullscreen,
     hideUI,
@@ -18,21 +16,10 @@
     showGrid,
   } from "./stores/globals";
   import { elements } from "./stores/elements";
-  import { initializeApp } from "firebase/app";
-  import { getFirestore } from "firebase/firestore";
   import { onMount } from "svelte";
   import StoresTooltip from "./components/tooltips/StoresTooltip.svelte";
   import FunctionsTooltip from "./components/tooltips/FunctionsTooltip.svelte";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAgh1vJII1SXHxdKuf33mnN1IvURsrQJXI",
-    authDomain: "things-site.firebaseapp.com",
-    projectId: "things-site",
-    storageBucket: "things-site.appspot.com",
-    messagingSenderId: "303439958131",
-    appId: "1:303439958131:web:0dd53ce4b0aac7d314da06",
-    measurementId: "G-ENLDR35L4P",
-  };
+  import { updateElement } from "./util";
 
   let ready = false;
 
@@ -41,10 +28,11 @@
     $clickedElement = $clickedElement;
   };
 
-  onMount(async () => {
-    $client = await initializeApp(firebaseConfig);
-    $db = getFirestore($client);
+  const handleSave = async () => {
+    await updateElement($clickedElement);
+  };
 
+  onMount(async () => {
     onkeydown = (e) => {
       if (e.key === "F1") {
         e.preventDefault();
@@ -84,10 +72,11 @@
   {#if ready && $functionsTooltipOpen}
     <FunctionsTooltip />
   {/if}
-  {#if ready && $elementTooltipId === $clickedElement?.id}
+  {#if ready && $elementTooltipId === $clickedElement?._id}
     <ElementTooltip
       element={$clickedElement}
       {handleEdit}
+      {handleSave}
       on:delete={() => {
         $elements = $elements.filter((e) => e.id !== $clickedElement.id);
         $elementTooltipId = null;

@@ -12,6 +12,17 @@
   export let gridRect;
   let element = null;
   let rect = null;
+  let outArrowOffsetHeight = 0;
+  let inArrowOffsetHeight = 0;
+  let outArrowOffsetWidth = 0;
+  let inArrowOffsetWidth = 0;
+  let outArrowClientHeight = 0;
+  let inArrowClientHeight = 0;
+  let outArrowClientWidth = 0;
+  let inArrowClientWidth = 0;
+
+  $: console.log(outArrowOffsetHeight, "outArrowOffetHeight");
+  $: console.log(outArrowClientHeight, "outArrowClientHeight");
 
   const setRect = () => {
     rect = element.getBoundingClientRect();
@@ -57,6 +68,12 @@
   }, 25);
 </script>
 
+<svelte:window
+  on:mouseup={() => {
+    setRect();
+    $draggableMoving = false;
+  }}
+/>
 <div
   on:mouseenter={() => {
     $functionMoving = gridFunction._id;
@@ -66,10 +83,6 @@
   }}
   on:mousedown={() => {
     $functionMoving = gridFunction._id;
-  }}
-  on:mouseup={() => {
-    setRect();
-    $functionMoving = null;
   }}
   class="gridFunction"
   bind:this={element}
@@ -84,7 +97,13 @@
       </div>
     {/if}
     <div class="gridFunctionName">{gridFunction.name}</div>
-    <div class="outArrow" on:focus on:click={(e) => handleClickArrow("out", e)}>
+    <div
+      bind:offsetHeight={outArrowOffsetHeight}
+      bind:clientHeight={outArrowClientHeight}
+      class="outArrow"
+      on:focus
+      on:click={(e) => handleClickArrow("out", e)}
+    >
       ▶
     </div>
   </div>
@@ -98,7 +117,8 @@
     border-radius: 5px;
     display: flex;
     flex-direction: column;
-    background: #ccc;
+    background: #aaa;
+    color: black;
   }
 
   .top {
@@ -113,6 +133,18 @@
   .outArrow {
     cursor: pointer;
     padding: 5px;
+  }
+
+  .inArrow:hover,
+  .outArrow:hover {
+    background: lightblue;
+    border-radius: 180px;
+  }
+
+  .inArrow.selected,
+  .outArrow.selected {
+    background: lightblue;
+    border-radius: 180px;
   }
 
   .label {

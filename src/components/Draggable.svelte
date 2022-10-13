@@ -1,8 +1,9 @@
 <script>
   import { draggableMoving, functionMoving } from "../stores/globals";
+  import { addDirtyFunction } from "../util";
   let moving = false;
-  let left = 30;
-  let top = 30;
+  export let left = 30;
+  export let top = 30;
   let element = null;
 
   const move = (e) => {
@@ -19,6 +20,7 @@
 
   const stop = async (e) => {
     moving = false;
+    addDirtyFunction($functionMoving);
     $draggableMoving = false;
     $functionMoving = null;
   };

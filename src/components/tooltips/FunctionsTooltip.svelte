@@ -1,6 +1,11 @@
 <script>
-  import { functions, fetchFunctionsForElement, addFunction } from "../../util";
-  import { clickedElement } from "../../stores/globals";
+  import {
+    functions,
+    fetchFunctionsForElement,
+    addFunction,
+    addDirtyFunction,
+  } from "../../util";
+  import { clickedElement, dirtyFunctions } from "../../stores/globals";
   import { onMount } from "svelte";
 
   let clickedElementFunctions = [];
@@ -13,27 +18,30 @@
 
   const click = async (item) => {
     let createdFunction = await addFunction($clickedElement._id, item);
-    createdFunction = {
-      id: createdFunction._id,
-      name: createdFunction.name,
-      rect: {
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-        inArrowLocation: {
+    if (createdFunction) {
+      createdFunction = {
+        _id: createdFunction._id,
+        name: createdFunction.name,
+        elementId: $clickedElement._id,
+        rect: {
           x: 0,
           y: 0,
+          width: 0,
+          height: 0,
+          inArrowLocation: {
+            x: 0,
+            y: 0,
+          },
+          outArrowLocation: {
+            x: 0,
+            y: 0,
+          },
         },
-        outArrowLocation: {
-          x: 0,
-          y: 0,
-        },
-      },
-    };
-
-    $clickedElement.grid.functions.push(createdFunction);
-    $clickedElement.grid.functions = $clickedElement.grid.functions;
+      };
+      addDirtyFunction(createdFunction._id);
+      $clickedElement.grid.functions.push(createdFunction);
+      $clickedElement.grid.functions = $clickedElement.grid.functions;
+    }
   };
 </script>
 

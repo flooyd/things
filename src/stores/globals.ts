@@ -21,6 +21,7 @@ export const outArrowClicked = writable(null);
 export const inArrowClicked = writable(null);
 export const draggableMoving = writable(null);
 export const functionMoving = writable(null);
+export const dirtyFunctions = writable([]);
 
 //export update function for elements
 export function updateAwaitingFirebase(newValue) {
@@ -31,5 +32,12 @@ export function updateGlobal(key, value) {
   global.update((g) => {
     g[key] = value;
     return g;
+  });
+}
+
+export function updateDirtyFunctions(newValue) {
+  dirtyFunctions.update((df) => {
+    df = newValue;
+    return df;
   });
 }

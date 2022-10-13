@@ -13,6 +13,7 @@
 
   export let element;
   export let handleEdit;
+  export let handleSave;
 
   let style =
     $mousePosition.x > $width / 2 ? "left: -3px" : "left: calc(100vw - 433px)";
@@ -32,13 +33,13 @@
   on:click={(e) => {
     e.stopPropagation();
   }}
-  transition:fly={{ x: 500, y: 0, duration: 100 }}
   class="elementTooltip"
   {style}
 >
   <div class="message">{message}</div>
 
   <div class="toolbar">
+    <button class="blueButton" on:click={() => handleSave()}>Save</button>
     <button
       on:click={() => ($showGrid = !$showGrid)}
       class="blueButton"
@@ -378,6 +379,14 @@
     color: black;
     z-index: 200;
     pointer-events: all;
+  }
+
+  .toolbar {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: left;
+    flex-wrap: wrap;
   }
 
   .infoGroup {

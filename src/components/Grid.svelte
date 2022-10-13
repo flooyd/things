@@ -1,6 +1,6 @@
 <script>
-  import { onMount, afterUpdate } from "svelte";
-  import { tick } from "svelte";
+  import { onMount } from "svelte";
+  import { fade } from "svelte/transition";
   import {
     storesTooltipOpen,
     functionsTooltipOpen,
@@ -9,22 +9,49 @@
     inArrowClicked,
     draggableMoving,
     functionMoving,
+    elementTooltipId,
+    dirtyFunctions,
   } from "../stores/globals";
   import Draggable from "./Draggable.svelte";
   import GridFunction from "./GridFunction.svelte";
-  import { fetchFunctionsForElement, removeAllFunctions } from "../util.js";
+  import { fetchFunctionsForElement, saveDirtyFunctions } from "../util.js";
+  import SelectionTool from "./SelectionTool.svelte";
 
   let element = null;
   let rect = null;
-  let connections = [];
   let connectionLocations = [];
   let ready = false;
+  let selectionToolStartLocation = null;
+  let selectionToolMousePosition = null;
 
   onMount(async () => {
-    $clickedElement.grid = {
-      functions: await fetchFunctionsForElement($clickedElement._id),
-      connections: [],
-    };
+    let functionsForElement = await fetchFunctionsForElement(
+      $clickedElement._id
+    );
+    $clickedElement.grid = [];
+    $clickedElement.grid.connections = [];
+    $dirtyFunctions = [];
+    functionsForElement = functionsForElement.map((func) => {
+      return {
+        blah: "5",
+        name: func.name,
+        _id: func._id,
+        rect: {
+          x: func.rectX,
+          y: func.rectY,
+          inArrowLocation: {
+            x: func.inArrowX,
+            y: func.inArrowYLocations[0],
+          },
+          outArrowLocation: {
+            x: func.outArrowX,
+            y: func.outArrowYLocations[0],
+          },
+        },
+      };
+    });
+
+    $clickedElement.grid.functions = functionsForElement;
     ready = true;
   });
 
@@ -33,20 +60,39 @@
   }
 
   $: if ($inArrowClicked && $outArrowClicked) {
-    connections.push({
-      in: $inArrowClicked,
-      out: $outArrowClicked,
-    });
-    connections = connections;
-    connectionLocations = getConnectionLocations();
-    $inArrowClicked = null;
-    $outArrowClicked = null;
+    //check if connection exists
+    let connectionExists = false;
+    for (let i = 0; i < $clickedElement.grid.connections.length; i++) {
+      if (
+        $clickedElement.grid.connections[i].in === $inArrowClicked &&
+        $clickedElement.grid.connections[i].out === $outArrowClicked
+      ) {
+        connectionExists = true;
+        break;
+      }
+    }
+
+    if (!connectionExists) {
+      $clickedElement.grid.connections.push({
+        in: $inArrowClicked,
+        out: $outArrowClicked,
+        elementId: $clickedElement._id,
+      });
+
+      connectionLocations = getConnectionLocations();
+      $clickedElement = $clickedElement;
+      $inArrowClicked = null;
+      $outArrowClicked = null;
+    } else {
+      $inArrowClicked = null;
+      $outArrowClicked = null;
+    }
   }
 
   const getConnectionLocations = () => {
     const connectionLocations = [];
 
-    connections.forEach((connection) => {
+    $clickedElement.grid.connections.forEach((connection) => {
       const inArrowLocation =
         $clickedElement.grid.functions.find((f) => f._id === connection.in).rect
           ?.inArrowLocation || null;
@@ -64,6 +110,35 @@
     return connectionLocations;
   };
 
+  const updateSelectionToolProps = (e) => {
+    selectionToolStartLocation = {
+      x: e.clientX,
+      y: e.clientY,
+    };
+    selectionToolMousePosition = {
+      x: e.clientX,
+      y: e.clientY,
+    };
+  };
+
+  const updateMousePosition = (e) => {
+    selectionToolMousePosition = {
+      x: e.clientX,
+      y: e.clientY,
+    };
+  };
+
+  const finalizeSelectionTool = () => {
+    selectionToolStartLocation = null;
+    selectionToolMousePosition = null;
+  };
+
+  const handleClickId = (e) => {
+    $elementTooltipId === $clickedElement._id
+      ? ($elementTooltipId = null)
+      : ($elementTooltipId = $clickedElement._id);
+  };
+
   setInterval(() => {
     if ($draggableMoving && $functionMoving) {
       connectionLocations = getConnectionLocations();
@@ -73,16 +148,41 @@
   setInterval(() => {
     connectionLocations = getConnectionLocations();
   }, 1000);
+
+  setInterval(() => {
+    rect = element.getBoundingClientRect();
+  }, 1000);
+
+  setInterval(() => {
+    if ($dirtyFunctions.length > 0) {
+      saveDirtyFunctions($dirtyFunctions);
+      $dirtyFunctions = [];
+    }
+  }, 1000);
 </script>
 
+<svelte:window
+  on:mousemove={updateMousePosition}
+  on:mouseup={(e) => finalizeSelectionTool(e)}
+/>
 {#if ready}
-  <div class="grid" bind:this={element}>
+  <div
+    class="grid"
+    bind:this={element}
+    on:mousedown={(e) => updateSelectionToolProps(e)}
+    transition:fade={{ duration: 75 }}
+  >
     <div class="toolbar">
-      <div class="id">
+      <button
+        class="id blueButton"
+        on:click={() => {
+          handleClickId();
+        }}
+      >
         {$clickedElement.name
           ? $clickedElement._id + " - " + $clickedElement.name
           : $clickedElement._id}
-      </div>
+      </button>
       <button
         on:click={() => ($storesTooltipOpen = !$storesTooltipOpen)}
         class="blueButton">stores</button
@@ -94,7 +194,7 @@
     </div>
     {#if rect}
       {#each $clickedElement.grid.functions as item}
-        <Draggable>
+        <Draggable top={item.rect.y} left={item.rect.x}>
           <GridFunction gridRect={rect} gridFunction={item} />
         </Draggable>
       {/each}
@@ -110,10 +210,19 @@
           x2={connection.outArrowLocation.x - 10}
           y2={connection.outArrowLocation.y + 14}
           stroke="black"
-          stroke-width="3"
+          stroke-width="5"
+          stroke-linecap="round"
+          stroke-dasharray="2, 2"
         /></svg
       >
     {/each}
+    {#if selectionToolStartLocation && selectionToolMousePosition && !$draggableMoving}
+      <SelectionTool
+        gridRect={rect}
+        startLocation={selectionToolStartLocation}
+        mousePosition={selectionToolMousePosition}
+      />
+    {/if}
   </div>
 {/if}
 
@@ -147,15 +256,11 @@
   .toolbar button {
     margin-right: 13px;
     pointer-events: all;
+    z-index: 99999;
   }
 
-  .id {
-    margin-right: 13px;
-    font-size: 16px;
-    font-weight: bold;
-    padding: 5px 8px;
-    border-radius: 5px;
-    background: white;
-    border: 2px solid black;
+  svg {
+    opacity: 0.9;
+    color: blue;
   }
 </style>

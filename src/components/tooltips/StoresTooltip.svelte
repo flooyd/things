@@ -11,12 +11,8 @@
       const randomNumber = Math.floor(Math.random() * 100);
       $global[alphabet[i]] = randomNumber;
     }
-    $global.domTest = { name: "blah", age: 23 };
-    $global.current;
-    $global.alpha = "";
+    $global = $global;
     ready = true;
-    window.updateGlobal = updateGlobal;
-    window.stores = $global;
   });
 
   const handleClick = (key) => {
