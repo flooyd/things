@@ -194,72 +194,73 @@
   on:mouseup={(e) => finalizeSelectionTool(e)}
 />
 {#if ready}
-  <div class="scroll-container">
-    <div
-      class="grid"
-      bind:this={element}
-      style={`width: ${gridWidth}px; height: ${gridHeight}px;`}
-      on:mousedown={(e) => updateSelectionToolProps(e)}
-      transition:fade={{ duration: 75 }}
-    >
-      <div class="toolbar">
-        <button
-          class="id blueButton"
-          on:click={() => {
-            handleClickId();
-          }}
-        >
-          {$clickedElement.name
-            ? $clickedElement._id + " - " + $clickedElement.name
-            : $clickedElement._id}
-        </button>
-        <button
-          on:click={() => ($storesTooltipOpen = !$storesTooltipOpen)}
-          class="blueButton">stores</button
-        >
-        <button
-          on:click={() => ($functionsTooltipOpen = !$functionsTooltipOpen)}
-          class="blueButton">functions</button
-        >
-      </div>
-      {#if rect}
-        {#each $clickedElement.grid.functions as item}
-          <Draggable top={item.rect.y} left={item.rect.x}>
-            <GridFunction gridRect={rect} gridFunction={item} />
-          </Draggable>
-        {/each}
-      {/if}
-      {#each connectionLocations as connection (connection.key)}
-        <svg
-          width="100%"
-          height="100%"
-          style="position: absolute; top: 0; left: 0; pointer-events: none;"
-          ><line
-            x1={connection.inArrowLocation.x + 10}
-            y1={connection.inArrowLocation.y + 14}
-            x2={connection.outArrowLocation.x - 10}
-            y2={connection.outArrowLocation.y + 14}
-            stroke="black"
-            stroke-width="5"
-            stroke-linecap="round"
-            stroke-dasharray="2, 2"
-          /></svg
-        >
-      {/each}
-      {#if selectionToolStartLocation && selectionToolMousePosition && !$draggableMoving}
-        <SelectionTool
-          gridRect={rect}
-          startLocation={selectionToolStartLocation}
-          mousePosition={selectionToolMousePosition}
-        />
-      {/if}
+  <div
+    class="grid"
+    bind:this={element}
+    style={`width: ${gridWidth}px; height: ${gridHeight}px;`}
+    on:mousedown={(e) => updateSelectionToolProps(e)}
+    transition:fade={{ duration: 75 }}
+  >
+    <div class="toolbar">
+      <button
+        class="id blueButton"
+        on:click={() => {
+          handleClickId();
+        }}
+      >
+        {$clickedElement.name
+          ? $clickedElement._id + " - " + $clickedElement.name
+          : $clickedElement._id}
+      </button>
+      <button
+        on:click={() => ($storesTooltipOpen = !$storesTooltipOpen)}
+        class="blueButton">stores</button
+      >
+      <button
+        on:click={() => ($functionsTooltipOpen = !$functionsTooltipOpen)}
+        class="blueButton">functions</button
+      >
     </div>
+    {#if rect}
+      {#each $clickedElement.grid.functions as item}
+        <Draggable top={item.rect.y} left={item.rect.x}>
+          <GridFunction gridRect={rect} gridFunction={item} />
+        </Draggable>
+      {/each}
+    {/if}
+    {#each connectionLocations as connection (connection.key)}
+      <svg
+        width="100%"
+        height="100%"
+        style="position: absolute; top: 0; left: 0; pointer-events: none;"
+        ><line
+          x1={connection.inArrowLocation.x + 10}
+          y1={connection.inArrowLocation.y + 14}
+          x2={connection.outArrowLocation.x - 10}
+          y2={connection.outArrowLocation.y + 14}
+          stroke="black"
+          stroke-width="5"
+          stroke-linecap="round"
+          stroke-dasharray="2, 2"
+        /></svg
+      >
+    {/each}
+    {#if selectionToolStartLocation && selectionToolMousePosition && !$draggableMoving}
+      <SelectionTool
+        gridRect={rect}
+        startLocation={selectionToolStartLocation}
+        mousePosition={selectionToolMousePosition}
+      />
+    {/if}
   </div>
 {/if}
 
 <style>
   .grid {
     height: 100vh;
+    width: 100vw;
+    overflow-x: scroll;
+    overflow-y: scroll;
     font-size: 13px;
     color: black;
     z-index: 200;
@@ -268,17 +269,6 @@
     background-image: linear-gradient(to right, grey 1px, transparent 1px),
       linear-gradient(to bottom, grey 1px, white 1px);
     background-size: 20px 20px;
-    position: relative;
-  }
-
-  .scroll-container {
-    height: 100%;
-    width: 100%;
-    overflow-x: scroll;
-    overfloy-y: scroll;
-    position: absolute;
-    white-space: nowrap;
-    background: transparent;
   }
 
   .toolbar {

@@ -100,6 +100,7 @@
     border: 2px solid black;
     border-radius: 5px;
     display: flex;
+    position: relative;
     flex-direction: column;
     background: #aaa;
     color: black;
