@@ -2,13 +2,10 @@
   import { onMount } from "svelte";
   import { getId } from "../../util";
   import { fade } from "svelte/transition";
-
-  import ElementTooltip from "../tooltips/ElementTooltip.svelte";
   import Div from "./Div.svelte";
 
   import { elementTooltipId, clickedElement } from "../../stores/globals";
   import { elements } from "../../stores/elements";
-  import { elementsOpen } from "../../stores/tooltip";
 
   export let element;
 
@@ -50,9 +47,6 @@
       ? element.flexDirection
       : "row";
     element.flexWrap = element.flexWrap ? element.flexWrap : "nowrap";
-    element.parentOf = $elements
-      .filter((e) => e.childOf === element.id)
-      .map((e) => e.id);
     ready = true;
   });
 
@@ -60,7 +54,7 @@
     element = $clickedElement;
   }
 
-  $: styleString = `width: ${element.width}; 
+  $: styleString = `width: ${element.width};
   height: ${element.height}; 
   background: ${element.background}; 
   border: ${element.border}; 

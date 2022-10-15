@@ -8,6 +8,7 @@
     parentOfChildPendingDeletion,
     childPendingDeletion,
   } from "../../stores/globals";
+  import { elements as elementsStore } from "../../stores/elements";
   import Element from "./Element.svelte";
 
   export let styleString;
@@ -21,12 +22,14 @@
   let hoverBorder = "3px solid red";
 
   onMount(() => {
-    if (parentOf) {
+    console.log($elementsStore);
+    if (parentOf.length > 0) {
       parentOf.forEach(async (child, index, arr) => {
-        const docRef = await doc($db, "things", child);
-        const document = await getDoc(docRef);
-        elements.push({ ...document.data(), id: document.id });
-        elements = elements;
+        //child is the id of the child element. get the element from the store and add it to the elements array
+        const childElement = $elementsStore.find(
+          (element) => element._id === child
+        );
+        elements = [...elements, childElement];
       });
     }
   });

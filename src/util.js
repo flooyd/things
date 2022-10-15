@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 //import collection, addDoc
 import {
-  updateAwaitingFirebase,
+  updateLoading,
   dirtyFunctions,
   clickedElement,
   updateDirtyFunctions,
@@ -37,7 +37,7 @@ export function typewriter(node, { speed = 1 }) {
 }
 
 export const addElement = async (type) => {
-  updateAwaitingFirebase(true);
+  updateLoading(true);
   const elements = get(elementsStore);
   const addedDoc = await fetch("http://localhost:3000/things", {
     method: "POST",
@@ -50,42 +50,42 @@ export const addElement = async (type) => {
     const addedDocJson = await addedDoc.json();
     let newElement = addedDocJson;
     updateElements([...elements, newElement]);
-    updateAwaitingFirebase(false);
+    updateLoading(false);
   } else {
     return;
   }
 };
 
 export const fetchElements = async () => {
-  updateAwaitingFirebase(true);
+  updateLoading(true);
   const elements = await fetch("http://localhost:3000/things");
   const elementsJson = await elements.json();
-  updateAwaitingFirebase(false);
+  updateLoading(false);
   return elementsJson;
 };
 
 export const deleteElement = async (id) => {
-  updateAwaitingFirebase(true);
+  updateLoading(true);
   const elements = get(elementsStore);
   const deletedDoc = await fetch("http://localhost:3000/things/" + id, {
     method: "DELETE",
   });
   updateElements(elements.filter((element) => element._id !== id));
-  updateAwaitingFirebase(false);
+  updateLoading(false);
 };
 
 export const deleteAllElements = async () => {
-  updateAwaitingFirebase(true);
+  updateLoading(true);
   const elements = get(elementsStore);
   const deletedDoc = await fetch("http://localhost:3000/things/deleteAll", {
     method: "DELETE",
   });
   updateElements([]);
-  updateAwaitingFirebase(false);
+  updateLoading(false);
 };
 
 export const updateElement = async (element) => {
-  updateAwaitingFirebase(true);
+  updateLoading(true);
   const elements = get(elementsStore);
   const updatedDoc = await fetch("http://localhost:3000/things/", {
     method: "PUT",
@@ -105,37 +105,22 @@ export const updateElement = async (element) => {
       }
     })
   );
-  updateAwaitingFirebase(false);
-};
-
-export const copyElement = async (element) => {
-  updateAwaitingFirebase(true);
-  const elements = get(elementsStore);
-  const copiedDoc = await fetch("http://localhost:3000/things", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ ...element, _id: undefined }),
-  });
-  const copiedDocJson = await copiedDoc.json();
-
-  updateAwaitingFirebase(false);
+  updateLoading(false);
 };
 
 //fetchFunctions(id) /functions
 export const fetchFunctionsForElement = async (elementId) => {
-  updateAwaitingFirebase(true);
+  updateLoading(true);
   const functions = await fetch(
     "http://localhost:3000/functions/forElement/" + elementId
   );
   const functionsJson = await functions.json();
-  updateAwaitingFirebase(false);
+  updateLoading(false);
   return functionsJson;
 };
 
 export const addFunction = async (elementId, type) => {
-  updateAwaitingFirebase(true);
+  updateLoading(true);
   const functions = await fetch("http://localhost:3000/functions/", {
     method: "POST",
     headers: {
@@ -145,7 +130,7 @@ export const addFunction = async (elementId, type) => {
   });
   if (functions.ok) {
     const functionsJson = await functions.json();
-    updateAwaitingFirebase(false);
+    updateLoading(false);
     return functionsJson;
   } else {
     return;
@@ -154,34 +139,34 @@ export const addFunction = async (elementId, type) => {
 
 //delete function by id
 export const deleteFunctionById = async (functionId) => {
-  updateAwaitingFirebase(true);
+  updateLoading(true);
   const functions = await fetch(
     "http://localhost:3000/functions/" + functionId,
     {
       method: "DELETE",
     }
   );
-  updateAwaitingFirebase(false);
+  updateLoading(false);
 };
 
 //delete all functions by id
 export const deleteAllFunctionsForElement = async (elementId) => {
-  updateAwaitingFirebase(true);
+  updateLoading(true);
   const functions = await fetch(
     "http://localhost:3000/functions/" + elementId,
     {
       method: "DELETE",
     }
   );
-  updateAwaitingFirebase(false);
+  updateLoading(false);
 };
 
 export const removeAllFunctions = async () => {
-  updateAwaitingFirebase(true);
+  updateLoading(true);
   const functions = await fetch("http://localhost:3000/functions/all", {
     method: "DELETE",
   });
-  updateAwaitingFirebase(false);
+  updateLoading(false);
 };
 
 export const addDirtyFunction = async (functionId) => {
@@ -228,62 +213,62 @@ export const saveFunction = async (functionId) => {
 //get all connections for element
 export const getAllConnectionsForElement = async (elementId) => {
   console.log("getting all connections for element", elementId);
-  updateAwaitingFirebase(true);
+  updateLoading(true);
   const connections = await fetch(
     "http://localhost:3000/connections/forElement/" + elementId
   );
   const connectionsJson = await connections.json();
-  updateAwaitingFirebase(false);
+  updateLoading(false);
   return connectionsJson;
 };
 
 //get connection by id
 export const getConnectionById = async (connectionId) => {
-  updateAwaitingFirebase(true);
+  updateLoading(true);
   const connections = await fetch(
     "http://localhost:3000/connections/" + connectionId
   );
   const connectionsJson = await connections.json();
-  updateAwaitingFirebase(false);
+  updateLoading(false);
   return connectionsJson;
 };
 
 //delete connection by id
 export const deleteConnectionById = async (connectionId) => {
-  updateAwaitingFirebase(true);
+  updateLoading(true);
   const connections = await fetch(
     "http://localhost:3000/connections/" + connectionId,
     {
       method: "DELETE",
     }
   );
-  updateAwaitingFirebase(false);
+  updateLoading(false);
 };
 
 //delete all connections by element id
 export const deleteAllConnectionsForElement = async (elementId) => {
-  updateAwaitingFirebase(true);
+  updateLoading(true);
   const connections = await fetch(
     "http://localhost:3000/connections/deleteAll/" + elementId,
     {
       method: "DELETE",
     }
   );
-  updateAwaitingFirebase(false);
+  updateLoading(false);
 };
 
 //delete all connections
 export const deleteAllConnections = async () => {
-  updateAwaitingFirebase(true);
+  updateLoading(true);
   const connections = await fetch("http://localhost:3000/connections/delete", {
     method: "DELETE",
   });
-  updateAwaitingFirebase(false);
+  updateLoading(false);
 };
 
 //add connection
 export const addConnection = async (connection) => {
-  updateAwaitingFirebase(true);
+  updateLoading(true);
   const createdConnection = await fetch("http://localhost:3000/connections/", {
     method: "POST",
     headers: {
@@ -293,7 +278,7 @@ export const addConnection = async (connection) => {
   });
   if (createdConnection.ok) {
     const connectionJson = await createdConnection.json();
-    updateAwaitingFirebase(false);
+    updateLoading(false);
     return connectionJson;
   } else {
     return null;
@@ -312,18 +297,46 @@ export const functions = {
   logError: "logs an error to the console",
   logWarning: "logs a warning to the console",
   logInfo: "logs an info message to the console",
+  //events
+  onClick: "runs when the component is clicked",
+  onDblClick: "runs when the component is double clicked",
+  onMouseDown: "runs when the mouse is pressed down on the component",
+  onMouseUp: "runs when the mouse is released on the component",
+  onMouseEnter: "runs when the mouse enters the component",
+  onMouseLeave: "runs when the mouse leaves the component",
+  onMouseMove: "runs when the mouse moves over the component",
+  onContextMenu: "runs when the context menu is opened on the component",
+  getElementsByName: "gets all elements with a given name",
+  getElementById: "gets an element by id",
 };
 
-export const executables = ["log", "logError", "logWarning", "logInfo"];
+export const executables = [
+  "log",
+  "logError",
+  "logWarning",
+  "logInfo",
+  "getElementsByName",
+  "getElementById",
+];
 
 export const classesAndObjects = {
-  log: "console",
-  logError: "console",
-  logWarning: "console",
-  logInfo: "console",
   mount: "lifecycle",
   afterUpdate: "lifecycle",
   beforeUpdate: "lifecycle",
   beforeDestroy: "lifecycle",
   afterDestroy: "lifecycle",
+  log: "console",
+  logError: "console",
+  logWarning: "console",
+  logInfo: "console",
+  onClick: "event",
+  onDblClick: "event",
+  onMouseDown: "event",
+  onMouseUp: "event",
+  onMouseEnter: "event",
+  onMouseLeave: "event",
+  onMouseMove: "event",
+  onContextMenu: "event",
+  getElementsByName: "document",
+  getElementById: "document",
 };

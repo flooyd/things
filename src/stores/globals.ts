@@ -7,7 +7,7 @@ export const db = writable(null);
 export const elementTooltipId = writable(null);
 export const clickedElement = writable(null);
 export const elementsHovered = writable([]);
-export const awaitingFirebase = writable(false);
+export const loading = writable(false);
 export const storesTooltipOpen = writable(false);
 export const functionsTooltipOpen = writable(false);
 export const showGrid = writable(false);
@@ -24,8 +24,8 @@ export const functionMoving = writable(null);
 export const dirtyFunctions = writable([]);
 
 //export update function for elements
-export function updateAwaitingFirebase(newValue) {
-  awaitingFirebase.set(newValue);
+export function updateLoading(newValue) {
+  loading.set(newValue);
 }
 
 export function updateGlobal(key, value) {

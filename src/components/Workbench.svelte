@@ -1,79 +1,54 @@
 <script lang="ts">
-  import { tick } from "svelte";
-  import { deleteAllElements, fetchElements } from "../util.js";
+  import { onMount, tick } from "svelte";
+  import { fetchElements } from "../util.js";
   import { fade } from "svelte/transition";
 
   import { elements } from "../stores/elements";
-  import {
-    db,
-    global,
-    hideUI,
-    fullscreen,
-    showGrid,
-    clickedElement,
-  } from "../stores/globals";
+  import { fullscreen, showGrid, clickedElement } from "../stores/globals";
 
   import Element from "./elements/Element.svelte";
-  import WorkbenchElements from "./WorkbenchElements.svelte";
-  import WorkbenchStores from "./WorkbenchStores.svelte";
-  import WorkbenchFunctions from "./WorkbenchFunctions.svelte";
-
-  let collectionName = "Sample Collection";
-  let heightOffset = 127;
-  $: $fullscreen ? (heightOffset = 0) : (heightOffset = 127);
 
   let ready = false;
 
+  onMount(async () => {
+    $elements = await getElements();
+    ready = true;
+  });
+
   const getElements = async () => {
+    //fetches all elements from the database
     const fetchedElements = await fetchElements();
 
-    fetchedElements.forEach((element) => {
-      if (!element.parentOf) {
-        element.parentOf = [];
-      }
-      const childElements = fetchedElements.filter((child) => {
-        return child.childOf === element.id;
-      });
-
-      childElements.forEach((child) => {
-        element.parentOf = [...element.parentOf, child.id];
-      });
-    });
-
-    $elements = fetchedElements;
-    $clickedElement = $elements.find(
-      (element) => element._id === "63479662c5681e6321ce5d86"
+    //gets children of each element by comparing the childOf property to the id
+    //of each element
+    const children = fetchedElements.filter(
+      (e) => e.childOf !== null && e.childOf !== undefined
     );
 
-    await tick();
-    $showGrid = true;
-    ready = true;
+    //adds the array of child ids to the parent element's parentOf property
+    const mappedElements = fetchedElements.map((e) => {
+      const childrenIds = children
+        .filter((c) => c.childOf === e._id)
+        .map((c) => c._id);
+      console.log(childrenIds);
+      return {
+        ...e,
+        parentOf: [...childrenIds],
+      };
+    });
+
+    return mappedElements;
   };
 
-  getElements();
+  $: console.log($elements);
 </script>
 
 {#if ready}
   <div
     transition:fade={{ duration: 100 }}
     class="workbench"
-    style="height: calc(100vh - {heightOffset}px);"
+    style="height: calc(100vh);"
   >
-    {#if !$hideUI}
-      <div transition:fade={{ duration: 100 }}>
-        <div class="collectionName">
-          <h1>
-            {collectionName}
-          </h1>
-          <span>{"F1 to hide/show"}</span>
-        </div>
-        <div class="toolbar">
-          <WorkbenchElements />
-          <WorkbenchStores />
-          <WorkbenchFunctions />
-        </div>
-      </div>
-    {/if}
     <div class="view">
       {#each $elements as element (element._id)}
         {#if element.childOf?.length === 0 || !element.childOf}
@@ -92,12 +67,14 @@
     background: var(--cultured);
     margin: 0px 0px;
     color: black;
+    overflow-y: auto;
+    overflow-x: auto;
   }
 
   .view {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+    background: white;
+    height: 100%;
+    width: 100%;
   }
 
   .loading {

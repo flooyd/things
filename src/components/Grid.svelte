@@ -79,7 +79,6 @@
 
   $: if (element) {
     rect = element.getBoundingClientRect();
-    gridWidth = 5000;
   }
 
   $: if ($inArrowClicked && $outArrowClicked) {
@@ -137,6 +136,7 @@
         key: `${connection.in}-${connection.out}`,
       });
     });
+
     return connectionLocations;
   };
 
@@ -176,17 +176,11 @@
   }, 25);
 
   setInterval(() => {
-    rect = element.getBoundingClientRect();
-  }, 1000);
-
-  setInterval(() => {
     if ($dirtyFunctions.length > 0) {
       saveDirtyFunctions($dirtyFunctions);
       $dirtyFunctions = [];
     }
   }, 1000);
-
-  $: console.log($clickedElement.grid?.connections);
 </script>
 
 <svelte:window
@@ -204,7 +198,8 @@
     <div class="toolbar">
       <button
         class="id blueButton"
-        on:click={() => {
+        on:mousedown={() => {
+          console.log("hi");
           handleClickId();
         }}
       >
@@ -213,11 +208,11 @@
           : $clickedElement._id}
       </button>
       <button
-        on:click={() => ($storesTooltipOpen = !$storesTooltipOpen)}
+        on:mousedown={() => ($storesTooltipOpen = !$storesTooltipOpen)}
         class="blueButton">stores</button
       >
       <button
-        on:click={() => ($functionsTooltipOpen = !$functionsTooltipOpen)}
+        on:mousedown={() => ($functionsTooltipOpen = !$functionsTooltipOpen)}
         class="blueButton">functions</button
       >
     </div>
@@ -259,8 +254,9 @@
   .grid {
     height: 100vh;
     width: 100vw;
-    overflow-x: scroll;
-    overflow-y: scroll;
+    position: absolute;
+    top: 0px;
+    left: 0px;
     font-size: 13px;
     color: black;
     z-index: 200;

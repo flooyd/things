@@ -3,7 +3,7 @@
   import { elements } from "../stores/elements";
   import { fade } from "svelte/transition";
   import { addDoc, collection, getDoc } from "firebase/firestore";
-  import { db, awaitingFirebase } from "../stores/globals.js";
+  import { db, loading } from "../stores/globals.js";
   import { addElement } from "../util.js";
   let x = 0;
   let y = 0;
@@ -34,7 +34,7 @@
   {#if width && height && $elementsOpen}
     <div transition:fade={{ duration: 50 }} class="tooltip">
       <button
-        disabled={$awaitingFirebase}
+        disabled={$loading}
         class="tooltip-item"
         on:click={() => addElement("div")}>div</button
       >
@@ -68,9 +68,9 @@
     justify-content: center;
     border-radius: 4px;
     padding: 5px 2px;
-    border: 3px solid var(--oxford-blue);
+    border: 3px solid black;
     cursor: pointer;
-    background: var(--cultured);
+    background: white;
     max-height: 30px;
     width: 125px;
   }

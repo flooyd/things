@@ -4,6 +4,7 @@
     fetchFunctionsForElement,
     addFunction,
     addDirtyFunction,
+    classesAndObjects,
   } from "../../util";
   import { clickedElement, dirtyFunctions } from "../../stores/globals";
   import { onMount } from "svelte";
@@ -55,7 +56,19 @@
       class="function"
     >
       <div class="title">
-        <img src="images/function.png" alt="function" />
+        {#if classesAndObjects[item] === "lifecycle"}
+          <i class="fa-solid fa-arrows-rotate" />
+          <img src="images/function.png" alt="function" />
+        {:else if classesAndObjects[item] === "console"}
+          <i class="fa-solid fa-terminal" />
+          <img src="images/function.png" alt="function" />
+        {:else if classesAndObjects[item] === "document"}
+          <i class="fa-solid fa-file" />
+          <img src="images/function.png" alt="function" />
+        {:else if classesAndObjects[item] === "event"}
+          <i class="fa-solid fa-mouse-pointer" />
+          <img src="images/function.png" alt="function" />
+        {/if}
         <div class="functionName">{item}</div>
       </div>
       <div class="functionType">{functions[item]}</div>
@@ -68,12 +81,12 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    width: fit-content;
     min-width: 400px;
-    height: calc(100vh - 20px);
+    max-width: 400px;
+    height: 100%;
     background: white;
     font-size: 13px;
-    padding: 16px;
+    padding: 0px 10px;
     overflow-y: auto;
     color: black;
     z-index: 200;
@@ -93,8 +106,8 @@
 
   .header {
     font-size: 20px;
+    margin-top: 20px;
     font-weight: bold;
-    color: var(--oxford-blue);
   }
 
   .function:hover {
@@ -109,11 +122,6 @@
     align-items: center;
     font-weight: bold;
     font-size: 16px;
-  }
-
-  img {
-    margin-right: 8px;
-    background: white !important;
-    padding: 5px;
+    gap: 8px;
   }
 </style>

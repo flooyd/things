@@ -1,7 +1,6 @@
 <script>
-  import { fly } from "svelte/transition";
   import {
-    awaitingFirebase,
+    loading,
     elementTooltipId,
     width,
     mousePosition,
@@ -9,7 +8,7 @@
     parentOfChildPendingDeletion,
     showGrid,
   } from "../../stores/globals";
-  import { deleteElement, copyElement } from "../../util";
+  import { deleteElement } from "../../util";
 
   export let element;
   export let handleEdit;
@@ -17,8 +16,6 @@
 
   let style =
     $mousePosition.x > $width / 2 ? "left: -3px" : "left: calc(100vw - 433px)";
-  let message =
-    "Edits for most fields are saved and updated instantly. Otherwise, click the save button to save and update changes.";
 
   let infoGroups = [
     "gap",
@@ -36,22 +33,13 @@
   class="elementTooltip"
   {style}
 >
-  <div class="message">{message}</div>
-
   <div class="toolbar">
     <button class="blueButton" on:click={() => handleSave()}>Save</button>
     <button
       on:click={() => ($showGrid = !$showGrid)}
       class="blueButton"
       type="button"
-      >{#if $showGrid}Hide{:else}Show{/if} Grid</button
-    >
-
-    <button
-      on:click={() => copyElement(element)}
-      type="button"
-      disabled={$awaitingFirebase}
-      class="blueButton">Copy Element</button
+      >{#if $showGrid}Close{:else}Open{/if} Grid</button
     >
     <button
       type="button"
@@ -62,7 +50,7 @@
         $childPendingDeletion = element._id;
         $parentOfChildPendingDeletion = element.childOf;
       }}
-      disabled={$awaitingFirebase}
+      disabled={$loading}
       class="redButton">Delete Element</button
     >
     <button
@@ -350,8 +338,8 @@
       on:input={(e) => handleEdit("parentOf", e.target.value)}
     />
   </div>
-  {#each infoGroups as infoGroup}
-    <div class="infoGroup">
+  {#each infoGroups as infoGroup, i}
+    <div class={`infoGroup ${i === infoGroups.length - 1 ? " last" : ""}`}>
       <label for={infoGroup} class="infoLabel">{infoGroup}</label>
       <input
         autocomplete="off"
@@ -363,6 +351,7 @@
       />
     </div>
   {/each}
+  <div class="placeholder" />
 </div>
 
 <style>
@@ -370,15 +359,16 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    width: 400px;
-    height: calc(100vh - 30px);
+    min-width: 400px;
+    max-width: 400px;
     background: white;
     font-size: 13px;
-    padding: 16px;
+    padding: 0px 10px;
     overflow-y: auto;
     color: black;
     z-index: 200;
     pointer-events: all;
+    height: 100%;
   }
 
   .toolbar {
@@ -387,6 +377,7 @@
     gap: 8px;
     align-items: left;
     flex-wrap: wrap;
+    margin-top: 20px;
   }
 
   .infoGroup {
@@ -395,6 +386,11 @@
     gap: 8px;
     align-items: center;
     justify-content: space-between;
+  }
+
+  .last {
+    color: red !important;
+    margin-bottom: 20px;
   }
 
   .infoGroup:hover {

@@ -75,7 +75,6 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    width: fit-content;
     min-width: 400px;
     height: calc(100vh - 30px);
     background: white;
