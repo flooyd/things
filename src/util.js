@@ -288,15 +288,19 @@ export const addConnection = async (connection) => {
 //update connection is not necessary
 
 export const functions = {
+  //life cycle
   mount: "runs when the component is mounted",
   afterUpdate: "runs after the component is updated",
   beforeUpdate: "runs before the component is updated",
   beforeDestroy: "runs before the component is destroyed",
   afterDestroy: "runs after the component is destroyed",
+
+  //log
   log: "logs a message to the console",
   logError: "logs an error to the console",
   logWarning: "logs a warning to the console",
   logInfo: "logs an info message to the console",
+
   //events
   onClick: "runs when the component is clicked",
   onDblClick: "runs when the component is double clicked",
@@ -306,23 +310,28 @@ export const functions = {
   onMouseLeave: "runs when the mouse leaves the component",
   onMouseMove: "runs when the mouse moves over the component",
   onContextMenu: "runs when the context menu is opened on the component",
+
   //document object model functions (reference mdn)
   getElementsByName: "gets all elements with a given name",
   getElementById: "gets an element by id",
   getElementsByClassName: "gets all elements with a given class name",
   getElementsByTagName: "gets all elements with a given tag name",
+
   //variable assignment
   setVariable: "sets a variable",
   getVariable: "gets a variable",
+
   //conditional
   if: "runs a block of code if a condition is true",
   elseIf:
     "runs a block of code if a condition is true and the previous if statement was false",
   else: "runs a block of code if a condition is false",
+
   //loop
   for: "runs a block of code a given number of times",
   forEach: "runs a block of code for each item in an array",
   while: "runs a block of code while a condition is true",
+
   //operators
   add: "adds two numbers",
   subtract: "subtracts two numbers",
@@ -330,10 +339,12 @@ export const functions = {
   divide: "divides two numbers",
   modulo: "returns the remainder of two numbers",
   power: "raises a number to a power",
+
   //logic
   and: "returns true if both values are true",
   or: "returns true if either value is true",
   not: "returns the opposite of the value",
+
   //comparison
   greaterThan: "returns true if the first value is greater than the second",
   lessThan: "returns true if the first value is less than the second",
@@ -343,9 +354,13 @@ export const functions = {
     "returns true if the first value is less than or equal to the second",
   equal: "returns true if the two values are equal",
   notEqual: "returns true if the two values are not equal",
+
+  //jump
   break: "stops the current loop",
   continue:
     "stops the current iteration of the loop and continues to the next iteration",
+
+  //return
   return: "returns a value from a function",
 };
 
@@ -363,28 +378,28 @@ export const functionOutputs = {
     count: 0,
   },
   getElementsByName: {
-    count: 0,
-    output: "array",
+    count: 1,
+    type: "array",
   },
   getElementById: {
-    count: 0,
-    output: "object",
+    count: 1,
+    type: "object",
   },
   getElementsByClassName: {
-    count: 0,
-    output: "array",
+    count: 1,
+    type: "array",
   },
   getElementsByTagName: {
-    count: 0,
-    output: "array",
+    count: 1,
+    type: "array",
   },
   setVariable: {
     count: 1,
-    output: "any",
+    type: "any",
   },
   getVariable: {
     count: 1,
-    output: "any",
+    type: "any",
   },
   if: {
     count: 0,
@@ -406,85 +421,85 @@ export const functionOutputs = {
   },
   add: {
     count: 1,
-    output: "number",
+    type: "number",
   },
   subtract: {
     count: 1,
-    output: "number",
+    type: "number",
   },
   multiply: {
     count: 1,
-    output: "number",
+    type: "number",
   },
   divide: {
     count: 1,
-    output: "number",
+    type: "number",
   },
   modulo: {
     count: 1,
-    output: "number",
+    type: "number",
   },
   power: {
     count: 1,
-    output: "number",
+    type: "number",
   },
   and: {
     count: 1,
-    output: "boolean",
+    type: "boolean",
   },
   or: {
     count: 1,
-    output: "boolean",
+    type: "boolean",
   },
   not: {
     count: 1,
-    output: "boolean",
+    type: "boolean",
   },
   greaterThan: {
     count: 1,
-    output: "boolean",
+    type: "boolean",
   },
   lessThan: {
     count: 1,
-    output: "boolean",
+    type: "boolean",
   },
   greaterThanOrEqual: {
     count: 1,
-    output: "boolean",
+    type: "boolean",
   },
   lessThanOrEqual: {
     count: 1,
-    output: "boolean",
+    type: "boolean",
   },
   equal: {
     count: 1,
-    output: "boolean",
+    type: "boolean",
   },
   notEqual: {
     count: 1,
-    output: "boolean",
+    type: "boolean",
   },
 };
 
 export const functionInputs = {
   log: {
     count: 1,
-    type: "string",
+    type: "any",
     description: "the message to log",
   },
   logError: {
     count: 1,
-    type: "string",
+    type: "any",
     description: "the error to log",
   },
   logWarning: {
     count: 1,
-    type: "string",
+    type: "any",
     description: "the warning to log",
   },
   logInfo: {
     count: 1,
-    type: "string",
+    type: "any",
     description: "the info message to log",
   },
   getElementsByName: {
@@ -510,7 +525,9 @@ export const functionInputs = {
   setVariable: {
     count: 2,
     type: "string",
-    description: "the name and value of the variable to set",
+    type2: "any",
+    description: "the name of the variable to set",
+    descripttion2: "the value of the variable to set",
   },
   getVariable: {
     count: 1,
@@ -664,7 +681,7 @@ export const executables = [
   "notEqual",
 ];
 
-export const classesAndObjects = {
+export const objects = {
   mount: "lifecycle",
   afterUpdate: "lifecycle",
   beforeUpdate: "lifecycle",
@@ -688,12 +705,12 @@ export const classesAndObjects = {
   getElementsByTagName: "document",
   setVariable: "variable",
   getVariable: "variable",
-  if: "control",
-  elseIf: "control",
-  else: "control",
-  for: "control",
-  forEach: "control",
-  while: "control",
+  if: "conditional",
+  elseIf: "conditional",
+  else: "conditional",
+  for: "loop",
+  forEach: "loop",
+  while: "loop",
   add: "math",
   subtract: "math",
   multiply: "math",
@@ -709,4 +726,86 @@ export const classesAndObjects = {
   lessThanOrEqual: "logic",
   equal: "logic",
   notEqual: "logic",
+  break: "jump",
+  continue: "jump",
+  return: "return",
+};
+
+export const objectColors = {
+  jump: "yellow",
+  lifecycle: "green",
+  console: "blue",
+  event: "purple",
+  document: "pink",
+  variable: "orange",
+  conditional: "red",
+  loop: "cyan",
+  math: "teal",
+  logic: "gray",
+  return: "gray",
+};
+
+export const objectDescriptions = {
+  jump: "Jump",
+  lifecycle: "Lifecycle",
+  console: "Console",
+  event: "Event",
+  document: "Document",
+  variable: "Variable",
+  conditional: "Conditional",
+  loop: "Loop",
+  math: "Math",
+  logic: "Logic",
+  return: "Return",
+};
+
+export const objectIcons = {
+  lifecycle: "fa-solid fa-arrows-rotate",
+  console: "fa-solid fa-terminal",
+  event: "fa-solid fa-mouse-pointer",
+  document: "fa-solid fa-file",
+  variable: "fa-solid fa-database",
+  conditional: "fa-solid fa-code",
+  loop: "fa-solid fa-repeat",
+  math: "fa-solid fa-calculator",
+  logic: "fa-solid fa-microchip",
+  jump: "fa-solid fa-arrow-right",
+  return: "fa-solid fa-arrow-left",
+};
+
+//7 from MDN
+const primitiveTypes = [
+  "string",
+  "number",
+  "bigint",
+  "boolean",
+  "undefined",
+  "symbol",
+  "null",
+];
+
+const primitiveTypeColors = {
+  string: "orange",
+  number: "blue",
+  bigint: "purple",
+  boolean: "red",
+  undefined: "gray",
+  symbol: "yellow",
+  null: "gray",
+};
+
+const otherTypes = ["any", "array", "object", "function"];
+
+const otherTypeColors = {
+  any: "gray",
+  array: "green",
+  object: "cyan",
+  function: "pink",
+};
+
+export const types = [...primitiveTypes, ...otherTypes];
+
+export const typeColors = {
+  ...primitiveTypeColors,
+  ...otherTypeColors,
 };

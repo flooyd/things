@@ -290,8 +290,7 @@
   }
 
   svg {
-    opacity: 0.9;
-    color: blue;
+    opacity: 1;
     z-index: 99999;
   }
 </style>

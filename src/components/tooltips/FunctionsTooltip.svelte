@@ -4,12 +4,14 @@
     fetchFunctionsForElement,
     addFunction,
     addDirtyFunction,
-    classesAndObjects,
+    objects,
+    objectColors,
   } from "../../util";
   import { clickedElement, dirtyFunctions } from "../../stores/globals";
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
 
   let clickedElementFunctions = [];
+  let hovered = null;
 
   onMount(async () => {
     clickedElementFunctions = await fetchFunctionsForElement(
@@ -44,30 +46,70 @@
       $clickedElement.grid.functions = $clickedElement.grid.functions;
     }
   };
+
+  const setHovered = async (item) => {
+    hovered = item;
+    await tick();
+  };
+
+  $: console.log(hovered);
 </script>
 
 <div class="functionsTooltip">
   <div class="header">Functions</div>
-  {#each Object.keys(functions) as item}
+  {#each Object.keys(functions) as item (item)}
     <div
       on:click={() => {
         click(item);
       }}
-      class="function"
+      on:mouseover={() => {
+        setHovered(item);
+      }}
+      on:focus={() => {
+        setHovered(item);
+      }}
+      on:mouseleave={() => {
+        setHovered(null);
+      }}
+      class={`function ${objectColors[objects[item]]}`}
     >
-      <div class="title">
-        {#if classesAndObjects[item] === "lifecycle"}
+      <div
+        class="title"
+        style={hovered === item
+          ? "color: black"
+          : "color: " + objectColors[objects[item]]}
+      >
+        {#if objects[item] === "lifecycle"}
           <i class="fa-solid fa-arrows-rotate" />
           <img src="images/function.png" alt="function" />
-        {:else if classesAndObjects[item] === "console"}
+        {:else if objects[item] === "console"}
           <i class="fa-solid fa-terminal" />
           <img src="images/function.png" alt="function" />
-        {:else if classesAndObjects[item] === "document"}
+        {:else if objects[item] === "document"}
           <i class="fa-solid fa-file" />
           <img src="images/function.png" alt="function" />
-        {:else if classesAndObjects[item] === "event"}
+        {:else if objects[item] === "event"}
           <i class="fa-solid fa-mouse-pointer" />
           <img src="images/function.png" alt="function" />
+        {:else if objects[item] === "variable"}
+          <i class="fa-solid fa-database" />
+          <img src="images/function.png" alt="function" />
+        {:else if objects[item] === "conditional"}
+          <i class="fa-solid fa-code" />
+          <img src="images/function.png" alt="function" />
+        {:else if objects[item] === "math"}
+          <i class="fa-solid fa-calculator" />
+          <img src="images/function.png" alt="function" />
+        {:else if objects[item] === "loop"}
+          <i class="fa-solid fa-repeat" />
+          <img src="images/function.png" alt="function" />
+        {:else if objects[item] === "logic"}
+          <i class="fa-solid fa-microchip" />
+          <img src="images/function.png" alt="function" />
+        {:else if objects[item] === "jump"}
+          <i class="fa-solid fa-arrow-right" />
+        {:else if objects[item] === "return"}
+          <i class="fa-solid fa-arrow-left" />
         {/if}
         <div class="functionName">{item}</div>
       </div>
@@ -104,16 +146,14 @@
     border: 2px solid black;
   }
 
+  .function:hover {
+    cursor: pointer;
+  }
+
   .header {
     font-size: 20px;
     margin-top: 20px;
     font-weight: bold;
-  }
-
-  .function:hover {
-    background: var(--oxford-blue);
-    color: white;
-    cursor: pointer;
   }
 
   .title {
@@ -123,5 +163,53 @@
     font-weight: bold;
     font-size: 16px;
     gap: 8px;
+  }
+
+  .function.green:hover {
+    background: green;
+  }
+
+  .function.red:hover {
+    background: red;
+  }
+
+  .function.blue:hover {
+    background: blue;
+  }
+
+  .function.yellow:hover {
+    background: yellow;
+  }
+
+  .function.purple:hover {
+    background: purple;
+  }
+
+  .function.orange:hover {
+    background: orange;
+  }
+
+  .function.pink:hover {
+    background: pink;
+  }
+
+  .function.cyan:hover {
+    background: cyan;
+  }
+
+  .function.gray:hover {
+    background: gray;
+  }
+
+  .function.teal:hover {
+    background: teal;
+  }
+
+  .functionName {
+    color: black;
+  }
+
+  .functionType {
+    color: black;
   }
 </style>

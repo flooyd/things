@@ -7,25 +7,40 @@
     draggableMoving,
     functionMoving,
   } from "../stores/globals";
-  import { classesAndObjects, executables, functionOutputs } from "../util";
+  import {
+    objects,
+    executables,
+    functionOutputs,
+    functionInputs,
+    objectDescriptions,
+    typeColors,
+  } from "../util";
 
   export let gridFunction;
   export let gridRect;
+
   let element = null;
   let rect = null;
   let numOutputs = 0;
   let numInputs = 0;
-  let typeOfInput;
+  let typeOfInput = null;
+  let typeOfInputTwo = null;
   let typeOfOutput;
   let ready = false;
 
   onMount(() => {
-    console.log(gridFunction.name);
     numOutputs = functionOutputs[gridFunction.name]?.count || 0;
-    numInputs = classesAndObjects[gridFunction.name]?.count || 0;
+    numInputs = functionInputs[gridFunction.name]?.count || 0;
     typeOfOutput = functionOutputs[gridFunction.name]?.type || "any";
-    typeOfInput = classesAndObjects[gridFunction.name]?.type || "any";
-    console.log(gridFunction.name, numOutputs, numInputs);
+    typeOfInput = functionInputs[gridFunction.name]?.type || "any";
+    typeOfInputTwo = functionInputs[gridFunction.name]?.type2 || null;
+    console.log(
+      gridFunction.name,
+      numOutputs,
+      numInputs,
+      typeOfOutput,
+      typeOfInput
+    );
     ready = true;
   });
 
@@ -83,6 +98,7 @@
   }, 25);
 
   $: element ? setRect() : null;
+  $: console.log("gridFunction", gridFunction);
 </script>
 
 <svelte:window
@@ -91,58 +107,76 @@
     $draggableMoving = false;
   }}
 />
-<div
-  on:mouseenter={() => {
-    $functionMoving = gridFunction._id;
-  }}
-  on:click={() => {
-    $functionMoving = gridFunction._id;
-  }}
-  on:mousedown={() => {
-    $functionMoving = gridFunction._id;
-  }}
-  class="gridFunction"
-  bind:this={element}
->
-  <div class="label">
-    {classesAndObjects[gridFunction.name]}
-  </div>
-  <div class="top">
-    {#if executables.includes(gridFunction.name)}
-      <div class="inArrow" on:focus on:click={(e) => handleClickArrow("in", e)}>
+{#if ready}
+  <div
+    on:mouseenter={() => {
+      $functionMoving = gridFunction._id;
+    }}
+    on:click={() => {
+      $functionMoving = gridFunction._id;
+    }}
+    on:mousedown={() => {
+      $functionMoving = gridFunction._id;
+    }}
+    class="gridFunction"
+    bind:this={element}
+  >
+    <div class="label">
+      {objectDescriptions[objects[gridFunction.name]]}
+    </div>
+    <div class="top">
+      {#if executables.includes(gridFunction.name)}
+        <div
+          class="inArrow"
+          on:focus
+          on:click={(e) => handleClickArrow("in", e)}
+        >
+          ▶
+        </div>
+      {/if}
+      <div class="gridFunctionName">{gridFunction.name}</div>
+      <div
+        class="outArrow"
+        on:focus
+        on:click={(e) => handleClickArrow("out", e)}
+      >
         ▶
       </div>
-    {/if}
-    <div class="gridFunctionName">{gridFunction.name}</div>
-    <div class="outArrow" on:focus on:click={(e) => handleClickArrow("out", e)}>
-      ▶
+    </div>
+    <div class="outputs">
+      {#each Array(numOutputs) as _, i}
+        <div class="output">
+          <div class={"outputCircle" + " " + typeColors[typeOfOutput]}>
+            <span class="outputCircleType">{typeOfOutput}</span>
+            <i class="fas fa-circle" />
+          </div>
+        </div>
+      {/each}
+    </div>
+    <div class="inputs">
+      {#each Array(numInputs) as _, i}
+        <div class="input">
+          {#if (typeOfInput && i === 0) || !typeOfInputTwo}
+            <div class={"inputCircle" + " " + typeColors[typeOfInput]}>
+              <i class="fas fa-circle" />
+              <span class="inputCircleType">{typeOfInput}</span>
+            </div>
+          {/if}
+          {#if typeOfInputTwo && i === 1}
+            <div class={"inputCircle" + " " + typeColors[typeOfInputTwo]}>
+              <i class="fas fa-circle" />
+              <span class="inputCircleType">{typeOfInputTwo}</span>
+            </div>
+          {/if}
+        </div>
+      {/each}
     </div>
   </div>
-  <div class="outputs">
-    {#each Array(numOutputs) as _, i}
-      <div class="output">
-        <div class="outputCircle">
-          <span class="outputCircleType">{typeOfOutput}</span>
-          <i class="fas fa-circle" />
-        </div>
-      </div>
-    {/each}
-  </div>
-  <div class="inputs">
-    {#each Array(numInputs) as _, i}
-      <div class="input">
-        <div class="inputCircle">
-          <span class="inputCircleType">{typeOfInput}</span>
-          <i class="fas fa-circle" />
-        </div>
-      </div>
-    {/each}
-  </div>
-</div>
+{/if}
 
 <style>
   .gridFunction {
-    min-width: 75px;
+    min-width: 150px;
     padding: 6px;
     border: 2px solid black;
     border-radius: 5px;
@@ -176,8 +210,9 @@
     padding: 5px;
   }
 
-  .outputSpan {
+  .outputCircleType {
     margin-right: 8px;
+    color: black;
   }
 
   .input {
@@ -193,8 +228,9 @@
     padding: 5px;
   }
 
-  .inputSpan {
+  .inputCircleType {
     margin-left: 8px;
+    color: black;
   }
 
   .inArrow,
