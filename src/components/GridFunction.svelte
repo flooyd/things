@@ -25,6 +25,7 @@
     numInputs = classesAndObjects[gridFunction.name]?.count || 0;
     typeOfOutput = functionOutputs[gridFunction.name]?.type || "any";
     typeOfInput = classesAndObjects[gridFunction.name]?.type || "any";
+    console.log(gridFunction.name, numOutputs, numInputs);
     ready = true;
   });
 
@@ -47,7 +48,6 @@
       x: rect.left + 10,
       y: rect.top + rect.height - 6 - 15 - numOutputs * 30 - numInputs * 30,
     };
-    console.log("inArrowLocation", inArrowLocation);
     const outArrowLocation = {
       x: rect.left + rect.width - 10,
       y: rect.top + rect.height - 6 - 15 - numOutputs * 30 - numInputs * 30,
@@ -83,7 +83,6 @@
   }, 25);
 
   $: element ? setRect() : null;
-  $: rect ? console.log("gridFunctionRect", rect) : null;
 </script>
 
 <svelte:window
