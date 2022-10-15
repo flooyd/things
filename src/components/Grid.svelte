@@ -137,6 +137,8 @@
       });
     });
 
+    console.log($clickedElement.grid.functions);
+
     return connectionLocations;
   };
 
@@ -230,9 +232,9 @@
         style="position: absolute; top: 0; left: 0; pointer-events: none;"
         ><line
           x1={connection.inArrowLocation.x + 10}
-          y1={connection.inArrowLocation.y + 14}
+          y1={connection.inArrowLocation.y}
           x2={connection.outArrowLocation.x - 10}
-          y2={connection.outArrowLocation.y + 14}
+          y2={connection.outArrowLocation.y}
           stroke="black"
           stroke-width="5"
           stroke-linecap="round"
@@ -290,5 +292,6 @@
   svg {
     opacity: 0.9;
     color: blue;
+    z-index: 99999;
   }
 </style>

@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from "svelte";
   import {
     clickedElement,
     outArrowClicked,
@@ -6,13 +7,36 @@
     draggableMoving,
     functionMoving,
   } from "../stores/globals";
-  import { classesAndObjects, executables } from "../util";
+  import { classesAndObjects, executables, functionOutputs } from "../util";
 
   export let gridFunction;
   export let gridRect;
   let element = null;
   let rect = null;
-  let outArrowOffsetHeight = 0;
+  let numOutputs = 0;
+  let numInputs = 0;
+  let typeOfInput;
+  let typeOfOutput;
+  let ready = false;
+
+  onMount(() => {
+    console.log(gridFunction.name);
+    numOutputs = functionOutputs[gridFunction.name]?.count || 0;
+    numInputs = classesAndObjects[gridFunction.name]?.count || 0;
+    typeOfOutput = functionOutputs[gridFunction.name]?.type || "any";
+    typeOfInput = classesAndObjects[gridFunction.name]?.type || "any";
+    ready = true;
+  });
+
+  //total function size = 72px
+  //divided by 2 = 36px
+  //function top padding  = 6px;
+  //function bottom padding = 6px;
+  //label size = 26px
+  //including top padding = 32px
+  //top element  = 30px;
+  //what is the center y of the top element factoring in all the padding and label size?
+  //72 - 6 - 15 = 51
 
   const setRect = () => {
     rect = element.getBoundingClientRect();
@@ -21,11 +45,12 @@
 
     const inArrowLocation = {
       x: rect.left + 10,
-      y: rect.top + rect.height / 2,
+      y: rect.top + rect.height - 6 - 15 - numOutputs * 30 - numInputs * 30,
     };
+    console.log("inArrowLocation", inArrowLocation);
     const outArrowLocation = {
       x: rect.left + rect.width - 10,
-      y: rect.top + rect.height / 2,
+      y: rect.top + rect.height - 6 - 15 - numOutputs * 30 - numInputs * 30,
     };
 
     $clickedElement.grid.functions.find(
@@ -56,6 +81,9 @@
       setRect();
     }
   }, 25);
+
+  $: element ? setRect() : null;
+  $: rect ? console.log("gridFunctionRect", rect) : null;
 </script>
 
 <svelte:window
@@ -91,12 +119,32 @@
       ▶
     </div>
   </div>
+  <div class="outputs">
+    {#each Array(numOutputs) as _, i}
+      <div class="output">
+        <div class="outputCircle">
+          <span class="outputCircleType">{typeOfOutput}</span>
+          <i class="fas fa-circle" />
+        </div>
+      </div>
+    {/each}
+  </div>
+  <div class="inputs">
+    {#each Array(numInputs) as _, i}
+      <div class="input">
+        <div class="inputCircle">
+          <span class="inputCircleType">{typeOfInput}</span>
+          <i class="fas fa-circle" />
+        </div>
+      </div>
+    {/each}
+  </div>
 </div>
 
 <style>
   .gridFunction {
     min-width: 75px;
-    padding: 5px;
+    padding: 6px;
     border: 2px solid black;
     border-radius: 5px;
     display: flex;
@@ -113,6 +161,41 @@
     width: 100%;
     justify-content: space-between;
     gap: 8px;
+    height: 30px;
+  }
+
+  .output {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: right;
+    color: lightblue;
+    height: 30px;
+  }
+
+  .outputCircle {
+    padding: 5px;
+  }
+
+  .outputSpan {
+    margin-right: 8px;
+  }
+
+  .input {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: left;
+    color: lightblue;
+    height: 30px;
+  }
+
+  .inputCircle {
+    padding: 5px;
+  }
+
+  .inputSpan {
+    margin-left: 8px;
   }
 
   .inArrow,
@@ -137,7 +220,7 @@
     text-align: center;
     font-style: italic;
     font-weight: bold;
-    padding-bottom: 3px;
+    padding-bottom: 4px;
     border-bottom: 1px solid black;
     margin-bottom: 8px;
   }

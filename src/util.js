@@ -306,8 +306,328 @@ export const functions = {
   onMouseLeave: "runs when the mouse leaves the component",
   onMouseMove: "runs when the mouse moves over the component",
   onContextMenu: "runs when the context menu is opened on the component",
+  //document object model functions (reference mdn)
   getElementsByName: "gets all elements with a given name",
   getElementById: "gets an element by id",
+  getElementsByClassName: "gets all elements with a given class name",
+  getElementsByTagName: "gets all elements with a given tag name",
+  //variable assignment
+  setVariable: "sets a variable",
+  getVariable: "gets a variable",
+  //conditional
+  if: "runs a block of code if a condition is true",
+  elseIf:
+    "runs a block of code if a condition is true and the previous if statement was false",
+  else: "runs a block of code if a condition is false",
+  //loop
+  for: "runs a block of code a given number of times",
+  forEach: "runs a block of code for each item in an array",
+  while: "runs a block of code while a condition is true",
+  //operators
+  add: "adds two numbers",
+  subtract: "subtracts two numbers",
+  multiply: "multiplies two numbers",
+  divide: "divides two numbers",
+  modulo: "returns the remainder of two numbers",
+  power: "raises a number to a power",
+  //logic
+  and: "returns true if both values are true",
+  or: "returns true if either value is true",
+  not: "returns the opposite of the value",
+  //comparison
+  greaterThan: "returns true if the first value is greater than the second",
+  lessThan: "returns true if the first value is less than the second",
+  greaterThanOrEqual:
+    "returns true if the first value is greater than or equal to the second",
+  lessThanOrEqual:
+    "returns true if the first value is less than or equal to the second",
+  equal: "returns true if the two values are equal",
+  notEqual: "returns true if the two values are not equal",
+  break: "stops the current loop",
+  continue:
+    "stops the current iteration of the loop and continues to the next iteration",
+  return: "returns a value from a function",
+};
+
+export const functionOutputs = {
+  log: {
+    count: 0,
+  },
+  logError: {
+    count: 0,
+  },
+  logWarning: {
+    count: 0,
+  },
+  logInfo: {
+    count: 0,
+  },
+  getElementsByName: {
+    count: 0,
+    output: "array",
+  },
+  getElementById: {
+    count: 0,
+    output: "object",
+  },
+  getElementsByClassName: {
+    count: 0,
+    output: "array",
+  },
+  getElementsByTagName: {
+    count: 0,
+    output: "array",
+  },
+  setVariable: {
+    count: 1,
+    output: "any",
+  },
+  getVariable: {
+    count: 1,
+    output: "any",
+  },
+  if: {
+    count: 0,
+  },
+  else: {
+    count: 0,
+  },
+  elseIf: {
+    count: 0,
+  },
+  for: {
+    count: 0,
+  },
+  forEach: {
+    count: 0,
+  },
+  while: {
+    count: 0,
+  },
+  add: {
+    count: 1,
+    output: "number",
+  },
+  subtract: {
+    count: 1,
+    output: "number",
+  },
+  multiply: {
+    count: 1,
+    output: "number",
+  },
+  divide: {
+    count: 1,
+    output: "number",
+  },
+  modulo: {
+    count: 1,
+    output: "number",
+  },
+  power: {
+    count: 1,
+    output: "number",
+  },
+  and: {
+    count: 1,
+    output: "boolean",
+  },
+  or: {
+    count: 1,
+    output: "boolean",
+  },
+  not: {
+    count: 1,
+    output: "boolean",
+  },
+  greaterThan: {
+    count: 1,
+    output: "boolean",
+  },
+  lessThan: {
+    count: 1,
+    output: "boolean",
+  },
+  greaterThanOrEqual: {
+    count: 1,
+    output: "boolean",
+  },
+  lessThanOrEqual: {
+    count: 1,
+    output: "boolean",
+  },
+  equal: {
+    count: 1,
+    output: "boolean",
+  },
+  notEqual: {
+    count: 1,
+    output: "boolean",
+  },
+};
+
+export const functionInputs = {
+  log: {
+    count: 1,
+    type: "string",
+    description: "the message to log",
+  },
+  logError: {
+    count: 1,
+    type: "string",
+    description: "the error to log",
+  },
+  logWarning: {
+    count: 1,
+    type: "string",
+    description: "the warning to log",
+  },
+  logInfo: {
+    count: 1,
+    type: "string",
+    description: "the info message to log",
+  },
+  getElementsByName: {
+    count: 1,
+    type: "string",
+    description: "the name of the elements to get",
+  },
+  getElementById: {
+    count: 1,
+    type: "string",
+    description: "the id of the element to get",
+  },
+  getElementsByClassName: {
+    count: 1,
+    type: "string",
+    description: "the class name of the elements to get",
+  },
+  getElementsByTagName: {
+    count: 1,
+    type: "string",
+    description: "the tag name of the elements to get",
+  },
+  setVariable: {
+    count: 2,
+    type: "string",
+    description: "the name and value of the variable to set",
+  },
+  getVariable: {
+    count: 1,
+    type: "string",
+    description: "the name of the variable to get",
+  },
+  if: {
+    count: 1,
+    type: "boolean",
+    description: "the condition to check",
+  },
+  elseIf: {
+    count: 1,
+    type: "boolean",
+    description: "the condition to check",
+  },
+  else: {
+    count: 0,
+  },
+  for: {
+    count: 1,
+    type: "number",
+    description: "the number of times to run the code",
+  },
+  forEach: {
+    count: 1,
+    type: "array",
+    description: "the array to loop through",
+  },
+  while: {
+    count: 1,
+    type: "boolean",
+    description: "the condition to check",
+  },
+  add: {
+    count: 2,
+    type: "number",
+    description: "the numbers to add",
+    extendable: true,
+  },
+  subtract: {
+    count: 2,
+    type: "number",
+    description: "the numbers to subtract",
+    extendable: true,
+  },
+  multiply: {
+    count: 2,
+    type: "number",
+    description: "the numbers to multiply",
+    extendable: true,
+  },
+  divide: {
+    count: 2,
+    type: "number",
+    description: "the numbers to divide",
+    extendable: true,
+  },
+  modulo: {
+    count: 2,
+    type: "number",
+    description: "the numbers to get the remainder of",
+    extendable: true,
+  },
+  power: {
+    count: 2,
+    type: "number",
+    description: "the numbers to get the power of",
+    extendable: true,
+  },
+  and: {
+    count: 2,
+    type: "boolean",
+    description: "the booleans to check",
+    extendable: true,
+  },
+  or: {
+    count: 2,
+    type: "boolean",
+    description: "the booleans to check",
+    extendable: true,
+  },
+  not: {
+    count: 1,
+    type: "boolean",
+    description: "the boolean to check",
+  },
+  greaterThan: {
+    count: 2,
+    type: "number",
+    description: "the numbers to check",
+  },
+  lessThan: {
+    count: 2,
+    type: "number",
+    description: "the numbers to check",
+  },
+  greaterThanOrEqual: {
+    count: 2,
+    type: "number",
+    description: "the numbers to check",
+  },
+  lessThanOrEqual: {
+    count: 2,
+    type: "number",
+    description: "the numbers to check",
+  },
+  equal: {
+    count: 2,
+    type: "any",
+    description: "the values to check",
+  },
+  notEqual: {
+    count: 2,
+    type: "any",
+    description: "the values to check",
+  },
 };
 
 export const executables = [
@@ -317,6 +637,31 @@ export const executables = [
   "logInfo",
   "getElementsByName",
   "getElementById",
+  "getElementsByClassName",
+  "getElementsByTagName",
+  "setVariable",
+  "getVariable",
+  "if",
+  "elseIf",
+  "else",
+  "for",
+  "forEach",
+  "while",
+  "add",
+  "subtract",
+  "multiply",
+  "divide",
+  "modulo",
+  "power",
+  "and",
+  "or",
+  "not",
+  "greaterThan",
+  "lessThan",
+  "greaterThanOrEqual",
+  "lessThanOrEqual",
+  "equal",
+  "notEqual",
 ];
 
 export const classesAndObjects = {
@@ -339,4 +684,29 @@ export const classesAndObjects = {
   onContextMenu: "event",
   getElementsByName: "document",
   getElementById: "document",
+  getElementsByClassName: "document",
+  getElementsByTagName: "document",
+  setVariable: "variable",
+  getVariable: "variable",
+  if: "control",
+  elseIf: "control",
+  else: "control",
+  for: "control",
+  forEach: "control",
+  while: "control",
+  add: "math",
+  subtract: "math",
+  multiply: "math",
+  divide: "math",
+  modulo: "math",
+  power: "math",
+  and: "logic",
+  or: "logic",
+  not: "logic",
+  greaterThan: "logic",
+  lessThan: "logic",
+  greaterThanOrEqual: "logic",
+  lessThanOrEqual: "logic",
+  equal: "logic",
+  notEqual: "logic",
 };
