@@ -54,8 +54,20 @@
 </script>
 
 <div class="functionsTooltip" style={$toolbarOpenStyle}>
-  <div class="header">Functions</div>
-  {#each Object.keys(functions) as item (item)}
+  <div class="header">
+    <span>Functions</span>
+    <i class="fa-solid fa-robot" />
+  </div>
+  <div class="description">
+    <span>Functions are the building blocks of your app.</span>
+    <span>
+      They are the actions that happen when a user interacts with your app.
+    </span>
+    <span>
+      You can add functions to your app by clicking on the buttons below.
+    </span>
+  </div>
+  {#each Object.keys(functions) as item, i (item)}
     <div
       on:click={() => {
         click(item);
@@ -114,6 +126,7 @@
       <div class="functionType">{functions[item]}</div>
     </div>
   {/each}
+  <div class="divider">Hello</div>
 </div>
 
 <style>
@@ -126,13 +139,19 @@
     height: 100%;
     background: white;
     font-size: 13px;
-    padding: 0px 10px;
+    padding: 0px 20px;
     overflow-y: auto;
     color: black;
     z-index: 200;
     left: calc(100vw - 433px);
     overflow-x: auto;
     pointer-events: all;
+    border-right: 3px solid blue;
+    border-top: 3px solid blue;
+  }
+
+  .functionsTooltip::-webkit-scrollbar {
+    width: 0px;
   }
 
   .function {
@@ -151,7 +170,22 @@
   .header {
     font-size: 20px;
     margin-top: 20px;
+    margin-bottom: 10px;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: blue;
+  }
+
+  .header span {
+    color: black;
+  }
+
+  .description {
+    font-size: 13px;
+    margin-bottom: 10px;
+    line-height: 1.4;
   }
 
   .title {
@@ -161,6 +195,12 @@
     font-weight: bold;
     font-size: 16px;
     gap: 8px;
+  }
+
+  .divider {
+    width: 100%;
+    height: 30px;
+    color: transparent;
   }
 
   .function.green:hover {

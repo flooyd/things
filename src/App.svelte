@@ -14,11 +14,13 @@
     showGrid,
     showToolbar,
     toolbarOpenStyle,
+    htmlTooltipOpen,
   } from "./stores/globals";
   import { elements } from "./stores/elements";
   import { onMount } from "svelte";
   import FunctionsTooltip from "./components/tooltips/FunctionsTooltip.svelte";
   import { updateElement } from "./util";
+  import HtmlTooltip from "./components/tooltips/HTMLTooltip.svelte";
 
   let ready = false;
 
@@ -49,7 +51,7 @@
   };
 
   $: $showToolbar
-    ? ($toolbarOpenStyle = "height: calc(100vh - 49px); margin-top: 49px;")
+    ? ($toolbarOpenStyle = "height: calc(100vh - 52px); margin-top: 49px;")
     : ($toolbarOpenStyle = "");
 </script>
 
@@ -71,6 +73,9 @@
   </main>
 {/if}
 <div class="tooltips">
+  {#if ready && $htmlTooltipOpen}
+    <HtmlTooltip />
+  {/if}
   {#if ready && $functionsTooltipOpen}
     <FunctionsTooltip />
   {/if}

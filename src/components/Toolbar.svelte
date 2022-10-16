@@ -17,9 +17,21 @@
 <div class="toolbar">
   <div class="appTitle">Svelte App Editor</div>
   <div class="CODE">
-    <button class="lightGreenButton" on:click={() => ($htmlTooltipOpen = true)}>
+    <button
+      class="lightGreenButton"
+      on:click={() => ($htmlTooltipOpen = !$htmlTooltipOpen)}
+    >
       HTML
     </button>
+    <button class="redButton"> CSS </button>
+    <button
+      on:mousedown={() => ($functionsTooltipOpen = !$functionsTooltipOpen)}
+      class="blueButton">Functions</button
+    >
+    <button
+      on:mousedown={() => ($storesTooltipOpen = !$storesTooltipOpen)}
+      class="orangeButton">Variables and Stores</button
+    >
     {#if $clickedElement}
       <button
         class="id blueButton"
@@ -32,14 +44,6 @@
           : $clickedElement._id}
       </button>
     {/if}
-    <button
-      on:mousedown={() => ($storesTooltipOpen = !$storesTooltipOpen)}
-      class="blueButton">Variables and Stores</button
-    >
-    <button
-      on:mousedown={() => ($functionsTooltipOpen = !$functionsTooltipOpen)}
-      class="blueButton">Functions</button
-    >
   </div>
 </div>
 
@@ -50,7 +54,7 @@
     left: 0;
     width: 100%;
     height: fit-content;
-    background: #111;
+    background: white;
     padding: 10px 20px;
     z-index: 999;
     display: flex;
@@ -60,8 +64,7 @@
 
   .appTitle {
     font-size: 1.5rem;
-    color: white;
-    margin-left: 20px;
+    color: black;
     align-self: center;
   }
 

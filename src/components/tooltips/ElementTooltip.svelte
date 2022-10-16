@@ -369,6 +369,12 @@
     color: black;
     z-index: 200;
     pointer-events: all;
+    border-right: 3px solid black;
+    border-top: 3px solid black;
+  }
+
+  .elementTooltip::-webkit-scrollbar {
+    width: 0px;
   }
 
   .toolbar {
