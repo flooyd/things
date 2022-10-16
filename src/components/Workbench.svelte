@@ -30,7 +30,6 @@
       const childrenIds = children
         .filter((c) => c.childOf === e._id)
         .map((c) => c._id);
-      console.log(childrenIds);
       return {
         ...e,
         parentOf: [...childrenIds],
@@ -39,8 +38,6 @@
 
     return mappedElements;
   };
-
-  $: console.log($elements);
 </script>
 
 {#if ready}

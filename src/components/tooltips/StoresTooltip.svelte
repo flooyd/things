@@ -25,9 +25,7 @@
   $: if ($global.current === "alpha") {
     try {
       functionMaker($global.alpha)();
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   }
 
   const functionMaker = (body) => {

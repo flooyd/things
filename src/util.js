@@ -212,7 +212,6 @@ export const saveFunction = async (functionId) => {
 
 //get all connections for element
 export const getAllConnectionsForElement = async (elementId) => {
-  console.log("getting all connections for element", elementId);
   updateLoading(true);
   const connections = await fetch(
     "http://localhost:3000/connections/forElement/" + elementId

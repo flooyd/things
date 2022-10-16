@@ -31,9 +31,6 @@
   let gridHeight = null;
   let gridWidth = null;
 
-  $: console.log("width", gridWidth);
-  $: console.log("height", gridHeight);
-
   onMount(async () => {
     let functionsForElement = await fetchFunctionsForElement(
       $clickedElement._id
@@ -137,8 +134,6 @@
       });
     });
 
-    console.log($clickedElement.grid.functions);
-
     return connectionLocations;
   };
 
@@ -163,12 +158,6 @@
   const finalizeSelectionTool = () => {
     selectionToolStartLocation = null;
     selectionToolMousePosition = null;
-  };
-
-  const handleClickId = (e) => {
-    $elementTooltipId === $clickedElement._id
-      ? ($elementTooltipId = null)
-      : ($elementTooltipId = $clickedElement._id);
   };
 
   setInterval(() => {
@@ -197,27 +186,6 @@
     on:mousedown={(e) => updateSelectionToolProps(e)}
     transition:fade={{ duration: 75 }}
   >
-    <div class="toolbar">
-      <button
-        class="id blueButton"
-        on:mousedown={() => {
-          console.log("hi");
-          handleClickId();
-        }}
-      >
-        {$clickedElement.name
-          ? $clickedElement._id + " - " + $clickedElement.name
-          : $clickedElement._id}
-      </button>
-      <button
-        on:mousedown={() => ($storesTooltipOpen = !$storesTooltipOpen)}
-        class="blueButton">stores</button
-      >
-      <button
-        on:mousedown={() => ($functionsTooltipOpen = !$functionsTooltipOpen)}
-        class="blueButton">functions</button
-      >
-    </div>
     {#if rect}
       {#each $clickedElement.grid.functions as item}
         <Draggable top={item.rect.y} left={item.rect.x}>
@@ -281,6 +249,7 @@
     position: fixed;
     top: 0px;
     left: 0px;
+    z-index: 5000;
   }
 
   .toolbar button {

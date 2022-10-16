@@ -34,31 +34,19 @@
     typeOfOutput = functionOutputs[gridFunction.name]?.type || "any";
     typeOfInput = functionInputs[gridFunction.name]?.type || "any";
     typeOfInputTwo = functionInputs[gridFunction.name]?.type2 || null;
-    console.log(
-      gridFunction.name,
-      numOutputs,
-      numInputs,
-      typeOfOutput,
-      typeOfInput
-    );
     ready = true;
   });
-
-  //total function size = 72px
-  //divided by 2 = 36px
-  //function top padding  = 6px;
-  //function bottom padding = 6px;
-  //label size = 26px
-  //including top padding = 32px
-  //top element  = 30px;
-  //what is the center y of the top element factoring in all the padding and label size?
-  //72 - 6 - 15 = 51
 
   const setRect = () => {
     rect = element.getBoundingClientRect();
     rect.x = rect.x - gridRect.x;
     rect.y = rect.y - gridRect.y;
 
+    // y of the arrows are calculated like so:
+    // top of the rect + height of the rect -6 for the padding at the bottom
+    // of the function. The arrows are 30px tall so we subtract 15 to get the
+    // center of the arrow. Then, for each additional arrow (input or output),
+    // we subtract 30 additional pixels.
     const inArrowLocation = {
       x: rect.left + 10,
       y: rect.top + rect.height - 6 - 15 - numOutputs * 30 - numInputs * 30,
@@ -98,7 +86,6 @@
   }, 25);
 
   $: element ? setRect() : null;
-  $: console.log("gridFunction", gridFunction);
 </script>
 
 <svelte:window

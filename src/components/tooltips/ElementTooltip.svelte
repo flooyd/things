@@ -7,6 +7,7 @@
     childPendingDeletion,
     parentOfChildPendingDeletion,
     showGrid,
+    toolbarOpenStyle,
   } from "../../stores/globals";
   import { deleteElement } from "../../util";
 
@@ -31,7 +32,7 @@
     e.stopPropagation();
   }}
   class="elementTooltip"
-  {style}
+  style={style + $toolbarOpenStyle}
 >
   <div class="toolbar">
     <button class="blueButton" on:click={() => handleSave()}>Save</button>
@@ -368,7 +369,6 @@
     color: black;
     z-index: 200;
     pointer-events: all;
-    height: 100%;
   }
 
   .toolbar {

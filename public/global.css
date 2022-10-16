@@ -171,6 +171,10 @@ button:hover {
   color: white;
 }
 
+.lightGreenButton:hover {
+  background: lightgreen;
+}
+
 .orange {
   color: orange;
 }

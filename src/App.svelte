@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Toolbar from "./components/Toolbar.svelte";
+
   import Workbench from "./components/Workbench.svelte";
   import WorkbenchElements from "./components/WorkbenchElements.svelte";
   import ElementTooltip from "./components/tooltips/ElementTooltip.svelte";
@@ -11,6 +13,8 @@
     clickedElement,
     elementTooltipId,
     showGrid,
+    showToolbar,
+    toolbarOpenStyle,
   } from "./stores/globals";
   import { elements } from "./stores/elements";
   import { onMount } from "svelte";
@@ -19,7 +23,6 @@
   import { updateElement } from "./util";
 
   let ready = false;
-  let showToolbar = false;
 
   const handleEdit = (property, value) => {
     $clickedElement[property] = value;
@@ -33,14 +36,23 @@
   const handleKeyPress = (e) => {
     if (e.key === "Escape") {
       e.preventDefault();
-      console.log("escape");
-      showToolbar = !showToolbar;
+      $showToolbar = !$showToolbar;
     }
   };
 
   onMount(async () => {
     ready = true;
   });
+
+  const handleClickId = (e) => {
+    $elementTooltipId === $clickedElement._id
+      ? ($elementTooltipId = null)
+      : ($elementTooltipId = $clickedElement._id);
+  };
+
+  $: $showToolbar
+    ? ($toolbarOpenStyle = "height: calc(100vh - 49px); margin-top: 49px;")
+    : ($toolbarOpenStyle = "");
 </script>
 
 <svelte:window on:keydown={handleKeyPress} />
@@ -55,10 +67,8 @@
     {#if ready && !$showGrid}
       <Workbench />
     {/if}
-    {#if ready && showToolbar}
-      <div class="toolbar">
-        <WorkbenchElements />
-      </div>
+    {#if ready && $showToolbar}
+      <Toolbar />
     {/if}
   </main>
 {/if}
@@ -89,20 +99,6 @@
 <style>
   main {
     font-family: "bebas-neue", sans-serif;
-  }
-
-  .toolbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: fit-content;
-    background: rgba(0, 0, 0, 0.5);
-    padding: 10px;
-    z-index: 99999;
-    border-bottom: 3px solid black;
-    display: flex;
-    justify-content: center;
   }
 
   .tooltips {

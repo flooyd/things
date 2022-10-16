@@ -10,6 +10,7 @@ export const elementsHovered = writable([]);
 export const loading = writable(false);
 export const storesTooltipOpen = writable(false);
 export const functionsTooltipOpen = writable(false);
+export const htmlTooltipOpen = writable(false);
 export const showGrid = writable(false);
 export const fullscreen = writable(false);
 export const hideUI = writable(false);
@@ -22,6 +23,8 @@ export const inArrowClicked = writable(null);
 export const draggableMoving = writable(null);
 export const functionMoving = writable(null);
 export const dirtyFunctions = writable([]);
+export const showToolbar = writable(true);
+export const toolbarOpenStyle = writable(null);
 
 //export update function for elements
 export function updateLoading(newValue) {

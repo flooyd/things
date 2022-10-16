@@ -22,7 +22,6 @@
   let hoverBorder = "3px solid red";
 
   onMount(() => {
-    console.log($elementsStore);
     if (parentOf.length > 0) {
       parentOf.forEach(async (child, index, arr) => {
         //child is the id of the child element. get the element from the store and add it to the elements array

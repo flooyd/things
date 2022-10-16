@@ -7,7 +7,7 @@
     objects,
     objectColors,
   } from "../../util";
-  import { clickedElement, dirtyFunctions } from "../../stores/globals";
+  import { clickedElement, toolbarOpenStyle } from "../../stores/globals";
   import { onMount, tick } from "svelte";
 
   let clickedElementFunctions = [];
@@ -51,11 +51,9 @@
     hovered = item;
     await tick();
   };
-
-  $: console.log(hovered);
 </script>
 
-<div class="functionsTooltip">
+<div class="functionsTooltip" style={$toolbarOpenStyle}>
   <div class="header">Functions</div>
   {#each Object.keys(functions) as item (item)}
     <div
