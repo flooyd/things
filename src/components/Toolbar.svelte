@@ -34,11 +34,11 @@
     {/if}
     <button
       on:mousedown={() => ($storesTooltipOpen = !$storesTooltipOpen)}
-      class="blueButton">STORES</button
+      class="blueButton">Variables and Stores</button
     >
     <button
       on:mousedown={() => ($functionsTooltipOpen = !$functionsTooltipOpen)}
-      class="blueButton">FUNCTIONS</button
+      class="blueButton">Functions</button
     >
   </div>
 </div>

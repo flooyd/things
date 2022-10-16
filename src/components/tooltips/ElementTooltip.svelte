@@ -37,12 +37,6 @@
   <div class="toolbar">
     <button class="blueButton" on:click={() => handleSave()}>Save</button>
     <button
-      on:click={() => ($showGrid = !$showGrid)}
-      class="blueButton"
-      type="button"
-      >{#if $showGrid}Close{:else}Open{/if} Grid</button
-    >
-    <button
       type="button"
       on:click={async (e) => {
         e.stopPropagation();
@@ -61,6 +55,12 @@
     >
       Close
     </button>
+    <button
+      on:click={() => ($showGrid = !$showGrid)}
+      class="blueButton"
+      type="button"
+      >{#if $showGrid}Close{:else}Open{/if} Grid</button
+    >
   </div>
   <div class="infoGroup">
     <label for="type" class="infoLabel">Element type</label>
