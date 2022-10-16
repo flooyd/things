@@ -36,7 +36,7 @@ export function typewriter(node, { speed = 1 }) {
   };
 }
 
-export const addElement = async (type) => {
+export const addElement = async (tag) => {
   updateLoading(true);
   const elements = get(elementsStore);
   const addedDoc = await fetch("http://localhost:3000/things", {
@@ -44,7 +44,7 @@ export const addElement = async (type) => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ type: type }),
+    body: JSON.stringify({ ...tag, type: tag.tag }),
   });
   if (addedDoc.ok) {
     const addedDocJson = await addedDoc.json();

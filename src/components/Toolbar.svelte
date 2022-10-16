@@ -56,10 +56,12 @@
     height: fit-content;
     background: white;
     padding: 10px 20px;
-    z-index: 999;
+    z-index: 99999;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5);
+    border-bottom: 3px solid black;
   }
 
   .appTitle {

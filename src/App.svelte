@@ -51,7 +51,7 @@
   };
 
   $: $showToolbar
-    ? ($toolbarOpenStyle = "height: calc(100vh - 52px); margin-top: 49px;")
+    ? ($toolbarOpenStyle = "height: calc(100vh - 49px); margin-top: 49px;")
     : ($toolbarOpenStyle = "");
 </script>
 
@@ -99,6 +99,7 @@
 <style>
   main {
     font-family: "bebas-neue", sans-serif;
+    background: white;
   }
 
   .tooltips {

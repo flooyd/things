@@ -47,11 +47,21 @@
       ? element.flexDirection
       : "row";
     element.flexWrap = element.flexWrap ? element.flexWrap : "nowrap";
+    element.position = element.position ? element.position : "";
+    element.top = element.top ? element.top : "";
+    element.right = element.right ? element.right : "";
+    element.bottom = element.bottom ? element.bottom : "";
+    element.left = element.left ? element.left : "";
+
     ready = true;
   });
 
   $: if ($clickedElement && $clickedElement.id === element.id) {
     element = $clickedElement;
+  }
+
+  $: if (ready) {
+    console.log(element);
   }
 
   $: styleString = `width: ${element.width};
@@ -78,6 +88,11 @@
   align-items: ${element.alignItems};
   flex-direction: ${element.flexDirection};
   flex-wrap: ${element.flexWrap};
+  position: ${element.position};
+  top: ${element.top};
+  right: ${element.right};
+  bottom: ${element.bottom};
+  left: ${element.left};
   `;
 </script>
 

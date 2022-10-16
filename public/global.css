@@ -222,3 +222,43 @@ button:hover {
 .teal {
   color: teal;
 }
+
+.green:hover {
+  background: green;
+}
+
+.red:hover {
+  background: red;
+}
+
+.blue:hover {
+  background: blue;
+}
+
+.yellow:hover {
+  background: yellow;
+}
+
+.purple:hover {
+  background: purple;
+}
+
+.orange:hover {
+  background: orange;
+}
+
+.pink:hover {
+  background: pink;
+}
+
+.cyan:hover {
+  background: cyan;
+}
+
+.gray:hover {
+  background: gray;
+}
+
+.teal:hover {
+  background: teal;
+}

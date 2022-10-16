@@ -61,7 +61,6 @@
 
 <style>
   .workbench {
-    background: var(--cultured);
     margin: 0px 0px;
     color: black;
     overflow-y: auto;

@@ -10,6 +10,7 @@
   } from "../../stores/globals";
   import { elements as elementsStore } from "../../stores/elements";
   import Element from "./Element.svelte";
+  import { element } from "svelte/internal";
 
   export let styleString;
   export let content = "";
@@ -49,10 +50,14 @@
 {#key unique}
   <div transition:fade {id} style={styleString} class={`thingDiv`}>
     {#each elements as element (element.id)}
-      <Element {element} />{/each}
-    {content ? content : ""}
+      <Element {element} />
+    {/each}
+    {content}
   </div>
 {/key}
 
 <style>
+  div {
+    color: black;
+  }
 </style>

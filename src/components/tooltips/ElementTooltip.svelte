@@ -24,6 +24,11 @@
     "alignItems",
     "flexDirection",
     "flexWrap",
+    "position",
+    "top",
+    "left",
+    "right",
+    "bottom",
   ];
 </script>
 
@@ -364,13 +369,12 @@
     max-width: 400px;
     background: white;
     font-size: 13px;
-    padding: 0px 10px;
+    padding: 0px 13px;
     overflow-y: auto;
     color: black;
     z-index: 200;
     pointer-events: all;
     border-right: 3px solid black;
-    border-top: 3px solid black;
   }
 
   .elementTooltip::-webkit-scrollbar {

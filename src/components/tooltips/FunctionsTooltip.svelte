@@ -139,7 +139,7 @@
     height: 100%;
     background: white;
     font-size: 13px;
-    padding: 0px 20px;
+    padding: 0px 13px;
     overflow-y: auto;
     color: black;
     z-index: 200;
@@ -147,7 +147,6 @@
     overflow-x: auto;
     pointer-events: all;
     border-right: 3px solid blue;
-    border-top: 3px solid blue;
   }
 
   .functionsTooltip::-webkit-scrollbar {
@@ -201,46 +200,6 @@
     width: 100%;
     height: 30px;
     color: transparent;
-  }
-
-  .function.green:hover {
-    background: green;
-  }
-
-  .function.red:hover {
-    background: red;
-  }
-
-  .function.blue:hover {
-    background: blue;
-  }
-
-  .function.yellow:hover {
-    background: yellow;
-  }
-
-  .function.purple:hover {
-    background: purple;
-  }
-
-  .function.orange:hover {
-    background: orange;
-  }
-
-  .function.pink:hover {
-    background: pink;
-  }
-
-  .function.cyan:hover {
-    background: cyan;
-  }
-
-  .function.gray:hover {
-    background: gray;
-  }
-
-  .function.teal:hover {
-    background: teal;
   }
 
   .functionName {
