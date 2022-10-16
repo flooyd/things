@@ -15,13 +15,11 @@
 </script>
 
 <div class="toolbar">
-  <div class="DOM">
+  <div class="appTitle">Svelte App Editor</div>
+  <div class="CODE">
     <button class="lightGreenButton" on:click={() => ($htmlTooltipOpen = true)}>
       HTML
     </button>
-  </div>
-  <div class="appTitle">Svelte App Editor</div>
-  <div class="CODE">
     {#if $clickedElement}
       <button
         class="id blueButton"
@@ -36,11 +34,11 @@
     {/if}
     <button
       on:mousedown={() => ($storesTooltipOpen = !$storesTooltipOpen)}
-      class="blueButton">stores</button
+      class="blueButton">STORES</button
     >
     <button
       on:mousedown={() => ($functionsTooltipOpen = !$functionsTooltipOpen)}
-      class="blueButton">functions</button
+      class="blueButton">FUNCTIONS</button
     >
   </div>
 </div>
@@ -64,6 +62,7 @@
     font-size: 1.5rem;
     color: white;
     margin-left: 20px;
+    align-self: center;
   }
 
   .CODE {

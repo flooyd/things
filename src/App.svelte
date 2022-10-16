@@ -2,7 +2,6 @@
   import Toolbar from "./components/Toolbar.svelte";
 
   import Workbench from "./components/Workbench.svelte";
-  import WorkbenchElements from "./components/WorkbenchElements.svelte";
   import ElementTooltip from "./components/tooltips/ElementTooltip.svelte";
   import Grid from "./components/Grid.svelte";
   import {
@@ -18,7 +17,6 @@
   } from "./stores/globals";
   import { elements } from "./stores/elements";
   import { onMount } from "svelte";
-  import StoresTooltip from "./components/tooltips/StoresTooltip.svelte";
   import FunctionsTooltip from "./components/tooltips/FunctionsTooltip.svelte";
   import { updateElement } from "./util";
 
@@ -73,9 +71,6 @@
   </main>
 {/if}
 <div class="tooltips">
-  {#if ready && $storesTooltipOpen}
-    <StoresTooltip />
-  {/if}
   {#if ready && $functionsTooltipOpen}
     <FunctionsTooltip />
   {/if}
