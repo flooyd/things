@@ -384,6 +384,7 @@
     z-index: 200;
     pointer-events: all;
     border-right: 3px solid black;
+    opacity: 0.9;
   }
 
   .header {

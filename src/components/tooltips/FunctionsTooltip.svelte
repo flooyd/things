@@ -159,7 +159,7 @@
     overflow-x: auto;
     pointer-events: all;
     border-right: 3px solid blue;
-    opacity: 0.95;
+    opacity: 0.9;
   }
 
   .functionsTooltip::-webkit-scrollbar {

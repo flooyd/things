@@ -378,6 +378,7 @@
     z-index: 200;
     pointer-events: all;
     border-right: 3px solid lightgreen;
+    opacity: 0.9;
   }
 
   .htmlTooltip::-webkit-scrollbar {
