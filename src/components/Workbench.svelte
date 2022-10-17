@@ -4,7 +4,7 @@
   import { fade } from "svelte/transition";
 
   import { elements } from "../stores/elements";
-  import { fullscreen, showGrid, clickedElement } from "../stores/globals";
+  import { toolbarOpenStyle } from "../stores/globals";
 
   import Element from "./elements/Element.svelte";
 
@@ -19,13 +19,12 @@
     //fetches all elements from the database
     const fetchedElements = await fetchElements();
 
-    //gets children of each element by comparing the childOf property to the id
-    //of each element
+    //gets all children in the fetched elements
     const children = fetchedElements.filter(
       (e) => e.childOf !== null && e.childOf !== undefined
     );
 
-    //adds the array of child ids to the parent element's parentOf property
+    //for each element, find its children and add them to the parentOf property of the element
     const mappedElements = fetchedElements.map((e) => {
       const childrenIds = children
         .filter((c) => c.childOf === e._id)
@@ -44,7 +43,7 @@
   <div
     transition:fade={{ duration: 100 }}
     class="workbench"
-    style="height: calc(100vh);"
+    style={$toolbarOpenStyle}
   >
     <div class="view">
       {#each $elements as element (element._id)}
@@ -81,31 +80,5 @@
     font-size: 50px;
     background: var(--platinum);
     color: black;
-  }
-
-  .collectionName {
-    font-size: 31px;
-    color: var(--oxford-blue);
-    padding: 13px 20px;
-    display: flex;
-    align-items: center;
-    gap: 13px;
-  }
-
-  .toolbar {
-    background: var(--shadow-blue);
-    height: 31px;
-    border-radius: 4px;
-    border: 3px solid var(--oxford-blue);
-    display: flex;
-    align-items: center;
-    justify-content: left;
-    gap: 13px;
-    padding: 10px 13px;
-    margin: 0px 20px;
-  }
-
-  span {
-    font-size: 13px;
   }
 </style>

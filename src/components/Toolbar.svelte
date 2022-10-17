@@ -15,7 +15,7 @@
 </script>
 
 <div class="toolbar">
-  <div class="appTitle">Svelte App Editor</div>
+  <div class="appTitle">SAE</div>
   <div class="CODE">
     <button
       class="lightGreenButton"

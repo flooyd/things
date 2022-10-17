@@ -7,7 +7,11 @@
     objects,
     objectColors,
   } from "../../util";
-  import { clickedElement, toolbarOpenStyle } from "../../stores/globals";
+  import {
+    clickedElement,
+    toolbarOpenStyle,
+    functionsTooltipOpen,
+  } from "../../stores/globals";
   import { onMount, tick } from "svelte";
 
   let clickedElementFunctions = [];
@@ -55,8 +59,16 @@
 
 <div class="functionsTooltip" style={$toolbarOpenStyle}>
   <div class="header">
-    <span>Functions</span>
-    <i class="fa-solid fa-robot" />
+    <div class="headerTitle">
+      <span>Functions</span>
+      <i class="fa-solid fa-robot" />
+    </div>
+    <button
+      class="headerClose"
+      on:click={() => ($functionsTooltipOpen = false)}
+    >
+      <i class="fa-solid fa-times" />
+    </button>
   </div>
   <div class="description">
     <span>Functions are the building blocks of your app.</span>
@@ -147,6 +159,7 @@
     overflow-x: auto;
     pointer-events: all;
     border-right: 3px solid blue;
+    opacity: 0.95;
   }
 
   .functionsTooltip::-webkit-scrollbar {
@@ -172,9 +185,24 @@
     margin-bottom: 10px;
     font-weight: bold;
     display: flex;
+    width: 100%;
     align-items: center;
     gap: 8px;
     color: blue;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .headerTitle {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .headerClose:hover {
+    cursor: pointer;
+    color: black;
+    background: blue;
   }
 
   .header span {

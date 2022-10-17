@@ -5,7 +5,6 @@
   import ElementTooltip from "./components/tooltips/ElementTooltip.svelte";
   import Grid from "./components/Grid.svelte";
   import {
-    storesTooltipOpen,
     mousePosition,
     width,
     functionsTooltipOpen,
@@ -31,6 +30,7 @@
 
   const handleSave = async () => {
     await updateElement($clickedElement);
+    $clickedElement = $clickedElement;
   };
 
   const handleKeyPress = (e) => {
@@ -43,12 +43,6 @@
   onMount(async () => {
     ready = true;
   });
-
-  const handleClickId = (e) => {
-    $elementTooltipId === $clickedElement._id
-      ? ($elementTooltipId = null)
-      : ($elementTooltipId = $clickedElement._id);
-  };
 
   $: $showToolbar
     ? ($toolbarOpenStyle = "height: calc(100vh - 49px); margin-top: 49px;")

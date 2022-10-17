@@ -1,5 +1,9 @@
 <script>
-  import { draggableMoving, functionMoving } from "../stores/globals";
+  import {
+    draggableMoving,
+    functionMoving,
+    mouseDownStartedOnArrow,
+  } from "../stores/globals";
   import { addDirtyFunction } from "../util";
   let moving = false;
   export let left = 30;
@@ -7,32 +11,37 @@
   let element = null;
 
   const move = (e) => {
-    if (moving) {
+    if (moving && $functionMoving) {
       left > -1 ? (left += e.movementX) : (left = 0);
       top > -1 ? (top += e.movementY) : (top = 0);
     }
   };
 
   const start = (e) => {
-    moving = true;
-    $draggableMoving = true;
+    if (!$mouseDownStartedOnArrow) {
+      moving = true;
+      $draggableMoving = true;
+    }
   };
 
   const stop = async (e) => {
-    moving = false;
-    addDirtyFunction($functionMoving);
-    $draggableMoving = false;
-    $functionMoving = null;
+    if (moving) {
+      moving = false;
+      console.log($functionMoving, "functionMoving before add dirty");
+      await addDirtyFunction($functionMoving);
+      $draggableMoving = false;
+      console.log("stop");
+      $functionMoving = null;
+    }
   };
 </script>
-
-<svelte:window on:mouseup={stop} on:mousemove={move} />
 
 <div
   bind:this={element}
   class="draggable"
   on:mousedown={start}
-  on:stop={stop}
+  on:mouseup={stop}
+  on:mousemove={move}
   style="position: absolute; left: {left}px; top: {top}px;"
 >
   <slot />

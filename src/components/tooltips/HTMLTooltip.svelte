@@ -164,8 +164,18 @@
 
 <div class="htmlTooltip" style={$toolbarOpenStyle}>
   <div class="header">
-    <span>HTML</span>
-    <i class="fa fa-html5" />
+    <div class="headerTitle">
+      <span>HTML</span>
+      <i class="fa fa-html5" />
+    </div>
+    <button
+      class="headerClose"
+      on:click={() => {
+        $htmlTooltipOpen = false;
+      }}
+    >
+      <i class="fa fa-times" />
+    </button>
   </div>
   {#if !showOptions}
     <div class="description">
@@ -382,6 +392,19 @@
     display: flex;
     gap: 8px;
     color: lightgreen;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .headerTitle {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .headerClose:hover {
+    cursor: pointer;
+    color: black;
   }
 
   span {

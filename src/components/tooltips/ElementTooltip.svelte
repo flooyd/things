@@ -39,6 +39,15 @@
   class="elementTooltip"
   style={style + $toolbarOpenStyle}
 >
+  <div class="header">
+    <div class="headerTitle">
+      <span>Element</span>
+      <i class="fa fa-code" />
+    </div>
+    <button class="headerClose" on:click={() => ($elementTooltipId = null)}>
+      <i class="fa-solid fa-times" />
+    </button>
+  </div>
   <div class="toolbar">
     <button class="blueButton" on:click={() => handleSave()}>Save</button>
     <button
@@ -377,6 +386,36 @@
     border-right: 3px solid black;
   }
 
+  .header {
+    font-size: 20px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 8px;
+    color: orange;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .headerTitle {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .headerTitle span {
+    color: black;
+  }
+
+  .headerClose:hover {
+    cursor: pointer;
+    background: orange;
+    color: black;
+  }
+
   .elementTooltip::-webkit-scrollbar {
     width: 0px;
   }
@@ -387,7 +426,6 @@
     gap: 8px;
     align-items: left;
     flex-wrap: wrap;
-    margin-top: 20px;
   }
 
   .infoGroup {

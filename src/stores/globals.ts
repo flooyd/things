@@ -25,6 +25,7 @@ export const functionMoving = writable(null);
 export const dirtyFunctions = writable([]);
 export const showToolbar = writable(true);
 export const toolbarOpenStyle = writable(null);
+export const mouseDownStartedOnArrow = writable(false);
 
 //export update function for elements
 export function updateLoading(newValue) {

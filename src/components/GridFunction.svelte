@@ -1,11 +1,12 @@
 <script>
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
   import {
     clickedElement,
     outArrowClicked,
     inArrowClicked,
     draggableMoving,
     functionMoving,
+    mouseDownStartedOnArrow,
   } from "../stores/globals";
   import {
     objects,
@@ -27,6 +28,7 @@
   let typeOfInputTwo = null;
   let typeOfOutput;
   let ready = false;
+  let initialized = false;
 
   onMount(() => {
     numOutputs = functionOutputs[gridFunction.name]?.count || 0;
@@ -69,7 +71,9 @@
   };
 
   const handleClickArrow = async (type, e) => {
-    e.stopPropagation();
+    $mouseDownStartedOnArrow = true;
+    console.log($mouseDownStartedOnArrow, "mouseDownStartedOnArrow");
+    await tick();
     if (type === "out") {
       $outArrowClicked = gridFunction._id;
     }
@@ -83,22 +87,24 @@
     if ($draggableMoving && $functionMoving === gridFunction._id) {
       setRect();
     }
-  }, 25);
+  }, 10);
 
-  $: element ? setRect() : null;
+  //if element is not null and initialized is false, set the rect and set initialized to true
+  $: if (element && !initialized) {
+    setRect();
+    initialized = true;
+  }
 </script>
 
 <svelte:window
   on:mouseup={() => {
     setRect();
     $draggableMoving = false;
+    $mouseDownStartedOnArrow = false;
   }}
 />
 {#if ready}
   <div
-    on:mouseenter={() => {
-      $functionMoving = gridFunction._id;
-    }}
     on:click={() => {
       $functionMoving = gridFunction._id;
     }}
@@ -116,7 +122,7 @@
         <div
           class="inArrow"
           on:focus
-          on:click={(e) => handleClickArrow("in", e)}
+          on:mousedown={(e) => handleClickArrow("in", e)}
         >
           ▶
         </div>
@@ -125,7 +131,7 @@
       <div
         class="outArrow"
         on:focus
-        on:click={(e) => handleClickArrow("out", e)}
+        on:mousedown={(e) => handleClickArrow("out", e)}
       >
         ▶
       </div>
@@ -172,7 +178,7 @@
     flex-direction: column;
     background: #aaa;
     color: black;
-    z-index: 5000;
+    z-index: 99999;
   }
 
   .top {

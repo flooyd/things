@@ -2,15 +2,14 @@
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import {
-    storesTooltipOpen,
-    functionsTooltipOpen,
     clickedElement,
     outArrowClicked,
     inArrowClicked,
     draggableMoving,
     functionMoving,
-    elementTooltipId,
     dirtyFunctions,
+    mouseDownStartedOnArrow,
+    mousePosition,
   } from "../stores/globals";
   import Draggable from "./Draggable.svelte";
   import GridFunction from "./GridFunction.svelte";
@@ -28,8 +27,6 @@
   let ready = false;
   let selectionToolStartLocation = null;
   let selectionToolMousePosition = null;
-  let gridHeight = null;
-  let gridWidth = null;
 
   onMount(async () => {
     let functionsForElement = await fetchFunctionsForElement(
@@ -138,14 +135,16 @@
   };
 
   const updateSelectionToolProps = (e) => {
-    selectionToolStartLocation = {
-      x: e.clientX,
-      y: e.clientY,
-    };
-    selectionToolMousePosition = {
-      x: e.clientX,
-      y: e.clientY,
-    };
+    if (!$mouseDownStartedOnArrow) {
+      selectionToolStartLocation = {
+        x: e.clientX - rect.x,
+        y: e.clientY - rect.y,
+      };
+      selectionToolMousePosition = {
+        x: e.clientX - rect.x,
+        y: e.clientY - rect.y,
+      };
+    }
   };
 
   const updateMousePosition = (e) => {
@@ -164,7 +163,7 @@
     if ($draggableMoving && $functionMoving) {
       connectionLocations = getConnectionLocations();
     }
-  }, 25);
+  }, 5);
 
   setInterval(() => {
     if ($dirtyFunctions.length > 0) {
@@ -176,14 +175,24 @@
 
 <svelte:window
   on:mousemove={updateMousePosition}
-  on:mouseup={(e) => finalizeSelectionTool(e)}
+  on:mouseup={(e) => {
+    finalizeSelectionTool(e);
+    $draggableMoving = null;
+    $functionMoving = null;
+  }}
 />
 {#if ready}
   <div
     class="grid"
     bind:this={element}
-    style={`width: ${gridWidth}px; height: ${gridHeight}px;`}
+    style={"top: 49px; height: calc(100vh - 49px"}
     on:mousedown={(e) => updateSelectionToolProps(e)}
+    on:mouseleave={() => {
+      selectionToolStartLocation = null;
+      selectionToolMousePosition = null;
+      $functionMoving = null;
+      $draggableMoving = null;
+    }}
     transition:fade={{ duration: 75 }}
   >
     {#if rect}
@@ -235,27 +244,6 @@
     background-image: linear-gradient(to right, grey 1px, transparent 1px),
       linear-gradient(to bottom, grey 1px, white 1px);
     background-size: 20px 20px;
-  }
-
-  .toolbar {
-    width: 100%;
-    height: 30px;
-    background: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-top: 13px;
-    pointer-events: none;
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    z-index: 5000;
-  }
-
-  .toolbar button {
-    margin-right: 13px;
-    pointer-events: all;
-    z-index: 99999;
   }
 
   svg {

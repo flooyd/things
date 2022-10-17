@@ -5,7 +5,6 @@
   import Div from "./Div.svelte";
 
   import { elementTooltipId, clickedElement } from "../../stores/globals";
-  import { elements } from "../../stores/elements";
 
   export let element;
 
@@ -60,10 +59,6 @@
     element = $clickedElement;
   }
 
-  $: if (ready) {
-    console.log(element);
-  }
-
   $: styleString = `width: ${element.width};
   height: ${element.height}; 
   background: ${element.background}; 
@@ -94,6 +89,8 @@
   bottom: ${element.bottom};
   left: ${element.left};
   `;
+
+  $: console.log(styleString);
 </script>
 
 {#if ready}
@@ -103,7 +100,7 @@
     on:click={(e) => {
       e.stopPropagation();
       showTooltip = true;
-      $elementTooltipId = element.id;
+      $elementTooltipId = element._id;
       $clickedElement = element;
     }}
   >
