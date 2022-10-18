@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, tick } from "svelte";
-  import { fetchElements } from "../util.js";
+  import { fetchElements, fetchFunctionsForElement } from "../util.js";
   import { fade } from "svelte/transition";
 
   import { elements } from "../stores/elements";
@@ -13,6 +13,9 @@
   onMount(async () => {
     $elements = await getElements();
     ready = true;
+
+    //foreach element, fetch functions
+    let functions = [];
   });
 
   const getElements = async () => {

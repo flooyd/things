@@ -27,10 +27,8 @@
   const stop = async (e) => {
     if (moving) {
       moving = false;
-      console.log($functionMoving, "functionMoving before add dirty");
       await addDirtyFunction($functionMoving);
       $draggableMoving = false;
-      console.log("stop");
       $functionMoving = null;
     }
   };

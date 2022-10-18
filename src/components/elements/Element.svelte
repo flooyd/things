@@ -14,6 +14,16 @@
 
   const id = getId("div");
 
+  //implement grid function onClick
+  const handleClick = (e) => {
+    console.log("clicked");
+    if (
+      $clickedElement.grid.functions.find((func) => func.name === "onClick")
+    ) {
+      console.log("found onClick for element " + $clickedElement.name);
+    }
+  };
+
   onMount(() => {
     element.width = element.width ? element.width : "400px";
     element.height = element.height ? element.height : "300px";
@@ -89,8 +99,6 @@
   bottom: ${element.bottom};
   left: ${element.left};
   `;
-
-  $: console.log(styleString);
 </script>
 
 {#if ready}
@@ -102,6 +110,7 @@
       showTooltip = true;
       $elementTooltipId = element._id;
       $clickedElement = element;
+      handleClick(e);
     }}
   >
     {#if element.type === "div"}

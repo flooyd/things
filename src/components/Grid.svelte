@@ -9,7 +9,6 @@
     functionMoving,
     dirtyFunctions,
     mouseDownStartedOnArrow,
-    mousePosition,
   } from "../stores/globals";
   import Draggable from "./Draggable.svelte";
   import GridFunction from "./GridFunction.svelte";
@@ -248,6 +247,5 @@
 
   svg {
     opacity: 1;
-    z-index: 99999;
   }
 </style>

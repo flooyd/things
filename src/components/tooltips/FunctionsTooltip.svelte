@@ -11,6 +11,8 @@
     clickedElement,
     toolbarOpenStyle,
     functionsTooltipOpen,
+    width,
+    functionMoving,
   } from "../../stores/globals";
   import { onMount, tick } from "svelte";
 
@@ -24,15 +26,20 @@
   });
 
   const click = async (item) => {
-    let createdFunction = await addFunction($clickedElement._id, item);
+    let createdFunction = await addFunction(
+      $clickedElement._id,
+      item,
+      $width / 2,
+      100
+    );
     if (createdFunction) {
       createdFunction = {
         _id: createdFunction._id,
         name: createdFunction.name,
         elementId: $clickedElement._id,
         rect: {
-          x: 0,
-          y: 0,
+          x: createdFunction.rectX,
+          y: createdFunction.rectY,
           width: 0,
           height: 0,
           inArrowLocation: {
@@ -47,6 +54,7 @@
       };
       addDirtyFunction(createdFunction._id);
       $clickedElement.grid.functions.push(createdFunction);
+      $functionMoving = createdFunction._id;
       $clickedElement.grid.functions = $clickedElement.grid.functions;
     }
   };

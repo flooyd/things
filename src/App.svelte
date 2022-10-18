@@ -7,6 +7,7 @@
   import {
     mousePosition,
     width,
+    height,
     functionsTooltipOpen,
     clickedElement,
     elementTooltipId,
@@ -57,6 +58,7 @@
       $mousePosition = { x: e.clientX, y: e.clientY };
     }}
     bind:clientWidth={$width}
+    bind:clientHeight={$height}
   >
     {#if ready && !$showGrid}
       <Workbench />

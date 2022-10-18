@@ -47,6 +47,7 @@
     <button class="headerClose" on:click={() => ($elementTooltipId = null)}>
       <i class="fa-solid fa-times" />
     </button>
+    <div class="headerDivider" />
     <div class="toolbar">
       <button class="blueButton" on:click={() => handleSave()}>Save</button>
       <button
@@ -75,7 +76,6 @@
         >{#if $showGrid}Close{:else}Open{/if} Grid</button
       >
     </div>
-    <div class="headerDivider" />
   </div>
   <div class="infoGroup">
     <label for="type" class="infoLabel">Element type</label>

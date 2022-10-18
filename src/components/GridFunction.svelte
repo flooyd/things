@@ -15,6 +15,7 @@
     functionInputs,
     objectDescriptions,
     typeColors,
+    objectColors,
   } from "../util";
 
   export let gridFunction;
@@ -72,7 +73,6 @@
 
   const handleClickArrow = async (type, e) => {
     $mouseDownStartedOnArrow = true;
-    console.log($mouseDownStartedOnArrow, "mouseDownStartedOnArrow");
     await tick();
     if (type === "out") {
       $outArrowClicked = gridFunction._id;
@@ -113,6 +113,9 @@
     }}
     class="gridFunction"
     bind:this={element}
+    style={$functionMoving === gridFunction._id
+      ? `z-index: 1000; background: ${objectColors[objects[gridFunction.name]]}`
+      : ""}
   >
     <div class="label">
       {objectDescriptions[objects[gridFunction.name]]}
@@ -178,7 +181,7 @@
     flex-direction: column;
     background: #aaa;
     color: black;
-    z-index: 99999;
+    z-index: 2;
   }
 
   .top {

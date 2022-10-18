@@ -152,8 +152,6 @@
   };
 
   const createElement = async () => {
-    console.log("creating element");
-    console.log(pendingTag);
     await addElement(pendingTag);
     pendingTag = null;
     showOptions = false;
