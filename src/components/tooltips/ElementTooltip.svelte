@@ -47,34 +47,35 @@
     <button class="headerClose" on:click={() => ($elementTooltipId = null)}>
       <i class="fa-solid fa-times" />
     </button>
-  </div>
-  <div class="toolbar">
-    <button class="blueButton" on:click={() => handleSave()}>Save</button>
-    <button
-      type="button"
-      on:click={async (e) => {
-        e.stopPropagation();
-        $elementTooltipId = null;
-        await deleteElement(element._id);
-        $childPendingDeletion = element._id;
-        $parentOfChildPendingDeletion = element.childOf;
-      }}
-      disabled={$loading}
-      class="redButton">Delete Element</button
-    >
-    <button
-      class="blueButton"
-      type="button"
-      on:click={() => ($elementTooltipId = null)}
-    >
-      Close
-    </button>
-    <button
-      on:click={() => ($showGrid = !$showGrid)}
-      class="blueButton"
-      type="button"
-      >{#if $showGrid}Close{:else}Open{/if} Grid</button
-    >
+    <div class="toolbar">
+      <button class="blueButton" on:click={() => handleSave()}>Save</button>
+      <button
+        type="button"
+        on:click={async (e) => {
+          e.stopPropagation();
+          $elementTooltipId = null;
+          await deleteElement(element._id);
+          $childPendingDeletion = element._id;
+          $parentOfChildPendingDeletion = element.childOf;
+        }}
+        disabled={$loading}
+        class="redButton">Delete Element</button
+      >
+      <button
+        class="blueButton"
+        type="button"
+        on:click={() => ($elementTooltipId = null)}
+      >
+        Close
+      </button>
+      <button
+        on:click={() => ($showGrid = !$showGrid)}
+        class="blueButton"
+        type="button"
+        >{#if $showGrid}Close{:else}Open{/if} Grid</button
+      >
+    </div>
+    <div class="headerDivider" />
   </div>
   <div class="infoGroup">
     <label for="type" class="infoLabel">Element type</label>
@@ -384,12 +385,11 @@
     z-index: 200;
     pointer-events: all;
     border-right: 3px solid black;
-    opacity: 0.9;
+    opacity: 0.95;
   }
 
   .header {
     font-size: 20px;
-    margin-top: 20px;
     margin-bottom: 10px;
     font-weight: bold;
     display: flex;
@@ -399,6 +399,11 @@
     color: orange;
     justify-content: space-between;
     align-items: center;
+    padding: 13px 0px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0px;
+    background: white;
   }
 
   .headerTitle {
@@ -427,6 +432,7 @@
     gap: 8px;
     align-items: left;
     flex-wrap: wrap;
+    width: 100%;
   }
 
   .infoGroup {
@@ -451,5 +457,13 @@
     border: 1px solid var(--oxford-blue);
     border-radius: 5px;
     padding: 8px;
+  }
+
+  .headerDivider {
+    height: 3px;
+    width: 100%;
+    border-top: 3px solid orange;
+    margin-top: 3px;
+    color: transparent;
   }
 </style>

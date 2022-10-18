@@ -1,5 +1,4 @@
 <script>
-  import { onMount } from "svelte";
   import { addElement } from "../../util";
   import { toolbarOpenStyle, htmlTooltipOpen } from "../../stores/globals";
 
@@ -176,6 +175,7 @@
     >
       <i class="fa fa-times" />
     </button>
+    <div class="headerDivider">Hello</div>
   </div>
   {#if !showOptions}
     <div class="description">
@@ -378,7 +378,7 @@
     z-index: 200;
     pointer-events: all;
     border-right: 3px solid lightgreen;
-    opacity: 0.9;
+    opacity: 0.95;
   }
 
   .htmlTooltip::-webkit-scrollbar {
@@ -387,14 +387,17 @@
 
   .header {
     font-size: 20px;
-    margin-top: 20px;
-    margin-bottom: 10px;
     font-weight: bold;
     display: flex;
     gap: 8px;
     color: lightgreen;
     justify-content: space-between;
     align-items: center;
+    position: sticky;
+    top: 0px;
+    background: white;
+    padding: 13px 0px;
+    flex-wrap: wrap;
   }
 
   .headerTitle {
@@ -488,5 +491,13 @@
 
   button:hover {
     background: lightgreen;
+  }
+
+  .headerDivider {
+    height: 3px;
+    width: 100%;
+    border-top: 3px solid lightgreen;
+    margin-top: 3px;
+    color: transparent;
   }
 </style>

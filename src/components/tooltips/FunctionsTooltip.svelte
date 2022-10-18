@@ -69,6 +69,7 @@
     >
       <i class="fa-solid fa-times" />
     </button>
+    <div class="headerDivider" />
   </div>
   <div class="description">
     <span>Functions are the building blocks of your app.</span>
@@ -145,6 +146,7 @@
   .functionsTooltip {
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
     gap: 8px;
     min-width: 400px;
     max-width: 400px;
@@ -159,7 +161,7 @@
     overflow-x: auto;
     pointer-events: all;
     border-right: 3px solid blue;
-    opacity: 0.9;
+    opacity: 0.95;
   }
 
   .functionsTooltip::-webkit-scrollbar {
@@ -172,7 +174,7 @@
     gap: 8px;
     padding: 8px;
     border-radius: 5px;
-    border: 2px solid black;
+    border: 3px solid black;
   }
 
   .function:hover {
@@ -181,16 +183,18 @@
 
   .header {
     font-size: 20px;
-    margin-top: 20px;
-    margin-bottom: 10px;
     font-weight: bold;
     display: flex;
-    width: 100%;
     align-items: center;
     gap: 8px;
     color: blue;
     justify-content: space-between;
     align-items: center;
+    position: sticky;
+    background: white;
+    top: 0px;
+    padding: 13px 0px;
+    flex-wrap: wrap;
   }
 
   .headerTitle {
@@ -236,5 +240,13 @@
 
   .functionType {
     color: black;
+  }
+
+  .headerDivider {
+    height: 3px;
+    width: 100%;
+    border-top: 3px solid blue;
+    margin-top: 3px;
+    color: transparent;
   }
 </style>
