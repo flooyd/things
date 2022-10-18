@@ -142,9 +142,9 @@
     <div class="outputs">
       {#each Array(numOutputs) as _, i}
         <div class="output">
-          <div class={"outputCircle" + " " + typeColors[typeOfOutput]}>
+          <div class="outputCircle">
             <span class="outputCircleType">{typeOfOutput}</span>
-            <i class="fas fa-circle" />
+            <i class={"fas fa-circle" + " " + typeColors[typeOfOutput]} />
           </div>
         </div>
       {/each}
@@ -153,14 +153,14 @@
       {#each Array(numInputs) as _, i}
         <div class="input">
           {#if (typeOfInput && i === 0) || !typeOfInputTwo}
-            <div class={"inputCircle" + " " + typeColors[typeOfInput]}>
-              <i class="fas fa-circle" />
+            <div>
+              <i class={"fas fa-circle" + " " + typeColors[typeOfInput]} />
               <span class="inputCircleType">{typeOfInput}</span>
             </div>
           {/if}
           {#if typeOfInputTwo && i === 1}
-            <div class={"inputCircle" + " " + typeColors[typeOfInputTwo]}>
-              <i class="fas fa-circle" />
+            <div class="inputCircle">
+              <i class={"fas fa-circle" + " " + typeColors[typeOfInputTwo]} />
               <span class="inputCircleType">{typeOfInputTwo}</span>
             </div>
           {/if}
@@ -245,6 +245,14 @@
   .outArrow.selected {
     background: lightblue;
     border-radius: 180px;
+  }
+
+  .outputCircle:hover > i {
+    color: black !important;
+  }
+
+  .inputCircle span {
+    color: black;
   }
 
   .label {

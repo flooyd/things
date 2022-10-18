@@ -10,13 +10,13 @@
   } from "../../stores/globals";
   import { elements as elementsStore } from "../../stores/elements";
   import Element from "./Element.svelte";
-  import { element } from "svelte/internal";
 
   export let styleString;
   export let content = "";
   export let id;
   export let parentOf;
   export let key;
+  export let name;
 
   let elements = [];
   let unique = {};
@@ -48,7 +48,7 @@
 </script>
 
 {#key unique}
-  <div transition:fade {id} style={styleString} class={`thingDiv`}>
+  <div transition:fade {id} style={styleString} class={`thingDiv`} {name}>
     {#each elements as element (element.id)}
       <Element {element} />
     {/each}

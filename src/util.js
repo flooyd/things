@@ -108,6 +108,15 @@ export const updateElement = async (element) => {
   updateLoading(false);
 };
 
+//fetch all functions
+export const fetchFunctions = async () => {
+  updateLoading(true);
+  const functions = await fetch("http://localhost:3000/functions");
+  const functionsJson = await functions.json();
+  updateLoading(false);
+  return functionsJson;
+};
+
 //fetchFunctions(id) /functions
 export const fetchFunctionsForElement = async (elementId) => {
   updateLoading(true);
@@ -288,7 +297,7 @@ export const addConnection = async (connection) => {
 
 export const functions = {
   //life cycle
-  mount: "runs when the component is mounted",
+  onMount: "runs when the component is mounted",
   afterUpdate: "runs after the component is updated",
   beforeUpdate: "runs before the component is updated",
   beforeDestroy: "runs before the component is destroyed",
@@ -315,6 +324,7 @@ export const functions = {
   getElementById: "gets an element by id",
   getElementsByClassName: "gets all elements with a given class name",
   getElementsByTagName: "gets all elements with a given tag name",
+  setStyle: "sets the style of the component",
 
   //variable assignment
   setVariable: "sets a variable",
@@ -391,6 +401,9 @@ export const functionOutputs = {
   getElementsByTagName: {
     count: 1,
     type: "array",
+  },
+  setStyle: {
+    count: 0,
   },
   setVariable: {
     count: 1,
@@ -520,6 +533,11 @@ export const functionInputs = {
     count: 1,
     type: "string",
     description: "the tag name of the elements to get",
+  },
+  setStyle: {
+    count: 2,
+    type: "string",
+    description: "the style and value to set",
   },
   setVariable: {
     count: 2,
@@ -655,6 +673,7 @@ export const executables = [
   "getElementById",
   "getElementsByClassName",
   "getElementsByTagName",
+  "setStyle",
   "setVariable",
   "getVariable",
   "if",
@@ -681,7 +700,7 @@ export const executables = [
 ];
 
 export const objects = {
-  mount: "lifecycle",
+  onMount: "lifecycle",
   afterUpdate: "lifecycle",
   beforeUpdate: "lifecycle",
   beforeDestroy: "lifecycle",
@@ -702,6 +721,7 @@ export const objects = {
   getElementById: "document",
   getElementsByClassName: "document",
   getElementsByTagName: "document",
+  setStyle: "element",
   setVariable: "variable",
   getVariable: "variable",
   if: "conditional",
@@ -742,6 +762,7 @@ export const objectColors = {
   math: "teal",
   logic: "gray",
   return: "gray",
+  element: "brown",
 };
 
 export const objectDescriptions = {
@@ -756,6 +777,7 @@ export const objectDescriptions = {
   math: "Math",
   logic: "Logic",
   return: "Return",
+  element: "Element",
 };
 
 export const objectIcons = {
@@ -770,6 +792,7 @@ export const objectIcons = {
   logic: "fa-solid fa-microchip",
   jump: "fa-solid fa-arrow-right",
   return: "fa-solid fa-arrow-left",
+  element: "fa-solid fa-square",
 };
 
 //7 from MDN

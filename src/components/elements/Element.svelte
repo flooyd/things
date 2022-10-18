@@ -12,16 +12,63 @@
     showTooltip,
     ready = null;
 
+  let localVars = {};
+
   const id = getId("div");
+
+  const getFunctionsToRun = (parentFunction) => {
+    const connections = element.grid.connections.filter(
+      (connection) => connection.out === parentFunction._id
+    );
+
+    const functionsToRun = connections.map((connection) => {
+      return element.grid.functions.find((func) => func._id === connection.in);
+    });
+
+    return functionsToRun;
+  };
+
+  const consoleLog = (args) => {
+    console.log(args);
+  };
+
+  const runFunction = (func) => {
+    switch (func.name) {
+      case "log":
+        console.log("Hello, world!");
+        break;
+      case "getElementsByName":
+        console.log("getting elements with name of ralwus");
+        break;
+      case "setVariable":
+        localVars["ralwuses"] = document.getElementsByName("ralwus");
+        break;
+      case "logError":
+        console.error(localVars.ralwuses);
+        break;
+      case "setStyle":
+        localVars.ralwuses.forEach((ralwus) => {
+          ralwus.style.background = "red";
+        });
+      default:
+        break;
+    }
+
+    const functionsToRun = getFunctionsToRun(func);
+    if (functionsToRun.length > 0) {
+      functionsToRun.forEach((func) => runFunction(func));
+    }
+  };
 
   //implement grid function onClick
   const handleClick = (e) => {
-    console.log("clicked");
-    if (
-      $clickedElement.grid.functions.find((func) => func.name === "onClick")
-    ) {
-      console.log("found onClick for element " + $clickedElement.name);
-    }
+    if (!element.grid) return;
+    const onClick = element.grid.functions.find(
+      (func) => func.name === "onClick"
+    );
+
+    const functionsToRun = getFunctionsToRun(onClick);
+    functionsToRun.forEach((func) => runFunction(func));
   };
 
   onMount(() => {
@@ -105,11 +152,13 @@
   <div
     class="element"
     out:fade
-    on:click={(e) => {
+    on:dblclick={(e) => {
       e.stopPropagation();
       showTooltip = true;
       $elementTooltipId = element._id;
       $clickedElement = element;
+    }}
+    on:click={(e) => {
       handleClick(e);
     }}
   >
@@ -120,6 +169,7 @@
         {styleString}
         content={element.content}
         parentOf={element.parentOf}
+        name={element.name}
       />
     {/if}
   </div>

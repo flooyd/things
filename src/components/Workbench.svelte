@@ -1,6 +1,10 @@
 <script lang="ts">
   import { onMount, tick } from "svelte";
-  import { fetchElements, fetchFunctionsForElement } from "../util.js";
+  import {
+    fetchElements,
+    fetchFunctions,
+    fetchFunctionsForElement,
+  } from "../util.js";
   import { fade } from "svelte/transition";
 
   import { elements } from "../stores/elements";
@@ -13,9 +17,6 @@
   onMount(async () => {
     $elements = await getElements();
     ready = true;
-
-    //foreach element, fetch functions
-    let functions = [];
   });
 
   const getElements = async () => {
@@ -79,7 +80,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 127px);
+    height: calc(100vh);
     font-size: 50px;
     background: var(--platinum);
     color: black;
