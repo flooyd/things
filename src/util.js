@@ -5,6 +5,7 @@ import {
   dirtyFunctions,
   clickedElement,
   updateDirtyFunctions,
+  loading,
 } from "./stores/globals";
 import { elements as elementsStore, updateElements } from "./stores/elements";
 import { get } from "svelte/store";
@@ -12,29 +13,6 @@ import { get } from "svelte/store";
 export const getId = () => {
   return uuidv4();
 };
-
-export function typewriter(node, { speed = 1 }) {
-  const valid =
-    node.childNodes.length === 1 &&
-    node.childNodes[0].nodeType === Node.TEXT_NODE;
-
-  if (!valid) {
-    throw new Error(
-      `This transition only works on elements with a single text node child`
-    );
-  }
-
-  const text = node.textContent;
-  const duration = text.length / (speed * 0.01);
-
-  return {
-    duration,
-    tick: (t) => {
-      const i = Math.trunc(text.length * t);
-      node.textContent = text.slice(0, i);
-    },
-  };
-}
 
 export const addElement = async (tag) => {
   updateLoading(true);
@@ -496,69 +474,86 @@ export const functionOutputs = {
 export const functionInputs = {
   log: {
     count: 1,
-    type: "any",
+    types: ["any"],
+    names: ["message1"],
     description: "the message to log",
+    extendable: true,
+    onExtend: () => {
+      names = [...names, "message" + (names.length + 1)];
+      types = [...types, "any"];
+    },
   },
   logError: {
     count: 1,
-    type: "any",
+    types: ["any"],
+    names: ["message1"],
     description: "the error to log",
   },
   logWarning: {
     count: 1,
-    type: "any",
+    types: ["any"],
+    names: ["message1"],
     description: "the warning to log",
   },
   logInfo: {
     count: 1,
-    type: "any",
+    types: ["any"],
+    names: ["message1"],
     description: "the info message to log",
   },
   getElementsByName: {
     count: 1,
-    type: "string",
+    types: ["string"],
+    names: ["name"],
     description: "the name of the elements to get",
   },
   getElementById: {
     count: 1,
-    type: "string",
+    types: ["string"],
+    names: ["id"],
     description: "the id of the element to get",
   },
   getElementsByClassName: {
     count: 1,
-    type: "string",
+    types: ["string"],
+    names: ["className"],
     description: "the class name of the elements to get",
   },
   getElementsByTagName: {
     count: 1,
-    type: "string",
+    types: ["string"],
+    names: ["tagName"],
     description: "the tag name of the elements to get",
   },
   setStyle: {
-    count: 2,
-    type: "string",
+    count: 3,
+    types: ["string", "string", "element"],
+    names: ["property", "value", "element"],
     description: "the style and value to set",
   },
   setVariable: {
     count: 2,
-    type: "string",
-    type2: "any",
+    types: ["string", "any"],
+    names: ["name", "value"],
     description: "the name of the variable to set",
-    descripttion2: "the value of the variable to set",
+    description2: "the value of the variable to set",
   },
   getVariable: {
     count: 1,
-    type: "string",
+    types: ["string"],
+    names: ["name"],
     description: "the name of the variable to get",
   },
   if: {
     count: 1,
-    type: "boolean",
+    types: "boolean",
+    names: ["condition"],
     description: "the condition to check",
   },
   elseIf: {
     count: 1,
-    type: "boolean",
+    types: "boolean",
+    names: ["condition"],
     description: "the condition to check",
   },
   else: {
@@ -566,100 +561,150 @@ export const functionInputs = {
   },
   for: {
     count: 1,
-    type: "number",
+    types: ["number"],
+    names: ["count"],
     description: "the number of times to run the code",
   },
   forEach: {
     count: 1,
-    type: "array",
+    types: ["array"],
+    names: ["array"],
     description: "the array to loop through",
   },
   while: {
     count: 1,
-    type: "boolean",
+    types: "boolean",
+    names: ["condition"],
     description: "the condition to check",
   },
   add: {
     count: 2,
-    type: "number",
+    types: ["number", "number"],
+    names: ["number1", "number2"],
     description: "the numbers to add",
     extendable: true,
+    onExtend: () => {
+      names = [...names, "number" + (names.length + 1)];
+      types = [...types, "number"];
+    },
   },
   subtract: {
     count: 2,
-    type: "number",
+    types: ["number", "number"],
     description: "the numbers to subtract",
     extendable: true,
+    onExtend: () => {
+      names = [...names, "number" + (names.length + 1)];
+      types = [...types, "number"];
+    },
   },
   multiply: {
     count: 2,
-    type: "number",
+    types: ["number"],
+    types: ["number", "number"],
     description: "the numbers to multiply",
     extendable: true,
+    onExtend: () => {
+      names = [...names, "number" + (names.length + 1)];
+      types = [...types, "number"];
+    },
   },
   divide: {
     count: 2,
-    type: "number",
+    types: ["number"],
+    types: ["number", "number"],
     description: "the numbers to divide",
     extendable: true,
+    onExtend: () => {
+      names = [...names, "number" + (names.length + 1)];
+      types = [...types, "number"];
+    },
   },
   modulo: {
     count: 2,
-    type: "number",
+    types: ["number", "number"],
+    names: ["number1", "number2"],
     description: "the numbers to get the remainder of",
     extendable: true,
+    onExtend: () => {
+      names = [...names, "number" + (names.length + 1)];
+      types = [...types, "number"];
+    },
   },
   power: {
     count: 2,
-    type: "number",
+    types: ["number"],
+    types: ["number", "number"],
+    names: ["number1", "number2"],
     description: "the numbers to get the power of",
     extendable: true,
+    onExtend: () => {
+      names = [...names, "number" + (names.length + 1)];
+      types = [...types, "number"];
+    },
   },
   and: {
     count: 2,
-    type: "boolean",
+    types: ["boolean", "boolean"],
+    names: ["boolean1", "boolean2"],
     description: "the booleans to check",
     extendable: true,
+    onExtend: () => {
+      names = [...names, "boolean" + (names.length + 1)];
+      types = [...types, "boolean"];
+    },
   },
   or: {
     count: 2,
-    type: "boolean",
+    types: ["boolean", "boolean"],
+    names: ["boolean1", "boolean2"],
     description: "the booleans to check",
     extendable: true,
+    onExtend: () => {
+      names = [...names, "number" + (names.length + 1)];
+      types = [...types, "number"];
+    },
   },
   not: {
     count: 1,
-    type: "boolean",
+    types: ["boolean"],
+    names: ["boolean"],
     description: "the boolean to check",
   },
   greaterThan: {
     count: 2,
-    type: "number",
+    types: ["number", "number"],
+    names: ["number1", "number2"],
     description: "the numbers to check",
   },
   lessThan: {
     count: 2,
-    type: "number",
+    types: ["number", "number"],
+    names: ["number1", "number2"],
     description: "the numbers to check",
   },
   greaterThanOrEqual: {
     count: 2,
-    type: "number",
+    types: ["number", "number"],
+    names: ["number1", "number2"],
     description: "the numbers to check",
   },
   lessThanOrEqual: {
     count: 2,
-    type: "number",
+    types: ["number", "number"],
+    names: ["number1", "number2"],
     description: "the numbers to check",
   },
   equal: {
     count: 2,
-    type: "any",
+    types: ["any", "any"],
+    names: ["value1", "value2"],
     description: "the values to check",
   },
   notEqual: {
     count: 2,
-    type: "any",
+    types: ["any", "any"],
+    names: ["value1", "value2"],
     description: "the values to check",
   },
 };
@@ -748,6 +793,7 @@ export const objects = {
   break: "jump",
   continue: "jump",
   return: "return",
+  element: "element",
 };
 
 export const objectColors = {
@@ -823,6 +869,7 @@ const otherTypeColors = {
   array: "green",
   object: "cyan",
   function: "pink",
+  element: "brown",
 };
 
 export const types = [...primitiveTypes, ...otherTypes];
@@ -830,4 +877,129 @@ export const types = [...primitiveTypes, ...otherTypes];
 export const typeColors = {
   ...primitiveTypeColors,
   ...otherTypeColors,
+};
+
+const createGridFunctionVar = async (body) => {
+  updateLoading(true);
+  const addedDoc = await fetch("http://localhost:3000/function-vars", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+  const addedDocJson = await addedDoc.json();
+  updateLoading(false);
+  return addedDocJson;
+};
+
+const updateGridFunctionVar = async (id, body) => {
+  updateLoading(true);
+  const updatedDoc = await fetch("http://localhost:3000/function-vars/id", {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+  const updatedDocJson = await updatedDoc.json();
+  updateLoading(false);
+  return updatedDocJson;
+};
+
+const deleteGridFunctionVar = async (id) => {
+  updateLoading(true);
+  const deletedDoc = await fetch("http://localhost:3000/function-vars/" + id, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const deletedDocJson = await deletedDoc.json();
+  updateLoading(false);
+  return deletedDocJson;
+};
+
+//delete grid function vars for element
+const deleteGridFunctionVarsForElement = async (elementId) => {
+  updateLoading(true);
+  const deletedDocs = await fetch(
+    "http://localhost:3000/function-vars/forElement/" + elementId,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const deletedDocsJson = await deletedDocs.json();
+  updateLoading(false);
+  return deletedDocsJson;
+};
+
+//delete grid function vars for function
+const deleteGridFunctionVarsForFunction = async (functionId) => {
+  updateLoading(true);
+  const deletedDocs = await fetch(
+    "http://localhost:3000/function-vars/forFunction/" + functionId,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const deletedDocsJson = await deletedDocs.json();
+  updateLoading(false);
+  return deletedDocsJson;
+};
+
+const deleteAllGridFunctionVars = async () => {
+  updateLoading(true);
+  const deletedDocs = await fetch("http://localhost:3000/function-vars", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const deletedDocJson = await deletedDocs.json();
+  updateLoading(false);
+  return deletedDocJson;
+};
+
+const getAllGridFunctionVars = async () => {
+  updateLoading(true);
+  const docs = await fetch("http://localhost:3000/function-vars");
+  const docsJson = await docs.json();
+  updateLoading(false);
+  return docsJson;
+};
+
+const getGridFunctionVarsForFunction = async (functionId) => {
+  updateLoading(true);
+  const docs = await fetch(
+    "http://localhost:3000/function-vars/forFunction/" + functionId
+  );
+  const docsJson = await docs.json();
+  updateLoading(false);
+  return docsJson;
+};
+
+//for element
+const getAllGridFunctionVarsForElement = async (elementId) => {
+  updateLoading(true);
+  const docs = await fetch(
+    "http://localhost:3000/function-vars/forElement/" + elementId
+  );
+  const docsJson = await docs.json();
+  updateLoading(false);
+  return docsJson;
+};
+
+const getGridFunctionVar = async (id) => {
+  updateLoading(true);
+  const doc = await fetch("http://localhost:3000/function-vars/" + id);
+  const docJson = await doc.json();
+  updateLoading(false);
+  return docJson;
 };

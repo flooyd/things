@@ -227,6 +227,10 @@ button:hover {
   color: teal;
 }
 
+.brown {
+  color: brown;
+}
+
 .green:hover {
   background: green;
 }

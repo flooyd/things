@@ -25,18 +25,19 @@
   let rect = null;
   let numOutputs = 0;
   let numInputs = 0;
-  let typeOfInput = null;
-  let typeOfInputTwo = null;
+  let typesOfInput = null;
   let typeOfOutput;
   let ready = false;
   let initialized = false;
+  let inputCircleInput = null;
+  let inputDisabled = true;
 
   onMount(() => {
     numOutputs = functionOutputs[gridFunction.name]?.count || 0;
     numInputs = functionInputs[gridFunction.name]?.count || 0;
     typeOfOutput = functionOutputs[gridFunction.name]?.type || "any";
-    typeOfInput = functionInputs[gridFunction.name]?.type || "any";
-    typeOfInputTwo = functionInputs[gridFunction.name]?.type2 || null;
+    typesOfInput = functionInputs[gridFunction.name]?.types || ["any"];
+    console.log(typesOfInput);
     ready = true;
   });
 
@@ -94,6 +95,8 @@
     setRect();
     initialized = true;
   }
+
+  $: console.log(inputDisabled);
 </script>
 
 <svelte:window
@@ -111,10 +114,18 @@
     on:mousedown={() => {
       $functionMoving = gridFunction._id;
     }}
+    on:mouseenter={() => {
+      console.log("enter");
+      inputDisabled = false;
+    }}
+    on:mouseleave={() => {
+      console.log("leave");
+      inputDisabled = true;
+    }}
     class="gridFunction"
     bind:this={element}
     style={$functionMoving === gridFunction._id
-      ? `z-index: 1000; background: ${objectColors[objects[gridFunction.name]]}`
+      ? `z-index: 1000; background: 'white';`
       : ""}
   >
     <div class="label">
@@ -123,7 +134,7 @@
     <div class="top">
       {#if executables.includes(gridFunction.name)}
         <div
-          class="inArrow"
+          class={"inArrow" + " " + objectColors[objects[gridFunction.name]]}
           on:focus
           on:mousedown={(e) => handleClickArrow("in", e)}
         >
@@ -132,7 +143,7 @@
       {/if}
       <div class="gridFunctionName">{gridFunction.name}</div>
       <div
-        class="outArrow"
+        class={"outArrow" + " " + objectColors[objects[gridFunction.name]]}
         on:focus
         on:mousedown={(e) => handleClickArrow("out", e)}
       >
@@ -152,18 +163,18 @@
     <div class="inputs">
       {#each Array(numInputs) as _, i}
         <div class="input">
-          {#if (typeOfInput && i === 0) || !typeOfInputTwo}
-            <div>
-              <i class={"fas fa-circle" + " " + typeColors[typeOfInput]} />
-              <span class="inputCircleType">{typeOfInput}</span>
-            </div>
-          {/if}
-          {#if typeOfInputTwo && i === 1}
-            <div class="inputCircle">
-              <i class={"fas fa-circle" + " " + typeColors[typeOfInputTwo]} />
-              <span class="inputCircleType">{typeOfInputTwo}</span>
-            </div>
-          {/if}
+          <div class="inputCircle">
+            <i class={"fas fa-circle" + " " + typeColors[typesOfInput[i]]} />
+            <span class="inputCircleType">{typesOfInput[i]}</span>
+            {#if typesOfInput[i] === "string" || typesOfInput[i] === "number"}
+              <input
+                class="inputCircleInput"
+                bind:this={inputCircleInput}
+                type={typesOfInput[i] === "string" ? "text" : "number"}
+                disabled={inputDisabled}
+              />
+            {/if}
+          </div>
         </div>
       {/each}
     </div>
@@ -182,6 +193,7 @@
     background: #aaa;
     color: black;
     z-index: 2;
+    box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
   }
 
   .top {
@@ -198,7 +210,6 @@
     align-items: center;
     width: 100%;
     justify-content: right;
-    color: lightblue;
     height: 30px;
   }
 
@@ -216,7 +227,6 @@
     align-items: center;
     width: 100%;
     justify-content: left;
-    color: lightblue;
     height: 30px;
   }
 
@@ -235,24 +245,16 @@
     padding: 5px;
   }
 
-  .inArrow:hover,
-  .outArrow:hover {
-    background: lightblue;
-    border-radius: 180px;
-  }
-
-  .inArrow.selected,
-  .outArrow.selected {
-    background: lightblue;
-    border-radius: 180px;
-  }
-
-  .outputCircle:hover > i {
-    color: black !important;
-  }
-
   .inputCircle span {
     color: black;
+  }
+
+  .inputCircleInput {
+    margin-left: 4px;
+    width: 100px;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 4px;
   }
 
   .label {
@@ -262,5 +264,71 @@
     padding-bottom: 4px;
     border-bottom: 1px solid black;
     margin-bottom: 8px;
+  }
+
+  .red:hover {
+    color: black;
+    background: transparent;
+  }
+
+  .green:hover {
+    color: black;
+    background: transparent;
+  }
+
+  .blue:hover {
+    color: black;
+    background: transparent;
+  }
+
+  .yellow:hover {
+    color: black;
+    background: transparent;
+  }
+
+  .purple:hover {
+    color: black;
+    background: transparent;
+  }
+
+  .orange:hover {
+    background: transparent;
+    color: black;
+  }
+
+  .pink:hover {
+    background: transparent;
+    color: black;
+  }
+
+  .cyan:hover {
+    background: transparent;
+    color: black;
+  }
+
+  .brown:hover {
+    background: transparent;
+    color: black;
+  }
+
+  .gray:hover {
+    background: transparent;
+    color: black;
+  }
+
+  .teal:hover {
+    background: transparent;
+    color: black;
+  }
+
+  .inArrow:hover,
+  .outArrow:hover {
+    background: white;
+    border-radius: 180px;
+  }
+
+  .inputCircle,
+  .outputCircle {
+    cursor: pointer;
   }
 </style>
