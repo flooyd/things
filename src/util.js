@@ -1,12 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 //import collection, addDoc
-import {
-  updateLoading,
-  dirtyFunctions,
-  clickedElement,
-  updateDirtyFunctions,
-  loading,
-} from "./stores/globals";
+import { updateLoading, clickedElement } from "./stores/globals";
 import { elements as elementsStore, updateElements } from "./stores/elements";
 import { get } from "svelte/store";
 
@@ -154,21 +148,6 @@ export const removeAllFunctions = async () => {
     method: "DELETE",
   });
   updateLoading(false);
-};
-
-export const addDirtyFunction = async (functionId) => {
-  const dirtyFunctionsArray = get(dirtyFunctions);
-  if (dirtyFunctionsArray.includes(functionId) || functionId === null) {
-    return;
-  }
-  updateDirtyFunctions([...dirtyFunctionsArray, functionId]);
-};
-
-export const saveDirtyFunctions = async () => {
-  const dirtyFunctionsArray = get(dirtyFunctions);
-  dirtyFunctionsArray.forEach(async (func) => {
-    await saveFunction(func);
-  });
 };
 
 export const saveFunction = async (functionId) => {

@@ -28,9 +28,7 @@
     return functionsToRun;
   };
 
-  const consoleLog = (args) => {
-    console.log(args);
-  };
+  const consoleLog = (args) => {};
 
   const runFunction = (func) => {
     switch (func.name) {

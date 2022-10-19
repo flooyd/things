@@ -3,9 +3,9 @@
     functions,
     fetchFunctionsForElement,
     addFunction,
-    addDirtyFunction,
     objects,
     objectColors,
+    saveFunction,
   } from "../../util";
   import {
     clickedElement,
@@ -52,10 +52,9 @@
           },
         },
       };
-      addDirtyFunction(createdFunction._id);
       $clickedElement.grid.functions.push(createdFunction);
-      $functionMoving = createdFunction._id;
       $clickedElement.grid.functions = $clickedElement.grid.functions;
+      saveFunction(createdFunction._id);
     }
   };
 
@@ -141,6 +140,8 @@
           <i class="fa-solid fa-arrow-right" />
         {:else if objects[item] === "return"}
           <i class="fa-solid fa-arrow-left" />
+        {:else if objects[item] === "element"}
+          <i class="fa-solid fa-square" />
         {/if}
         <div class="functionName">{item}</div>
       </div>

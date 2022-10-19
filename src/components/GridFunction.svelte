@@ -4,7 +4,6 @@
     clickedElement,
     outArrowClicked,
     inArrowClicked,
-    draggableMoving,
     functionMoving,
     mouseDownStartedOnArrow,
   } from "../stores/globals";
@@ -16,13 +15,12 @@
     objectDescriptions,
     typeColors,
     objectColors,
+    saveFunction,
   } from "../util";
 
   export let gridFunction;
-  export let gridRect;
 
   let element = null;
-  let rect = null;
   let numOutputs = 0;
   let numInputs = 0;
   let typesOfInput = null;
@@ -31,33 +29,51 @@
   let initialized = false;
   let inputCircleInput = null;
   let inputDisabled = true;
+  let rect = {
+    x: gridFunction.rect.x,
+    y: gridFunction.rect.y,
+    width: 0,
+    height: 0,
+    initialized: false,
+  };
+  let style = null;
+  let functionDirty = false;
 
   onMount(() => {
     numOutputs = functionOutputs[gridFunction.name]?.count || 0;
     numInputs = functionInputs[gridFunction.name]?.count || 0;
     typeOfOutput = functionOutputs[gridFunction.name]?.type || "any";
     typesOfInput = functionInputs[gridFunction.name]?.types || ["any"];
-    console.log(typesOfInput);
     ready = true;
   });
 
-  const setRect = () => {
-    rect = element.getBoundingClientRect();
-    rect.x = rect.x - gridRect.x;
-    rect.y = rect.y - gridRect.y;
+  const move = (e) => {
+    if ($functionMoving === gridFunction._id) {
+      setRect(e.movementX, e.movementY);
+    }
+  };
 
-    // y of the arrows are calculated like so:
-    // top of the rect + height of the rect -6 for the padding at the bottom
-    // of the function. The arrows are 30px tall so we subtract 15 to get the
-    // center of the arrow. Then, for each additional arrow (input or output),
-    // we subtract 30 additional pixels.
+  const stop = async (e) => {
+    $functionMoving = null;
+    functionDirty = true;
+  };
+
+  const start = (e) => {
+    if (!$mouseDownStartedOnArrow) {
+      $functionMoving = gridFunction._id;
+    }
+  };
+
+  const setRect = (movementLeft = 0, movementTop = 0) => {
+    rect.x = rect.x + movementLeft;
+    rect.y = rect.y + movementTop;
     const inArrowLocation = {
-      x: rect.left + 10,
-      y: rect.top + rect.height - 6 - 15 - numOutputs * 30 - numInputs * 30,
+      x: rect.x + 10,
+      y: rect.y + rect.height - 6 - 15 - numOutputs * 30 - numInputs * 30,
     };
     const outArrowLocation = {
-      x: rect.left + rect.width - 10,
-      y: rect.top + rect.height - 6 - 15 - numOutputs * 30 - numInputs * 30,
+      x: rect.x + rect.width - 10,
+      y: rect.y + rect.height - 6 - 15 - numOutputs * 30 - numInputs * 30,
     };
 
     $clickedElement.grid.functions.find(
@@ -84,49 +100,48 @@
     }
   };
 
-  setInterval(() => {
-    if ($draggableMoving && $functionMoving === gridFunction._id) {
-      setRect();
-    }
-  }, 10);
-
-  //if element is not null and initialized is false, set the rect and set initialized to true
   $: if (element && !initialized) {
-    setRect();
+    rect.width = element.clientWidth;
+    rect.height = element.clientHeight;
     initialized = true;
   }
 
-  $: console.log(inputDisabled);
+  setInterval(() => {
+    if (functionDirty) {
+      saveFunction(gridFunction._id);
+      functionDirty = false;
+    }
+  }, 2000);
+
+  $: if ($functionMoving === gridFunction._id) {
+    style = `z-index: 1000; background: 'white'; top:${rect?.y || 0}px; left: ${
+      rect?.x || 0
+    }px;`;
+  } else {
+    style = `top:${rect?.y || 0}px; left: ${rect?.x || 0}px;`;
+  }
 </script>
 
-<svelte:window
-  on:mouseup={() => {
-    setRect();
-    $draggableMoving = false;
-    $mouseDownStartedOnArrow = false;
-  }}
-/>
+<svelte:window on:mousemove={move} />
 {#if ready}
   <div
-    on:click={() => {
+    on:mousedown={(e) => {
+      e.stopPropagation();
       $functionMoving = gridFunction._id;
+      start();
     }}
-    on:mousedown={() => {
-      $functionMoving = gridFunction._id;
+    on:mouseup={(e) => {
+      stop();
     }}
     on:mouseenter={() => {
-      console.log("enter");
       inputDisabled = false;
     }}
     on:mouseleave={() => {
-      console.log("leave");
       inputDisabled = true;
     }}
     class="gridFunction"
     bind:this={element}
-    style={$functionMoving === gridFunction._id
-      ? `z-index: 1000; background: 'white';`
-      : ""}
+    {style}
   >
     <div class="label">
       {objectDescriptions[objects[gridFunction.name]]}
@@ -184,16 +199,18 @@
 <style>
   .gridFunction {
     min-width: 150px;
+    position: absolute;
     padding: 6px;
     border: 2px solid black;
     border-radius: 5px;
     display: flex;
-    position: relative;
     flex-direction: column;
     background: #aaa;
     color: black;
-    z-index: 2;
-    box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+    z-index: 999;
+    font-size: 16px;
+    box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.75);
+    opacity: 0.95;
   }
 
   .top {

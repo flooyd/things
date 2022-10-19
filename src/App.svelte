@@ -4,6 +4,7 @@
   import Workbench from "./components/Workbench.svelte";
   import ElementTooltip from "./components/tooltips/ElementTooltip.svelte";
   import Grid from "./components/Grid.svelte";
+  import GridFunction from "./components/GridFunction.svelte";
   import {
     mousePosition,
     width,
@@ -15,6 +16,10 @@
     showToolbar,
     toolbarOpenStyle,
     htmlTooltipOpen,
+    gridConnectionLocationsUpdatePending,
+    functionMoving,
+    windowScrollX,
+    windowScrollY,
   } from "./stores/globals";
   import { elements } from "./stores/elements";
   import { onMount } from "svelte";
@@ -23,6 +28,13 @@
   import HtmlTooltip from "./components/tooltips/HTMLTooltip.svelte";
 
   let ready = false;
+  let connectionLocations = [];
+  let scrollX = 0;
+  let scrollY = 0;
+
+  onMount(async () => {
+    ready = true;
+  });
 
   const handleEdit = (property, value) => {
     $clickedElement[property] = value;
@@ -41,13 +53,42 @@
     }
   };
 
-  onMount(async () => {
-    ready = true;
-  });
+  const getConnectionLocations = () => {
+    const connectionLocations = [];
+
+    $clickedElement.grid.connections.forEach((connection) => {
+      const inArrowLocation =
+        $clickedElement.grid.functions.find((f) => f._id === connection.in).rect
+          ?.inArrowLocation || null;
+
+      const outArrowLocation =
+        $clickedElement.grid.functions.find((f) => f._id === connection.out)
+          .rect?.outArrowLocation || null;
+
+      connectionLocations.push({
+        inArrowLocation,
+        outArrowLocation,
+        key: `${connection.in}-${connection.out}`,
+      });
+    });
+
+    $gridConnectionLocationsUpdatePending = false;
+    return connectionLocations;
+  };
 
   $: $showToolbar
     ? ($toolbarOpenStyle = "height: calc(100vh - 49px); margin-top: 49px;")
     : ($toolbarOpenStyle = "");
+
+  $: if ($gridConnectionLocationsUpdatePending) {
+    connectionLocations = getConnectionLocations();
+  }
+
+  setInterval(() => {
+    if ($functionMoving) {
+      connectionLocations = getConnectionLocations();
+    }
+  }, 5);
 </script>
 
 <svelte:window on:keydown={handleKeyPress} />
@@ -91,6 +132,28 @@
 {#if ready && $showGrid}
   <Grid />
 {/if}
+{#if ready && $clickedElement?.grid?.functions.length > 0}
+  {#each $clickedElement.grid.functions as item}
+    <GridFunction gridFunction={item} />
+  {/each}
+  {#each connectionLocations as connection (connection.key)}
+    <svg
+      width="100%"
+      height="100%"
+      style="position: absolute; top: 0; left: 0; pointer-events: none;"
+      ><line
+        x1={connection.inArrowLocation.x}
+        y1={connection.inArrowLocation.y}
+        x2={connection.outArrowLocation.x}
+        y2={connection.outArrowLocation.y}
+        stroke="black"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-dasharray="2, 2"
+      /></svg
+    >
+  {/each}
+{/if}
 
 <style>
   main {
@@ -100,7 +163,6 @@
 
   .tooltips {
     display: flex;
-    width: calc(100vw);
     background: transparent;
     top: 0px;
     pointer-events: none;

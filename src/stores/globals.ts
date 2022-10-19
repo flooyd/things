@@ -20,12 +20,13 @@ export const childPendingDeletion = writable(null);
 export const global = writable<any>({});
 export const outArrowClicked = writable(null);
 export const inArrowClicked = writable(null);
-export const draggableMoving = writable(null);
 export const functionMoving = writable(null);
-export const dirtyFunctions = writable([]);
 export const showToolbar = writable(true);
 export const toolbarOpenStyle = writable(null);
 export const mouseDownStartedOnArrow = writable(false);
+export const gridConnectionLocationsUpdatePending = writable(false);
+export const windowScrollX = writable(0);
+export const windowScrollY = writable(0);
 
 //export update function for elements
 export function updateLoading(newValue) {
@@ -36,12 +37,5 @@ export function updateGlobal(key, value) {
   global.update((g) => {
     g[key] = value;
     return g;
-  });
-}
-
-export function updateDirtyFunctions(newValue) {
-  dirtyFunctions.update((df) => {
-    df = newValue;
-    return df;
   });
 }
