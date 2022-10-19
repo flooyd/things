@@ -19,12 +19,6 @@
   let clickedElementFunctions = [];
   let hovered = null;
 
-  onMount(async () => {
-    clickedElementFunctions = await fetchFunctionsForElement(
-      $clickedElement._id
-    );
-  });
-
   const click = async (item) => {
     let createdFunction = await addFunction(
       $clickedElement._id,

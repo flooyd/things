@@ -525,13 +525,13 @@ export const functionInputs = {
   },
   if: {
     count: 1,
-    types: "boolean",
+    types: ["boolean"],
     names: ["condition"],
     description: "the condition to check",
   },
   elseIf: {
     count: 1,
-    types: "boolean",
+    types: ["boolean"],
     names: ["condition"],
     description: "the condition to check",
   },
@@ -721,6 +721,9 @@ export const executables = [
   "lessThanOrEqual",
   "equal",
   "notEqual",
+  "return",
+  "break",
+  "continue",
 ];
 
 export const objects = {

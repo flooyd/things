@@ -114,9 +114,7 @@
   }, 2000);
 
   $: if ($functionMoving === gridFunction._id) {
-    style = `z-index: 1000; background: 'white'; top:${rect?.y || 0}px; left: ${
-      rect?.x || 0
-    }px;`;
+    style = `z-index: 1000; top:${rect?.y || 0}px; left: ${rect?.x || 0}px;`;
   } else {
     style = `top:${rect?.y || 0}px; left: ${rect?.x || 0}px;`;
   }
@@ -157,13 +155,15 @@
         </div>
       {/if}
       <div class="gridFunctionName">{gridFunction.name}</div>
-      <div
-        class={"outArrow" + " " + objectColors[objects[gridFunction.name]]}
-        on:focus
-        on:mousedown={(e) => handleClickArrow("out", e)}
-      >
-        ▶
-      </div>
+      {#if objects[gridFunction.name] !== "jump" && objects[gridFunction.name] !== "return"}
+        <div
+          class={"outArrow" + " " + objectColors[objects[gridFunction.name]]}
+          on:focus
+          on:mousedown={(e) => handleClickArrow("out", e)}
+        >
+          ▶
+        </div>
+      {/if}
     </div>
     <div class="outputs">
       {#each Array(numOutputs) as _, i}
@@ -198,7 +198,7 @@
 
 <style>
   .gridFunction {
-    min-width: 150px;
+    min-width: 230px;
     position: absolute;
     padding: 6px;
     border: 2px solid black;
@@ -210,7 +210,7 @@
     z-index: 999;
     font-size: 16px;
     box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.75);
-    opacity: 0.95;
+    cursor: grab;
   }
 
   .top {

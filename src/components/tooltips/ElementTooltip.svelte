@@ -384,7 +384,7 @@
     color: black;
     z-index: 200;
     pointer-events: all;
-    border-right: 3px solid black;
+    border-right: 3px solid brown;
     opacity: 0.95;
   }
 
@@ -396,7 +396,7 @@
     width: 100%;
     align-items: center;
     gap: 8px;
-    color: orange;
+    color: brown;
     justify-content: space-between;
     align-items: center;
     padding: 13px 0px;
@@ -418,7 +418,7 @@
 
   .headerClose:hover {
     cursor: pointer;
-    background: orange;
+    background: brown;
     color: black;
   }
 
@@ -462,7 +462,7 @@
   .headerDivider {
     height: 3px;
     width: 100%;
-    border-top: 3px solid orange;
+    border-top: 3px solid brown;
     margin-top: 3px;
     color: transparent;
   }

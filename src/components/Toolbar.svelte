@@ -1,6 +1,6 @@
 <script lang="ts">
   import {
-    storesTooltipOpen,
+    variablesStoresTooltipOpen,
     functionsTooltipOpen,
     clickedElement,
     elementTooltipId,
@@ -29,12 +29,13 @@
       class="blueButton">Functions</button
     >
     <button
-      on:mousedown={() => ($storesTooltipOpen = !$storesTooltipOpen)}
-      class="orangeButton">Variables and Stores</button
+      on:mousedown={() =>
+        ($variablesStoresTooltipOpen = !$variablesStoresTooltipOpen)}
+      class="orangeButton">Variables/Stores</button
     >
     {#if $clickedElement}
       <button
-        class="id blueButton"
+        class="id brownButton"
         on:mousedown={(e) => {
           handleClickId(e);
         }}
@@ -62,6 +63,7 @@
     align-items: center;
     box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5);
     border-bottom: 3px solid black;
+    opacity: 0.9;
   }
 
   .appTitle {

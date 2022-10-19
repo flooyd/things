@@ -20,12 +20,14 @@
     functionMoving,
     windowScrollX,
     windowScrollY,
+    variablesStoresTooltipOpen,
   } from "./stores/globals";
   import { elements } from "./stores/elements";
   import { onMount } from "svelte";
   import FunctionsTooltip from "./components/tooltips/FunctionsTooltip.svelte";
   import { updateElement } from "./util";
   import HtmlTooltip from "./components/tooltips/HTMLTooltip.svelte";
+  import VariablesStoresTooltip from "./components/tooltips/VariablesStoresTooltip.svelte";
 
   let ready = false;
   let connectionLocations = [];
@@ -116,6 +118,9 @@
   {#if ready && $functionsTooltipOpen}
     <FunctionsTooltip />
   {/if}
+  {#if ready && $variablesStoresTooltipOpen}
+    <VariablesStoresTooltip />
+  {/if}
   {#if ready && $elementTooltipId === $clickedElement?._id}
     <ElementTooltip
       element={$clickedElement}
@@ -132,19 +137,19 @@
 {#if ready && $showGrid}
   <Grid />
 {/if}
-{#if ready && $clickedElement?.grid?.functions.length > 0}
+{#if ready && $clickedElement?.grid?.functions.length > 0 && $showGrid}
   {#each $clickedElement.grid.functions as item}
     <GridFunction gridFunction={item} />
   {/each}
   {#each connectionLocations as connection (connection.key)}
     <svg
-      width="100%"
-      height="100%"
+      height="5000px"
+      width="5000px"
       style="position: absolute; top: 0; left: 0; pointer-events: none;"
       ><line
         x1={connection.inArrowLocation.x}
         y1={connection.inArrowLocation.y}
-        x2={connection.outArrowLocation.x}
+        x2={connection.outArrowLocation.x + 10}
         y2={connection.outArrowLocation.y}
         stroke="black"
         stroke-width="5"
@@ -167,7 +172,7 @@
     top: 0px;
     pointer-events: none;
     justify-content: left;
-    position: absolute;
+    position: fixed;
     z-index: 99998;
     top: 0px;
     left: 0px;
