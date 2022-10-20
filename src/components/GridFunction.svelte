@@ -367,10 +367,6 @@
     padding: 5px;
   }
 
-  .inputCircle span {
-    color: black;
-  }
-
   .inputCircleInput {
     margin-left: 4px;
     width: 100px;
