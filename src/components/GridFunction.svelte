@@ -63,7 +63,6 @@
   };
 
   const stop = async (e) => {
-    console.log("STOP");
     $functionMoving = null;
     functionDirty = true;
   };
