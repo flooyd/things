@@ -65,8 +65,15 @@
   };
 
   const setRect = (movementLeft = 0, movementTop = 0) => {
+    if (rect.x < 3 && movementLeft < 0) {
+      return;
+    }
+    if (rect.y < 3 && movementTop < 0) {
+      return;
+    }
     rect.x = rect.x + movementLeft;
     rect.y = rect.y + movementTop;
+
     const inArrowLocation = {
       x: rect.x + 10,
       y: rect.y + rect.height - 6 - 15 - numOutputs * 30 - numInputs * 30,
@@ -118,6 +125,9 @@
   } else {
     style = `top:${rect?.y || 0}px; left: ${rect?.x || 0}px;`;
   }
+
+  console.log("gridFunction", gridFunction);
+  console.log(objects[gridFunction.name]);
 </script>
 
 <svelte:window on:mousemove={move} />
@@ -136,6 +146,7 @@
     }}
     on:mouseleave={() => {
       inputDisabled = true;
+      $functionMoving = null;
     }}
     class="gridFunction"
     bind:this={element}
@@ -181,11 +192,13 @@
           <div class="inputCircle">
             <i class={"fas fa-circle" + " " + typeColors[typesOfInput[i]]} />
             <span class="inputCircleType">{typesOfInput[i]}</span>
-            {#if typesOfInput[i] === "string" || typesOfInput[i] === "number"}
+            {#if typesOfInput[i] === "string" || typesOfInput[i] === "number" || (typesOfInput[i] === "any" && objects[gridFunction.name] === "console")}
               <input
                 class="inputCircleInput"
                 bind:this={inputCircleInput}
-                type={typesOfInput[i] === "string" ? "text" : "number"}
+                type={typesOfInput[i] === "string" || typesOfInput[i] === "any"
+                  ? "text"
+                  : "number"}
                 disabled={inputDisabled}
               />
             {/if}
@@ -198,7 +211,7 @@
 
 <style>
   .gridFunction {
-    min-width: 230px;
+    width: fit-content;
     position: absolute;
     padding: 6px;
     border: 2px solid black;
