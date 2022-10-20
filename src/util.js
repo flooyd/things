@@ -121,7 +121,6 @@ export const addFunction = async (elementId, type, rectX, rectY) => {
 //delete function by id
 export const deleteFunctionById = async (functionId) => {
   updateLoading(true);
-  console.log(functionId);
   try {
     const functions = await fetch(
       "http://localhost:3000/functions/" + functionId,
@@ -132,7 +131,6 @@ export const deleteFunctionById = async (functionId) => {
     updateLoading(false);
     return true;
   } catch (error) {
-    console.log(error);
     updateLoading(false);
     return false;
   }
@@ -232,7 +230,6 @@ export const deleteAllConnectionsForElement = async (elementId) => {
 };
 
 export const deleteAllConnectionsForFunction = async (functionId) => {
-  console.log(functionId);
   updateLoading(true);
   try {
     const connections = await fetch(
