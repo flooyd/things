@@ -28,12 +28,10 @@
   import { updateElement } from "./util";
   import HtmlTooltip from "./components/tooltips/HTMLTooltip.svelte";
   import VariablesStoresTooltip from "./components/tooltips/VariablesStoresTooltip.svelte";
-  import { fade } from "svelte/transition";
+  import { fade, fly } from "svelte/transition";
 
   let ready = false;
   let connectionLocations = [];
-  let scrollX = 0;
-  let scrollY = 0;
 
   onMount(async () => {
     ready = true;
@@ -139,8 +137,10 @@
   <Grid />
 {/if}
 {#if ready && $clickedElement?.grid?.functions.length > 0 && $showGrid}
-  {#each $clickedElement.grid.functions as item}
-    <GridFunction gridFunction={item} />
+  {#each $clickedElement.grid.functions as item (item._id)}
+    <div out:fade>
+      <GridFunction gridFunction={item} />
+    </div>
   {/each}
   {#each connectionLocations as connection (connection.key)}
     <svg

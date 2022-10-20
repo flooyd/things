@@ -121,13 +121,21 @@ export const addFunction = async (elementId, type, rectX, rectY) => {
 //delete function by id
 export const deleteFunctionById = async (functionId) => {
   updateLoading(true);
-  const functions = await fetch(
-    "http://localhost:3000/functions/" + functionId,
-    {
-      method: "DELETE",
-    }
-  );
-  updateLoading(false);
+  console.log(functionId);
+  try {
+    const functions = await fetch(
+      "http://localhost:3000/functions/" + functionId,
+      {
+        method: "DELETE",
+      }
+    );
+    updateLoading(false);
+    return true;
+  } catch (error) {
+    console.log(error);
+    updateLoading(false);
+    return false;
+  }
 };
 
 //delete all functions by id
@@ -150,7 +158,8 @@ export const removeAllFunctions = async () => {
   updateLoading(false);
 };
 
-export const saveFunction = async (functionId) => {
+export const saveFunction = async (functionId, pendingDelete) => {
+  if (pendingDelete) return;
   const functions = get(clickedElement).grid.functions;
   const functionToSave = functions.find((func) => func._id === functionId);
   const functionFlattend = {
@@ -214,12 +223,31 @@ export const deleteConnectionById = async (connectionId) => {
 export const deleteAllConnectionsForElement = async (elementId) => {
   updateLoading(true);
   const connections = await fetch(
-    "http://localhost:3000/connections/deleteAll/" + elementId,
+    "http://localhost:3000/connections/deleteAll/forElement/" + elementId,
     {
       method: "DELETE",
     }
   );
   updateLoading(false);
+};
+
+export const deleteAllConnectionsForFunction = async (functionId) => {
+  console.log(functionId);
+  updateLoading(true);
+  try {
+    const connections = await fetch(
+      "http://localhost:3000/connections/deleteAll/forFunction/" + functionId,
+      {
+        method: "DELETE",
+      }
+    );
+    updateLoading(false);
+    return true;
+  } catch (error) {
+    console.log(error);
+    updateLoading(false);
+    return false;
+  }
 };
 
 //delete all connections

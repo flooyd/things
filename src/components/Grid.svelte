@@ -156,7 +156,7 @@
       selectionToolMousePosition = null;
       $functionMoving = null;
     }}
-    transition:fade={{ duration: 75 }}
+    out:fade
   >
     {#if selectionToolStartLocation && selectionToolMousePosition && !$functionMoving}
       <SelectionTool
