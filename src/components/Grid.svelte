@@ -18,13 +18,12 @@
 
   let element = null;
   let rect = null;
-  let scrollX = 0;
-  let scrollY = 0;
   let ready = false;
   let selectionToolStartLocation = null;
   let selectionToolMousePosition = null;
 
   onMount(async () => {
+    if (!$clickedElement) return;
     let functionsForElement = await fetchFunctionsForElement(
       $clickedElement._id
     );
@@ -139,6 +138,14 @@
     finalizeSelectionTool(e);
   }}
 />
+{#if !$clickedElement}
+  <div class="noElement">
+    <div class="title">No Element Selected</div>
+    <div class="hideGrid">
+      Click Hide Grid above and select an element by double clicking it.
+    </div>
+  </div>
+{/if}
 {#if ready}
   <div
     class="grid"
@@ -176,5 +183,23 @@
       linear-gradient(to bottom, grey 1px, white 1px);
     background-size: 20px 20px;
     white-space: nowrap;
+  }
+
+  .noElement {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    font-size: 20px;
+    color: black;
+    line-height: 1.4;
+  }
+
+  .title {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 20px;
   }
 </style>

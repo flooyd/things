@@ -63,13 +63,6 @@
         class="redButton">Delete Element</button
       >
       <button
-        class="blueButton"
-        type="button"
-        on:click={() => ($elementTooltipId = null)}
-      >
-        Close
-      </button>
-      <button
         on:click={() => ($showGrid = !$showGrid)}
         class="blueButton"
         type="button"

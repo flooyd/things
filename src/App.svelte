@@ -28,6 +28,7 @@
   import { updateElement } from "./util";
   import HtmlTooltip from "./components/tooltips/HTMLTooltip.svelte";
   import VariablesStoresTooltip from "./components/tooltips/VariablesStoresTooltip.svelte";
+  import { fade } from "svelte/transition";
 
   let ready = false;
   let connectionLocations = [];
@@ -143,6 +144,7 @@
   {/each}
   {#each connectionLocations as connection (connection.key)}
     <svg
+      transition:fade
       height="5000px"
       width="5000px"
       style="position: absolute; top: 0; left: 0; pointer-events: none;"

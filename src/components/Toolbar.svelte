@@ -5,6 +5,7 @@
     clickedElement,
     elementTooltipId,
     htmlTooltipOpen,
+    showGrid,
   } from "../stores/globals";
 
   const handleClickId = (e) => {
@@ -43,6 +44,15 @@
         {$clickedElement.name
           ? $clickedElement._id + " - " + $clickedElement.name
           : $clickedElement._id}
+      </button>
+    {/if}
+    {#if $showGrid}
+      <button class="threethreesbutton" on:click={() => ($showGrid = false)}>
+        Close Grid
+      </button>
+    {:else}
+      <button class="333button" on:click={() => ($showGrid = true)}>
+        Open Grid
       </button>
     {/if}
   </div>

@@ -1,5 +1,6 @@
 <script>
   import { onMount, tick } from "svelte";
+  import { fade } from "svelte/transition";
   import {
     clickedElement,
     outArrowClicked,
@@ -149,6 +150,7 @@
       $functionMoving = null;
     }}
     class="gridFunction"
+    transition:fade
     bind:this={element}
     {style}
   >
