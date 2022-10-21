@@ -10,6 +10,7 @@
     toolbarOpenStyle,
   } from "../../stores/globals";
   import { deleteElement } from "../../util";
+  import { fly } from "svelte/transition";
 
   export let element;
   export let handleEdit;
@@ -38,6 +39,7 @@
   }}
   class="elementTooltip"
   style={style + $toolbarOpenStyle}
+  transition:fly={{ duration: 75, x: -500 }}
 >
   <div class="header">
     <div class="headerTitle">

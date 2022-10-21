@@ -15,6 +15,7 @@
     functionMoving,
   } from "../../stores/globals";
   import { onMount, tick } from "svelte";
+  import { fly } from "svelte/transition";
 
   let clickedElementFunctions = [];
   let hovered = null;
@@ -58,7 +59,11 @@
   };
 </script>
 
-<div class="functionsTooltip" style={$toolbarOpenStyle}>
+<div
+  class="functionsTooltip"
+  style={$toolbarOpenStyle}
+  transition:fly={{ duration: 75, x: -500 }}
+>
   <div class="header">
     <div class="headerTitle">
       <span>Functions</span>

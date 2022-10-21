@@ -1,6 +1,7 @@
 <script>
   import { addElement } from "../../util";
   import { toolbarOpenStyle, htmlTooltipOpen } from "../../stores/globals";
+  import { fly } from "svelte/transition";
 
   let hovered = null;
   let showOptions = false;
@@ -159,7 +160,11 @@
   };
 </script>
 
-<div class="htmlTooltip" style={$toolbarOpenStyle}>
+<div
+  class="htmlTooltip"
+  style={$toolbarOpenStyle}
+  transition:fly={{ duration: 75, x: -500 }}
+>
   <div class="header">
     <div class="headerTitle">
       <span>HTML</span>

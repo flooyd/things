@@ -10,6 +10,7 @@
     variablesStoresTooltipOpen,
     clickedElement,
   } from "../../stores/globals";
+  import { fly } from "svelte/transition";
 
   let error = "";
   let selected = null;
@@ -97,7 +98,11 @@
   }
 </script>
 
-<div class="variablesStoresTooltip" style={$toolbarOpenStyle}>
+<div
+  class="variablesStoresTooltip"
+  style={$toolbarOpenStyle}
+  transition:fly={{ duration: 75, x: -500 }}
+>
   <div class="header">
     <div class="headerTitle">
       <span>Variables and Stores</span>
