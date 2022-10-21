@@ -51,7 +51,7 @@
         Close Grid
       </button>
     {:else}
-      <button class="333button" on:click={() => ($showGrid = true)}>
+      <button class="threethreesbutton" on:click={() => ($showGrid = true)}>
         Open Grid
       </button>
     {/if}

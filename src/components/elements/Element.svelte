@@ -149,7 +149,6 @@
 {#if ready}
   <div
     class="element"
-    out:fade
     on:dblclick={(e) => {
       e.stopPropagation();
       showTooltip = true;

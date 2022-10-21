@@ -64,7 +64,7 @@
     ready = true;
   });
 
-  $: if (element) {
+  $: if (element && ready) {
     rect = element.getBoundingClientRect();
   }
 
@@ -149,6 +149,7 @@
 {#if ready}
   <div
     class="grid"
+    transition:fade={{ duration: 100 }}
     bind:this={element}
     on:mousedown={(e) => updateSelectionToolProps(e)}
     on:mouseleave={() => {
@@ -156,7 +157,6 @@
       selectionToolMousePosition = null;
       $functionMoving = null;
     }}
-    out:fade
   >
     {#if selectionToolStartLocation && selectionToolMousePosition && !$functionMoving}
       <SelectionTool

@@ -8,6 +8,7 @@
     functionMoving,
     mouseDownStartedOnArrow,
     gridConnectionLocationsUpdatePending,
+    lastInteractedWith,
   } from "../stores/globals";
   import {
     objects,
@@ -30,7 +31,6 @@
   let typesOfInput = null;
   let typeOfOutput;
   let ready = false;
-  let initialized = false;
   let inputCircleInput = null;
   let inputCircleTextarea = null;
   let inputDisabled = true;
@@ -39,7 +39,6 @@
     y: gridFunction.rect.y,
     width: 0,
     height: 0,
-    initialized: false,
   };
   let style = null;
   let functionDirty = false;
@@ -58,7 +57,12 @@
   const move = (e) => {
     if (pendingDelete) return;
     if ($functionMoving === gridFunction._id) {
-      setRect(e.movementX, e.movementY);
+      setRect(
+        e.movementX,
+        e.movementY,
+        element.clientWidth,
+        element.clientHeight
+      );
     }
   };
 
@@ -73,24 +77,50 @@
     }
   };
 
-  const setRect = (movementLeft = 0, movementTop = 0) => {
-    if (rect.x < 3 && movementLeft < 0) {
+  // 241 12 = 253
+
+  const setRect = (movementLeft = 0, movementTop = 0, width, height) => {
+    console.log(width);
+    if (rect.x === 0 && movementLeft < 0) {
       return;
     }
-    if (rect.y < 3 && movementTop < 0) {
+    if (rect.y === 0 && movementTop < 0) {
       return;
     }
     rect.x = rect.x + movementLeft;
     rect.y = rect.y + movementTop;
 
     const inArrowLocation = {
-      x: rect.x + 10,
-      y: rect.y + rect.height - 6 - 15 - numOutputs * 36 - numInputs * 36,
+      x:
+        rect.x +
+        6 + //padding of left of function
+        5 + //padding left of the input arrow
+        7 + //half the width of the input arrow
+        3, //border width on left of function
+      y:
+        rect.y +
+        3 + //half the width of line
+        6 + // padding of top of function
+        16 + // height of the label
+        4 + // padding-bottom of label
+        1 + // border-bottom of label
+        8 + // margin-bottom of label
+        19, // center point of height (37) of row (topName in this case)
     };
     const outArrowLocation = {
-      x: rect.x + rect.width - 10,
-      y: rect.y + rect.height - 6 - 15 - numOutputs * 36 - numInputs * 36,
+      x: rect.x + width - 5 - 7 - 6, //padding of left of function
+      y:
+        rect.y +
+        3 + //half the width of line
+        6 + // padding of top of function
+        16 + // height of the label
+        4 + // padding-bottom of label
+        1 + // border-bottom of label
+        8 + // margin-bottom of label
+        19, // center point of height (37) of row (topName in this case)
     };
+
+    //6 + 16 + 4 + 1 + 8 + 18 = 53
 
     $clickedElement.grid.functions.find(
       (f) => f._id === gridFunction._id
@@ -99,6 +129,8 @@
       y: rect.y,
       inArrowLocation,
       outArrowLocation,
+      width: width,
+      height: height,
     };
 
     $clickedElement = $clickedElement;
@@ -116,10 +148,9 @@
     }
   };
 
-  $: if (element && !initialized) {
-    rect.width = element.clientWidth;
-    rect.height = element.clientHeight;
-    initialized = true;
+  $: if (ready && element) {
+    console.log("READY!!!");
+    setRect(0, 0, element.clientHeight, element.clientWidth);
   }
 
   setInterval(() => {
@@ -163,11 +194,16 @@
     }
   };
 
-  $: if ($functionMoving === gridFunction._id) {
+  $: if (
+    $functionMoving === gridFunction._id ||
+    $lastInteractedWith === gridFunction._id
+  ) {
     style = `z-index: 1000; top:${rect?.y || 0}px; left: ${rect?.x || 0}px;`;
   } else {
     style = `top:${rect?.y || 0}px; left: ${rect?.x || 0}px;`;
   }
+
+  //6 + 16 + 4 + 1 + 8 + 18 = 53
 </script>
 
 <svelte:window on:mousemove={move} />
@@ -175,6 +211,7 @@
   <div
     on:mousedown={(e) => {
       e.stopPropagation();
+      $lastInteractedWith = gridFunction._id;
       $functionMoving = gridFunction._id;
       start();
     }}
@@ -188,7 +225,6 @@
     on:mouseleave={() => {
       inputDisabled = true;
       $functionMoving = null;
-      contextMenuOpen = false;
       functionHovered = false;
     }}
     on:contextmenu={(e) => {
@@ -198,29 +234,61 @@
     class="gridFunction"
     bind:this={element}
     {style}
-    in:fly={{ x: -500, duration: 150 }}
+    in:fly={{ x: -500, duration: 100 }}
   >
     {#if contextMenuOpen}
-      <div
-        out:fade={{ duration: 150 }}
-        on:mouseleave={() => (contextMenuOpen = false)}
-        class="contextMenu"
-      >
-        <button class="redButton" on:mousedown={(e) => deleteFunction(e)}
-          >Delete</button
-        >
-        <button class="threethreesButton" on:click={() => removeConnections()}
-          >Remove Connections</button
-        >
+      <div out:fade={{ duration: 100 }} class="contextMenu">
+        <div class="buttons">
+          <button class="redButton" on:mousedown={(e) => deleteFunction(e)}
+            >Delete</button
+          >
+          <button class="threethreesbutton" on:click={() => removeConnections()}
+            >Remove Connections</button
+          >
+          <button
+            class="threethreesbutton"
+            on:click={() => (contextMenuOpen = false)}
+            ><i class="fa fa-times" />
+          </button>
+        </div>
+
+        <div class="locationInfo">
+          <div class="header">
+            <div class="name">{gridFunction.name}</div>
+            <div class="infoType">Location and Rectangle</div>
+          </div>
+          {#each Object.keys($clickedElement.grid.functions.find((f) => f._id === gridFunction._id).rect) as key}
+            <div class="locationInfoItem">
+              <div class="locationInfoItemKey">{key}</div>
+              <div class="locationInfoItemValue">
+                {#if typeof $clickedElement.grid.functions.find((f) => f._id === gridFunction._id).rect[key] === "object"}
+                  {#each Object.keys($clickedElement.grid.functions.find((f) => f._id === gridFunction._id).rect[key]) as key2}
+                    <div class="locationInfoItem">
+                      <div class="locationInfoItemKey">{key2}</div>
+                      <div class="locationInfoItemValue">
+                        {$clickedElement.grid.functions.find(
+                          (f) => f._id === gridFunction._id
+                        ).rect[key][key2]}
+                      </div>
+                    </div>
+                  {/each}
+                {:else}
+                  {$clickedElement.grid.functions.find(
+                    (f) => f._id === gridFunction._id
+                  ).rect[key]}
+                {/if}
+              </div>
+            </div>
+          {/each}
+        </div>
       </div>
     {/if}
-    <div out:fade={{ duration: 100 }} class="label">
+    <div class="label">
       {objectDescriptions[objects[gridFunction.name]]}
     </div>
-    <div out:fade={{ duration: 100 }} class="top">
+    <div class="topName">
       {#if executables.includes(gridFunction.name)}
         <div
-          out:fade={{ duration: 100 }}
           class={"inArrow" + " " + objectColors[objects[gridFunction.name]]}
           on:focus
           on:mousedown={(e) => handleClickArrow("in", e)}
@@ -228,7 +296,7 @@
           ▶
         </div>
       {/if}
-      <div out:fade={{ duration: 100 }} class="gridFunctionName">
+      <div class="gridFunctionName">
         {gridFunction.name}
       </div>
       {#if objects[gridFunction.name] !== "jump" && objects[gridFunction.name] !== "return"}
@@ -241,7 +309,7 @@
         </div>
       {/if}
     </div>
-    <div out:fade={{ duration: 100 }} class="outputs">
+    <div class="outputs">
       {#each Array(numOutputs) as _, i}
         <div class="output">
           <div class="outputCircle">
@@ -251,7 +319,7 @@
         </div>
       {/each}
     </div>
-    <div out:fade={{ duration: 100 }} class="inputs">
+    <div class="inputs">
       {#each Array(numInputs) as _, i}
         <div class="input">
           <i class={"fas fa-circle" + " " + typeColors[typesOfInput[i]]} />
@@ -292,20 +360,20 @@
     font-size: 16px;
     box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.75);
     cursor: grab;
-    opacity: 1;
+    opacity: 0.95;
   }
 
   .contextMenu {
     position: absolute;
-    min-width: 220px;
-    width: fit-content;
+    min-width: 300px;
     left: -3px;
-    bottom: -62px;
+    top: -3px;
     gap: 8px;
     background: white;
     border: 3px solid black;
     border-collapse: collapse;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 99999;
@@ -314,15 +382,61 @@
     padding: 8px;
     border-radius: 5px;
     font-size: 13px;
+    opacity: 0.9;
   }
 
-  .top {
+  .contextMenu .buttons {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 4px;
+    justify-content: center;
+  }
+
+  .contextMenu .locationInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+
+  .contextMenu .locationInfo .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 4px;
+  }
+
+  .header .name,
+  .header .infoType {
+    font-weight: bold;
+  }
+  .contextMenu .locationInfoItem {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px;
+    align-items: center;
+    border: 1px solid black;
+    gap: 8px;
+    border-collapse: collapse;
+  }
+
+  .contextMenu .locationInfoItemKey {
+    font-weight: bold;
+  }
+
+  .contextMenu .locationInfoItemValue {
+    font-weight: normal;
+  }
+
+  .topName {
     display: flex;
     align-items: center;
     width: 100%;
     justify-content: space-between;
     gap: 8px;
-    height: 30px;
+    height: 37px;
   }
 
   .output {
@@ -330,7 +444,7 @@
     align-items: center;
     width: 100%;
     justify-content: right;
-    height: 36px;
+    height: 37px;
   }
 
   .outputCircle {
@@ -349,7 +463,7 @@
     justify-content: left;
     align-items: center;
     gap: 4px;
-    height: 36px;
+    height: 37px;
   }
 
   .inputCircle {

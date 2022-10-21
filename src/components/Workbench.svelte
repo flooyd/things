@@ -1,12 +1,12 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { fetchElements } from "../util.js";
-  import { fade } from "svelte/transition";
 
   import { elements } from "../stores/elements";
   import { toolbarOpenStyle } from "../stores/globals";
 
   import Element from "./elements/Element.svelte";
+  import { fade } from "svelte/transition";
 
   let ready = false;
 
@@ -54,9 +54,6 @@
     </div>
   </div>
 {/if}
-{#if !ready}
-  <div class="loading" in:fade>Loading...</div>
-{/if}
 
 <style>
   .workbench {
@@ -70,15 +67,5 @@
     background: white;
     height: 100%;
     width: 100%;
-  }
-
-  .loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: calc(100vh);
-    font-size: 50px;
-    background: var(--platinum);
-    color: black;
   }
 </style>

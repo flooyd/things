@@ -18,9 +18,9 @@
     htmlTooltipOpen,
     gridConnectionLocationsUpdatePending,
     functionMoving,
+    variablesStoresTooltipOpen,
     windowScrollX,
     windowScrollY,
-    variablesStoresTooltipOpen,
   } from "./stores/globals";
   import { elements } from "./stores/elements";
   import { onMount } from "svelte";
@@ -28,7 +28,7 @@
   import { updateElement } from "./util";
   import HtmlTooltip from "./components/tooltips/HTMLTooltip.svelte";
   import VariablesStoresTooltip from "./components/tooltips/VariablesStoresTooltip.svelte";
-  import { fade, fly } from "svelte/transition";
+  import { fade } from "svelte/transition";
 
   let ready = false;
   let connectionLocations = [];
@@ -92,16 +92,22 @@
   }, 5);
 </script>
 
-<svelte:window on:keydown={handleKeyPress} />
+<svelte:window
+  on:keydown={handleKeyPress}
+  on:mousemove={(e) => {
+    $mousePosition = {
+      x: e.clientX + $windowScrollX,
+      y: e.clientY + $windowScrollY,
+    };
+  }}
+  on:scroll={(e) => {
+    $windowScrollX = window.scrollX;
+    $windowScrollY = window.scrollY;
+  }}
+/>
 
 {#if ready}
-  <main
-    on:mousemove={(e) => {
-      $mousePosition = { x: e.clientX, y: e.clientY };
-    }}
-    bind:clientWidth={$width}
-    bind:clientHeight={$height}
-  >
+  <main bind:clientWidth={$width} bind:clientHeight={$height}>
     {#if ready && !$showGrid}
       <Workbench />
     {/if}
@@ -138,25 +144,25 @@
 {/if}
 {#if ready && $clickedElement?.grid?.functions.length > 0 && $showGrid}
   {#each $clickedElement.grid.functions as item (item._id)}
-    <div out:fade>
+    <div out:fade={{ duration: 100 }}>
       <GridFunction gridFunction={item} />
     </div>
   {/each}
   {#each connectionLocations as connection (connection.key)}
     <svg
-      transition:fade
+      transition:fade={{ duration: 100 }}
       height="5000px"
       width="5000px"
       style="position: absolute; top: 0; left: 0; pointer-events: none;"
       ><line
         x1={connection.inArrowLocation.x}
         y1={connection.inArrowLocation.y}
-        x2={connection.outArrowLocation.x + 10}
+        x2={connection.outArrowLocation.x}
         y2={connection.outArrowLocation.y}
         stroke="black"
         stroke-width="5"
         stroke-linecap="round"
-        stroke-dasharray="2, 2"
+        stroke-dasharray="2,2"
       /></svg
     >
   {/each}

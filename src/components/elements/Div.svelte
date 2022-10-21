@@ -48,7 +48,7 @@
 </script>
 
 {#key unique}
-  <div transition:fade {id} style={styleString} class={`thingDiv`} {name}>
+  <div {id} style={styleString} class={`thingDiv`} {name}>
     {#each elements as element (element.id)}
       <Element {element} />
     {/each}
