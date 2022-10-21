@@ -275,6 +275,61 @@ export const addConnection = async (connection) => {
   }
 };
 
+export const getVariablesForElement = async (elementId) => {
+  updateLoading(true);
+  const variables = await fetch(
+    "http://localhost:3000/function-vars/forElement/" + elementId
+  );
+  const variablesJson = await variables.json();
+  updateLoading(false);
+  return variablesJson;
+};
+
+export const addVariableForElement = async (elementId, variable) => {
+  variable.elementId = elementId;
+  updateLoading(true);
+  const createdVariable = await fetch("http://localhost:3000/function-vars/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ variable }),
+  });
+  if (createdVariable.ok) {
+    const variableJson = await createdVariable.json();
+    updateLoading(false);
+    return variableJson;
+  } else {
+    updateLoading(false);
+    return null;
+  }
+};
+
+export const updateVariableForElement = async (elementId, variable) => {
+  variable.elementId = elementId;
+  updateLoading(true);
+  const updatedVariable = await fetch(
+    "http://localhost:3000/function-vars/" + variable._id,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ variable }),
+    }
+  );
+  if (updatedVariable.ok) {
+    const variableJson = await updatedVariable.json();
+    updateLoading(false);
+    return variableJson;
+  } else {
+    updateLoading(false);
+    return null;
+  }
+};
+
+export const addStore = async (store) => {};
+
 //update connection is not necessary
 
 export const functions = {

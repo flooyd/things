@@ -1,12 +1,100 @@
 <script>
-  import {} from "../../util";
+  import {
+    addVariableForElement,
+    getId,
+    getVariablesForElement,
+    updateVariableForElement,
+  } from "../../util";
   import {
     toolbarOpenStyle,
     variablesStoresTooltipOpen,
+    clickedElement,
   } from "../../stores/globals";
-  import { onMount } from "svelte";
 
-  onMount(async () => {});
+  let error = "";
+  let selected = null;
+  let selectedType = null;
+  let ready = false;
+  let variables = [];
+  let dirtyVariables = [];
+
+  const addVariable = async (readonly = false) => {
+    const createdVariable = await addVariableForElement($clickedElement._id, {
+      name: getId(),
+      type: "string",
+      readonly,
+      value: "",
+    });
+
+    if (createdVariable) {
+      variables.push(createdVariable);
+      variables = variables;
+    }
+  };
+
+  const setSelected = (value) => {
+    selected = value;
+  };
+
+  const handleChange = (e, id) => {
+    const variable = variables.find((v) => v._id === id);
+    variable[e.target.name] = e.target.value;
+    variables = variables;
+    console.log(variable);
+    if (!dirtyVariables.find((v) => v._id === id)) {
+      dirtyVariables.push(variable);
+    }
+  };
+
+  const saveVariable = async () => {
+    if (error.length > 0) {
+      return;
+    }
+    error = " ";
+    const variablesToSave = dirtyVariables.map((v) => {
+      return {
+        _id: v._id,
+        name: v.name,
+        type: v.type,
+        value: v.value,
+        readonly: v.readonly,
+      };
+    });
+    console.log(variablesToSave);
+    const elementId = $clickedElement._id;
+    variablesToSave.forEach((variable) => {
+      const updatedVariable = updateVariableForElement(elementId, variable);
+      variable = updatedVariable;
+    });
+    variables = variables;
+    dirtyVariables = [];
+  };
+
+  setInterval(() => {
+    variables.forEach((variable) => {
+      if (
+        variables.find(
+          (v) => v.name === variable.name && v._id !== variable._id
+        )
+      ) {
+        error = "Variable names must be unique";
+      } else {
+        error = "";
+      }
+    });
+  }, 500);
+
+  const getVariables = async () => {
+    const elementId = $clickedElement._id;
+    variables = await getVariablesForElement(elementId);
+    ready = true;
+  };
+
+  $: console.log(selected, selectedType);
+  $: console.log(variables);
+  $: if ($clickedElement && $variablesStoresTooltipOpen) {
+    getVariables();
+  }
 </script>
 
 <div class="variablesStoresTooltip" style={$toolbarOpenStyle}>
@@ -31,6 +119,207 @@
       elements/components).
     </span>
   </div>
+  {#if $clickedElement}
+    <div class="variablesStores">
+      <div class="variable">
+        <div class="variableTitle">
+          <span>Variables</span>
+          <i class="fa-solid fa-box" />
+        </div>
+        <div class="variableDescription">
+          <span>
+            Variables are used to store data that is only used in the current
+            element/component.
+          </span>
+        </div>
+        <div class="variableExample">
+          <span>
+            <span class="variableExampleTitle">Example:</span>
+            <span class="variableExampleCode">
+              <span class="variableExampleCodeKeyword">let</span>
+              <span class="variableExampleCodeName">name</span>
+              <span class="variableExampleCodeOperator">=</span>
+              <span class="variableExampleCodeString">"John"</span>
+              <span class="variableExampleCodeOperator">;</span>
+            </span>
+          </span>
+        </div>
+
+        <div class="variables">
+          <div
+            class="variable"
+            on:click={() => setSelected("let")}
+            style={selected === "let" ? "" : "cursor: pointer"}
+          >
+            <div class="variableTitle">
+              <div>
+                <span>let</span>
+              </div>
+              {#if selected === "let"}
+                <button
+                  class="threethreesbutton"
+                  on:click={(e) => {
+                    e.stopPropagation();
+                    setSelected(null);
+                  }}
+                >
+                  <i class="fa fa-times" />
+                </button>
+              {/if}
+            </div>
+            <div class="variableDescription">
+              <span>
+                Declares a variable that can be changed. The value of the
+                variable can be changed at any time.
+              </span>
+            </div>
+            {#if selected === "let"}
+              <div class="variableEditors">
+                <div class="buttons">
+                  <button
+                    class="blueButton"
+                    on:click={() => saveVariable()}
+                    disabled={error.length > 0}>Save</button
+                  >
+                  <button
+                    class="orangeButton"
+                    on:click={() => addVariable(false)}
+                    disabled={error.length > 0}
+                  >
+                    <i class="fa fa-plus" />
+                  </button>
+                </div>
+                <div class="error">{error}</div>
+                {#if ready}
+                  {#each variables as variable (variable._id)}
+                    <div class="variableEditor">
+                      <span class="variableEditorKeyword">let</span>
+                      <span class="variableEditorName">
+                        <input
+                          on:input={(e) => handleChange(e, variable._id)}
+                          class="nameInput"
+                          type="text"
+                          placeholder="name"
+                          name="name"
+                          value={variable.name}
+                        />
+                      </span>
+                      <span class="variableEditorOperator">=</span>
+                      <span class="variableEditorString">
+                        <input
+                          disabled={error.length > 0}
+                          class="valueInput"
+                          type="text"
+                          placeholder="John"
+                          name="value"
+                          value={variable.value}
+                          on:input={(e) => handleChange(e, variable._id)}
+                        />
+                      </span>
+                      <span class="variableEditorOperator">;</span>
+                      <select
+                        name="type"
+                        disabled={error.length > 0}
+                        bind:value={variable.type}
+                      >
+                        <option value="number">number</option>
+                        <option value="string">string</option>
+                        <option value="boolean">boolean</option>
+                        <option value="object">object</option>
+                        <option value="array">array</option>
+                        <option value="null">null</option>
+                        <option value="undefined">undefined</option>
+                      </select>
+                      <button class="orangeButton" disabled={error.length > 0}>
+                        <i class="fa fa-arrow-right" />
+                      </button>
+                    </div>
+                  {/each}
+                {/if}
+              </div>
+            {/if}
+          </div>
+          <div class="variable" on:click={() => setSelected("const")}>
+            <div class="variableTitle">
+              <span>const</span>
+            </div>
+            <div class="variableDescription">
+              <span>
+                Declares a variable that cannot be changed. The value of the
+                variable cannot be changed at any time.
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="store">
+        <div class="storeTitle">
+          <span>Stores</span>
+          <i class="fa-solid fa-box" />
+        </div>
+        <div class="storeDescription">
+          <span>
+            Stores are used to store data that is used across the entire app (or
+            multiple elements/components).
+          </span>
+        </div>
+        <div class="storeExample">
+          <span>
+            <span class="storeExampleTitle">Example:</span>
+            <span class="storeExampleCode">
+              <span class="storeExampleCodeKeyword">import</span>
+              <span class="storeExampleCodeName">name</span>
+              <span class="storeExampleCodeOperator">from</span>
+              <span class="storeExampleCodeString">"../stores/name"</span>
+              <span class="storeExampleCodeOperator">;</span>
+            </span>
+          </span>
+        </div>
+        <div class="stores">
+          <div class="store" on:click={() => setSelected("createStore")}>
+            <div class="storeTitle">
+              <span>Create Store</span>
+            </div>
+            <div class="storeDescription">
+              <span> Creates a store. </span>
+            </div>
+          </div>
+          <div class="store" on:click={() => setSelected("updateStore")}>
+            <div class="storeTitle">
+              <span>Update Store</span>
+            </div>
+            <div class="storeDescription">
+              <span> Updates a store. </span>
+            </div>
+          </div>
+
+          <div class="store" on:click={() => setSelected("subscribe")}>
+            <div class="storeTitle">
+              <span>Subscribe to Store</span>
+            </div>
+            <div class="storeDescription">
+              <span>
+                Subscribes to a store. When the store is updated, the subscribed
+                element/component will be updated.
+              </span>
+            </div>
+          </div>
+          <div class="store" on:click={() => setSelected("unsubscribe")}>
+            <div class="storeTitle">
+              <span>Unsubscribe from Store</span>
+            </div>
+            <div class="storeDescription">
+              <span>
+                Unsubscribes from a store. When the store is updated, the
+                unsubscribed element/component will not be updated.
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {/if}
+  <div class="divider">Hello</div>
 </div>
 
 <style>
@@ -39,8 +328,8 @@
     flex-direction: column;
     justify-content: flex-start;
     gap: 8px;
-    min-width: 400px;
-    max-width: 400px;
+    min-width: 500px;
+    max-width: 500px;
     height: 100%;
     background: white;
     font-size: 13px;
@@ -102,6 +391,122 @@
     width: 100%;
     border-top: 3px solid orange;
     margin-top: 3px;
+    color: transparent;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .variablesStores {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .variable,
+  .store {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 5px;
+  }
+
+  .variableEditor {
+    padding: 4px 0px;
+    border-bottom: 1px solid black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .variableEditor:hover {
+    background: white;
+  }
+
+  .error {
+    color: red;
+  }
+
+  .nameInput,
+  .valueInput {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 13px;
+    color: black;
+    max-width: 100px;
+  }
+
+  .variables .variable,
+  .stores .store {
+    margin-top: 8px;
+    border-radius: 5px;
+  }
+
+  .variableTitle,
+  .storeTitle {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  .variableDescription,
+  .storeDescription {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .variableExample,
+  .storeExample {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .variableExampleTitle,
+  .storeExampleTitle {
+    font-weight: bold;
+  }
+
+  .variableExampleCode,
+  .storeExampleCode,
+  .variableEditorOperator {
+    font-family: "Courier New", Courier, monospace;
+  }
+
+  .variableExampleCodeKeyword,
+  .storeExampleCodeKeyword,
+  .variableEditorKeyword {
+    color: #0000ff;
+  }
+
+  .variableExampleCodeName,
+  .storeExampleCodeName,
+  .variableEditorName {
+    color: #a31515;
+  }
+
+  .variableExampleCodeOperator,
+  .storeExampleCodeOperator,
+  .variableEditorOperator {
+    color: orange;
+  }
+
+  .variableExampleCodeString,
+  .storeExampleCodeString {
+    color: #a31515;
+  }
+
+  .divider {
+    width: 100%;
+    height: 30px;
     color: transparent;
   }
 </style>
