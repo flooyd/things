@@ -100,14 +100,28 @@ export const fetchFunctionsForElement = async (elementId) => {
   return functionsJson;
 };
 
-export const addFunction = async (elementId, type, rectX, rectY) => {
+export const addFunction = async (
+  elementId,
+  name,
+  rectX,
+  rectY,
+  isVariable = false,
+  variableId = null
+) => {
   updateLoading(true);
   const functions = await fetch("http://localhost:3000/functions/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ name: type, elementId: elementId, rectX, rectY }),
+    body: JSON.stringify({
+      name,
+      elementId,
+      rectX,
+      rectY,
+      isVariable,
+      variableId,
+    }),
   });
   if (functions.ok) {
     const functionsJson = await functions.json();

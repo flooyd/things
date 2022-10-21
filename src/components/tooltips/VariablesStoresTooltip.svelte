@@ -4,13 +4,19 @@
     getId,
     getVariablesForElement,
     updateVariableForElement,
+    addFunction,
   } from "../../util";
   import {
     toolbarOpenStyle,
     variablesStoresTooltipOpen,
     clickedElement,
+    width,
+    height,
+    variablesStore,
+    variableUpdated,
   } from "../../stores/globals";
   import { fly } from "svelte/transition";
+  import { onMount } from "svelte";
 
   let error = "";
   let selected = null;
@@ -18,6 +24,11 @@
   let ready = false;
   let variables = [];
   let dirtyVariables = [];
+
+  onMount(() => {
+    setSelected("let");
+    getVariables();
+  });
 
   const addVariable = async (readonly = false) => {
     const createdVariable = await addVariableForElement($clickedElement._id, {
@@ -33,6 +44,44 @@
     }
   };
 
+  const createVariableFunction = async (variable) => {
+    await saveVariables();
+    let createdFunction = await addFunction(
+      $clickedElement._id,
+      variable.name,
+      $width / 2,
+      $height / 2,
+      true,
+      variable._id
+    );
+    if (createdFunction) {
+      createdFunction = {
+        _id: createdFunction._id,
+        name: createdFunction.name,
+        elementId: $clickedElement._id,
+        rect: {
+          x: createdFunction.rectX,
+          y: createdFunction.rectY,
+          width: 0,
+          height: 0,
+          inArrowLocation: {
+            x: 0,
+            y: 0,
+          },
+          outArrowLocation: {
+            x: 0,
+            y: 0,
+          },
+        },
+        isVariable: createdFunction.isVariable,
+        variableId: createdFunction.variableId,
+      };
+
+      $clickedElement.grid.functions.push(createdFunction);
+      $clickedElement.grid.functions = $clickedElement.grid.functions;
+    }
+  };
+
   const setSelected = (value) => {
     selected = value;
   };
@@ -41,17 +90,18 @@
     const variable = variables.find((v) => v._id === id);
     variable[e.target.name] = e.target.value;
     variables = variables;
-    console.log(variable);
+    $variablesStore = variables;
+    $variableUpdated = id;
     if (!dirtyVariables.find((v) => v._id === id)) {
       dirtyVariables.push(variable);
     }
   };
 
-  const saveVariable = async () => {
+  const saveVariables = async () => {
     if (error.length > 0) {
       return;
     }
-    error = " ";
+    error = "";
     const variablesToSave = dirtyVariables.map((v) => {
       return {
         _id: v._id,
@@ -61,7 +111,6 @@
         readonly: v.readonly,
       };
     });
-    console.log(variablesToSave);
     const elementId = $clickedElement._id;
     variablesToSave.forEach((variable) => {
       const updatedVariable = updateVariableForElement(elementId, variable);
@@ -85,17 +134,20 @@
     });
   }, 500);
 
+  setInterval(() => {
+    if (error.length > 0) {
+      return;
+    } else {
+      saveVariables();
+    }
+  }, 5000);
+
   const getVariables = async () => {
     const elementId = $clickedElement._id;
     variables = await getVariablesForElement(elementId);
+    $variablesStore = variables;
     ready = true;
   };
-
-  $: console.log(selected, selectedType);
-  $: console.log(variables);
-  $: if ($clickedElement && $variablesStoresTooltipOpen) {
-    getVariables();
-  }
 </script>
 
 <div
@@ -182,11 +234,6 @@
               <div class="variableEditors">
                 <div class="buttons">
                   <button
-                    class="blueButton"
-                    on:click={() => saveVariable()}
-                    disabled={error.length > 0}>Save</button
-                  >
-                  <button
                     class="orangeButton"
                     on:click={() => addVariable(false)}
                     disabled={error.length > 0}
@@ -215,7 +262,7 @@
                           disabled={error.length > 0}
                           class="valueInput"
                           type="text"
-                          placeholder="John"
+                          placeholder="value"
                           name="value"
                           value={variable.value}
                           on:input={(e) => handleChange(e, variable._id)}
@@ -226,6 +273,7 @@
                         name="type"
                         disabled={error.length > 0}
                         bind:value={variable.type}
+                        on:change={(e) => handleChange(e, variable._id)}
                       >
                         <option value="number">number</option>
                         <option value="string">string</option>
@@ -235,7 +283,14 @@
                         <option value="null">null</option>
                         <option value="undefined">undefined</option>
                       </select>
-                      <button class="orangeButton" disabled={error.length > 0}>
+                      <button class="redButton">
+                        <i class="fa fa-trash" />
+                      </button>
+                      <button
+                        class="orangeButton"
+                        disabled={error.length > 0}
+                        on:click={() => createVariableFunction(variable)}
+                      >
                         <i class="fa fa-arrow-right" />
                       </button>
                     </div>
@@ -333,8 +388,8 @@
     flex-direction: column;
     justify-content: flex-start;
     gap: 8px;
-    min-width: 500px;
-    max-width: 500px;
+    min-width: 550px;
+    max-width: 550px;
     height: 100%;
     background: white;
     font-size: 13px;

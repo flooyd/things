@@ -1,20 +1,13 @@
 <script>
-  import {
-    functions,
-    fetchFunctionsForElement,
-    addFunction,
-    objects,
-    objectColors,
-    saveFunction,
-  } from "../../util";
+  import { functions, addFunction, objects, objectColors } from "../../util";
   import {
     clickedElement,
     toolbarOpenStyle,
     functionsTooltipOpen,
     width,
-    functionMoving,
+    height,
   } from "../../stores/globals";
-  import { onMount, tick } from "svelte";
+  import { tick } from "svelte";
   import { fly } from "svelte/transition";
 
   let clickedElementFunctions = [];
@@ -25,7 +18,7 @@
       $clickedElement._id,
       item,
       $width / 2,
-      100
+      $height / 2
     );
     if (createdFunction) {
       createdFunction = {
@@ -46,10 +39,10 @@
             y: 0,
           },
         },
+        isVariable: createdFunction.isVariable,
       };
       $clickedElement.grid.functions.push(createdFunction);
       $clickedElement.grid.functions = $clickedElement.grid.functions;
-      saveFunction(createdFunction._id);
     }
   };
 

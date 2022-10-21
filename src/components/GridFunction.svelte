@@ -9,6 +9,8 @@
     mouseDownStartedOnArrow,
     gridConnectionLocationsUpdatePending,
     lastInteractedWith,
+    variablesStore,
+    variableUpdated,
   } from "../stores/globals";
   import {
     objects,
@@ -45,6 +47,12 @@
   let contextMenuOpen = false;
   let functionHovered = false;
   let pendingDelete = false;
+  let xLocation = null;
+  let yLocation = null;
+  let initialized = false;
+  let variable = null;
+  let variableTypeColor = null;
+  let variableInitialValue = null;
 
   onMount(() => {
     numOutputs = functionOutputs[gridFunction.name]?.count || 0;
@@ -77,10 +85,7 @@
     }
   };
 
-  // 241 12 = 253
-
   const setRect = (movementLeft = 0, movementTop = 0, width, height) => {
-    console.log(width);
     if (rect.x === 0 && movementLeft < 0) {
       return;
     }
@@ -120,7 +125,14 @@
         19, // center point of height (37) of row (topName in this case)
     };
 
-    //6 + 16 + 4 + 1 + 8 + 18 = 53
+    let variableOutCircleLocation = null;
+
+    if (gridFunction.isVariable) {
+      variableOutCircleLocation = {
+        x: rect.x + width - 5 - 7 - 6,
+        y: rect.y + 3 + 6 + 16 + 4 + 1 + 8 + 19,
+      };
+    }
 
     $clickedElement.grid.functions.find(
       (f) => f._id === gridFunction._id
@@ -131,9 +143,12 @@
       outArrowLocation,
       width: width,
       height: height,
+      variableOutCircleLocation,
     };
 
     $clickedElement = $clickedElement;
+    xLocation = rect.x;
+    yLocation = rect.y;
   };
 
   const handleClickArrow = async (type, e) => {
@@ -148,9 +163,23 @@
     }
   };
 
-  $: if (ready && element) {
-    console.log("READY!!!");
-    setRect(0, 0, element.clientHeight, element.clientWidth);
+  $: if (ready && element && !initialized) {
+    if (gridFunction.isVariable) {
+      variable = $variablesStore.find((v) => v._id === gridFunction.variableId);
+      if (variable) {
+        variableTypeColor = typeColors[variable.type];
+      }
+    }
+    setRect(0, 0, element.clientWidth, element.clientHeight);
+    initialized = true;
+  }
+
+  $: if (
+    gridFunction.isVariable &&
+    $variableUpdated === gridFunction.variableId
+  ) {
+    variable = $variablesStore.find((v) => v._id === gridFunction.variableId);
+    variableTypeColor = typeColors[variable.type];
   }
 
   setInterval(() => {
@@ -158,7 +187,7 @@
       saveFunction(gridFunction._id, pendingDelete);
       functionDirty = false;
     }
-  }, 2000);
+  }, 5000);
 
   const removeConnections = async () => {
     const deleted = await deleteAllConnectionsForFunction(gridFunction._id);
@@ -202,8 +231,6 @@
   } else {
     style = `top:${rect?.y || 0}px; left: ${rect?.x || 0}px;`;
   }
-
-  //6 + 16 + 4 + 1 + 8 + 18 = 53
 </script>
 
 <svelte:window on:mousemove={move} />
@@ -237,7 +264,11 @@
     in:fly={{ x: -500, duration: 100 }}
   >
     {#if contextMenuOpen}
-      <div out:fade={{ duration: 100 }} class="contextMenu">
+      <div
+        out:fade={{ duration: 100 }}
+        class="contextMenu"
+        style={`left: ${element.clientWidth + 8}px; top: -3px;`}
+      >
         <div class="buttons">
           <button class="redButton" on:mousedown={(e) => deleteFunction(e)}
             >Delete</button
@@ -257,37 +288,39 @@
             <div class="name">{gridFunction.name}</div>
             <div class="infoType">Location and Rectangle</div>
           </div>
-          {#each Object.keys($clickedElement.grid.functions.find((f) => f._id === gridFunction._id).rect) as key}
-            <div class="locationInfoItem">
-              <div class="locationInfoItemKey">{key}</div>
-              <div class="locationInfoItemValue">
-                {#if typeof $clickedElement.grid.functions.find((f) => f._id === gridFunction._id).rect[key] === "object"}
-                  {#each Object.keys($clickedElement.grid.functions.find((f) => f._id === gridFunction._id).rect[key]) as key2}
-                    <div class="locationInfoItem">
-                      <div class="locationInfoItemKey">{key2}</div>
-                      <div class="locationInfoItemValue">
-                        {$clickedElement.grid.functions.find(
-                          (f) => f._id === gridFunction._id
-                        ).rect[key][key2]}
+          {#if gridFunction._id}
+            {#each Object.keys($clickedElement.grid.functions.find((f) => f._id === gridFunction._id)?.rect || {}) as key}
+              <div class="locationInfoItem">
+                <div class="locationInfoItemKey">{key}</div>
+                <div class="locationInfoItemValue">
+                  {#if typeof $clickedElement.grid.functions.find((f) => f._id === gridFunction._id).rect[key] === "object"}
+                    {#each Object.keys($clickedElement.grid.functions.find((f) => f._id === gridFunction._id)?.rect[key] || {}) as key2}
+                      <div class="locationInfoItem">
+                        <div class="locationInfoItemKey">{key2}</div>
+                        <div class="locationInfoItemValue">
+                          {$clickedElement.grid.functions.find(
+                            (f) => f._id === gridFunction._id
+                          ).rect[key][key2]}
+                        </div>
                       </div>
-                    </div>
-                  {/each}
-                {:else}
-                  {$clickedElement.grid.functions.find(
-                    (f) => f._id === gridFunction._id
-                  ).rect[key]}
-                {/if}
+                    {/each}
+                  {:else}
+                    {$clickedElement.grid.functions.find(
+                      (f) => f._id === gridFunction._id
+                    ).rect[key]}
+                  {/if}
+                </div>
               </div>
-            </div>
-          {/each}
+            {/each}
+          {/if}
         </div>
       </div>
     {/if}
     <div class="label">
-      {objectDescriptions[objects[gridFunction.name]]}
+      {objectDescriptions[objects[gridFunction.name]] || "Variable"}
     </div>
     <div class="topName">
-      {#if executables.includes(gridFunction.name)}
+      {#if !gridFunction.isVariable && executables.includes(gridFunction.name)}
         <div
           class={"inArrow" + " " + objectColors[objects[gridFunction.name]]}
           on:focus
@@ -297,9 +330,9 @@
         </div>
       {/if}
       <div class="gridFunctionName">
-        {gridFunction.name}
+        {variable ? variable.name : gridFunction.name}
       </div>
-      {#if objects[gridFunction.name] !== "jump" && objects[gridFunction.name] !== "return"}
+      {#if !gridFunction.isVariable && objects[gridFunction.name] !== "jump" && objects[gridFunction.name] !== "return"}
         <div
           class={"outArrow" + " " + objectColors[objects[gridFunction.name]]}
           on:focus
@@ -318,6 +351,17 @@
           </div>
         </div>
       {/each}
+      {#if variable}
+        <div class={"output" + " " + variableTypeColor}>
+          <div class="outputCircle">
+            <span class={"outputCircleType" + " " + variableTypeColor}
+              >{variable.type}</span
+            >
+            <span class="outputCircleValue">{variable.value}</span>
+            <i class={"fas fa-circle"} />
+          </div>
+        </div>
+      {/if}
     </div>
     <div class="inputs">
       {#each Array(numInputs) as _, i}
@@ -347,7 +391,7 @@
 
 <style>
   .gridFunction {
-    width: fit-content;
+    min-width: 240px;
     position: absolute;
     padding: 6px;
     border: 3px solid black;
@@ -366,8 +410,6 @@
   .contextMenu {
     position: absolute;
     min-width: 300px;
-    left: -3px;
-    top: -3px;
     gap: 8px;
     background: white;
     border: 3px solid black;
@@ -411,6 +453,10 @@
   .header .name,
   .header .infoType {
     font-weight: bold;
+  }
+
+  .header .infoType {
+    font-size: 10px;
   }
   .contextMenu .locationInfoItem {
     display: flex;
@@ -499,58 +545,47 @@
   }
 
   .red:hover {
-    color: black;
     background: transparent;
   }
 
   .green:hover {
-    color: black;
     background: transparent;
   }
 
   .blue:hover {
-    color: black;
     background: transparent;
   }
 
   .yellow:hover {
-    color: black;
     background: transparent;
   }
 
   .purple:hover {
-    color: black;
     background: transparent;
   }
 
   .orange:hover {
     background: transparent;
-    color: black;
   }
 
   .pink:hover {
     background: transparent;
-    color: black;
   }
 
   .cyan:hover {
     background: transparent;
-    color: black;
   }
 
   .brown:hover {
     background: transparent;
-    color: black;
   }
 
   .gray:hover {
     background: transparent;
-    color: black;
   }
 
   .teal:hover {
     background: transparent;
-    color: black;
   }
 
   .inArrow:hover,
@@ -562,5 +597,9 @@
   .inputCircle,
   .outputCircle {
     cursor: pointer;
+  }
+
+  textarea {
+    padding: 4px;
   }
 </style>

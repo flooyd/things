@@ -28,6 +28,8 @@ export const gridConnectionLocationsUpdatePending = writable(false);
 export const windowScrollX = writable(0);
 export const windowScrollY = writable(0);
 export const lastInteractedWith = writable(null);
+export const variablesStore = writable([]);
+export const variableUpdated = writable(null);
 
 //export update function for elements
 export function updateLoading(newValue) {

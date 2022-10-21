@@ -34,6 +34,8 @@
         blah: "5",
         name: func.name,
         _id: func._id,
+        isVariable: func.isVariable,
+        variableId: func.variableId,
         rect: {
           x: func.rectX,
           y: func.rectY,
@@ -44,6 +46,14 @@
           outArrowLocation: {
             x: func.outArrowX,
             y: func.outArrowYLocations[0],
+          },
+          variableInCircleLocation: {
+            x: null, //func.isVariable ? func.variableInCircleX : null,
+            y: null, //func.isVariable ? func.variableInCircleY : null,
+          },
+          variableOutCircleLocation: {
+            x: null, //func.isVariable ? func.variableOutCircleX : null,
+            y: null, //func.isVariable ? func.variableOutCircleY : null
           },
         },
       };
