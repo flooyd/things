@@ -8,9 +8,13 @@
     functionMoving,
     mouseDownStartedOnArrow,
     gridConnectionLocationsUpdatePending,
+    outVariableClicked,
+    inVariableClicked,
+    outputClicked,
   } from "../stores/globals";
   import {
     addConnection,
+    deleteConnectionById,
     fetchFunctionsForElement,
     getAllConnectionsForElement,
   } from "../util.js";
@@ -41,11 +45,11 @@
           y: func.rectY,
           inArrowLocation: {
             x: func.inArrowX,
-            y: func.inArrowYLocations[0],
+            y: 37,
           },
           outArrowLocation: {
             x: func.outArrowX,
-            y: func.outArrowYLocations[0],
+            y: 37,
           },
           variableInCircleLocation: {
             x: null, //func.isVariable ? func.variableInCircleX : null,
@@ -82,6 +86,107 @@
     createConnection();
   }
 
+  $: if ($inVariableClicked && $outVariableClicked) {
+    createVariableConnection();
+  }
+
+  $: if ($outputClicked && $inVariableClicked) {
+    createOutputConnection();
+  }
+
+  const createOutputConnection = async () => {
+    let connectionExists = false;
+    for (let i = 0; i < $clickedElement.grid.connections.length; i++) {
+      if (
+        $clickedElement.grid.connections[i].outputIndex ===
+          $outputClicked.outputIndex &&
+        $clickedElement.grid.connections[i].in ===
+          $inVariableClicked.functionId &&
+        $clickedElement.grid.connections[i].inputIndex ===
+          $inVariableClicked.inputIndex &&
+        $clickedElement.grid.connections[i].out === $outputClicked.functionId
+      ) {
+        connectionExists = true;
+        break;
+      }
+    }
+
+    if (!connectionExists) {
+      const connection = {
+        outputIndex: $outputClicked.outputIndex,
+        in: $inVariableClicked.functionId,
+        inputIndex: $inVariableClicked.inputIndex,
+        out: $outputClicked.functionId,
+        elementId: $clickedElement._id,
+      };
+
+      const createdConnection = await addConnection(connection);
+      if (createdConnection) {
+        $clickedElement.grid.connections.push(createdConnection);
+        $gridConnectionLocationsUpdatePending = true;
+      }
+
+      $outputClicked = null;
+      $inVariableClicked = null;
+    }
+  };
+
+  const createVariableConnection = async () => {
+    let connectionExists = false;
+    for (let i = 0; i < $clickedElement.grid.connections.length; i++) {
+      if (
+        $clickedElement.grid.connections[i].inputIndex ===
+          $inVariableClicked.inputIndex &&
+        $clickedElement.grid.connections[i].in ===
+          $inVariableClicked.functionId &&
+        $clickedElement.grid.connections[i].outVariableId ===
+          $outVariableClicked.variableId
+      ) {
+        connectionExists = true;
+        break;
+      }
+    }
+
+    //{in: functionId, out: functionId, elementId: elementId, inVariableId: variableId, outVariableId: variableId}
+    if (!connectionExists) {
+      let existingConnectionDeleted = null;
+      for (let i = 0; i < $clickedElement.grid.connections.length; i++) {
+        if (
+          $clickedElement.grid.connections[i].in ===
+            $inVariableClicked.functionId &&
+          $clickedElement.grid.connections[i].inputIndex ===
+            $inVariableClicked.inputIndex
+        ) {
+          console.log("delete connection by Id");
+          await deleteConnectionById($clickedElement.grid.connections[i]._id);
+          existingConnectionDeleted = $clickedElement.grid.connections[i]._id;
+        }
+
+        if (existingConnectionDeleted) {
+          $clickedElement.grid.connections =
+            $clickedElement.grid.connections.filter(
+              (conn) => conn._id != existingConnectionDeleted
+            );
+        }
+      }
+      const createdConnection = await addConnection({
+        in: $inVariableClicked.functionId,
+        out: $outVariableClicked.functionId,
+        elementId: $clickedElement._id,
+        inputIndex: $inVariableClicked.inputIndex,
+        outVariableId: $outVariableClicked.variableId,
+      });
+
+      if (createdConnection) {
+        $clickedElement.grid.connections.push(createdConnection);
+        $gridConnectionLocationsUpdatePending = true;
+      }
+    }
+
+    $inVariableClicked = null;
+    $outVariableClicked = null;
+  };
+
   const createConnection = async () => {
     let connectionExists = false;
     for (let i = 0; i < $clickedElement.grid.connections.length; i++) {
@@ -104,16 +209,10 @@
       if (createdConnection) {
         $clickedElement.grid.connections.push(createdConnection);
       }
-
-      $gridConnectionLocationsUpdatePending = true;
-      await tick();
-      $clickedElement = $clickedElement;
-      $inArrowClicked = null;
-      $outArrowClicked = null;
-    } else {
-      $inArrowClicked = null;
-      $outArrowClicked = null;
     }
+
+    $inArrowClicked = null;
+    $outArrowClicked = null;
   };
 
   const updateSelectionToolProps = (e) => {

@@ -2,7 +2,6 @@
   import {
     addVariableForElement,
     getId,
-    getVariablesForElement,
     updateVariableForElement,
     addFunction,
   } from "../../util";
@@ -20,14 +19,10 @@
 
   let error = "";
   let selected = null;
-  let selectedType = null;
-  let ready = false;
-  let variables = [];
   let dirtyVariables = [];
 
   onMount(() => {
     setSelected("let");
-    getVariables();
   });
 
   const addVariable = async (readonly = false) => {
@@ -39,8 +34,8 @@
     });
 
     if (createdVariable) {
-      variables.push(createdVariable);
-      variables = variables;
+      $variablesStore.push(createdVariable);
+      $variablesStore = $variablesStore;
     }
   };
 
@@ -50,7 +45,7 @@
       $clickedElement._id,
       variable.name,
       $width / 2,
-      $height / 2,
+      150,
       true,
       variable._id
     );
@@ -87,10 +82,9 @@
   };
 
   const handleChange = (e, id) => {
-    const variable = variables.find((v) => v._id === id);
+    const variable = $variablesStore.find((v) => v._id === id);
     variable[e.target.name] = e.target.value;
-    variables = variables;
-    $variablesStore = variables;
+    $variablesStore = $variablesStore;
     $variableUpdated = id;
     if (!dirtyVariables.find((v) => v._id === id)) {
       dirtyVariables.push(variable);
@@ -116,14 +110,13 @@
       const updatedVariable = updateVariableForElement(elementId, variable);
       variable = updatedVariable;
     });
-    variables = variables;
     dirtyVariables = [];
   };
 
   setInterval(() => {
-    variables.forEach((variable) => {
+    $variablesStore.forEach((variable) => {
       if (
-        variables.find(
+        $variablesStore.find(
           (v) => v.name === variable.name && v._id !== variable._id
         )
       ) {
@@ -141,13 +134,6 @@
       saveVariables();
     }
   }, 5000);
-
-  const getVariables = async () => {
-    const elementId = $clickedElement._id;
-    variables = await getVariablesForElement(elementId);
-    $variablesStore = variables;
-    ready = true;
-  };
 </script>
 
 <div
@@ -242,60 +228,58 @@
                   </button>
                 </div>
                 <div class="error">{error}</div>
-                {#if ready}
-                  {#each variables as variable (variable._id)}
-                    <div class="variableEditor">
-                      <span class="variableEditorKeyword">let</span>
-                      <span class="variableEditorName">
-                        <input
-                          on:input={(e) => handleChange(e, variable._id)}
-                          class="nameInput"
-                          type="text"
-                          placeholder="name"
-                          name="name"
-                          value={variable.name}
-                        />
-                      </span>
-                      <span class="variableEditorOperator">=</span>
-                      <span class="variableEditorString">
-                        <input
-                          disabled={error.length > 0}
-                          class="valueInput"
-                          type="text"
-                          placeholder="value"
-                          name="value"
-                          value={variable.value}
-                          on:input={(e) => handleChange(e, variable._id)}
-                        />
-                      </span>
-                      <span class="variableEditorOperator">;</span>
-                      <select
-                        name="type"
+                {#each $variablesStore as variable (variable._id)}
+                  <div class="variableEditor">
+                    <span class="variableEditorKeyword">let</span>
+                    <span class="variableEditorName">
+                      <input
+                        on:input={(e) => handleChange(e, variable._id)}
+                        class="nameInput"
+                        type="text"
+                        placeholder="name"
+                        name="name"
+                        value={variable.name}
+                      />
+                    </span>
+                    <span class="variableEditorOperator">=</span>
+                    <span class="variableEditorString">
+                      <input
                         disabled={error.length > 0}
-                        bind:value={variable.type}
-                        on:change={(e) => handleChange(e, variable._id)}
-                      >
-                        <option value="number">number</option>
-                        <option value="string">string</option>
-                        <option value="boolean">boolean</option>
-                        <option value="object">object</option>
-                        <option value="array">array</option>
-                        <option value="null">null</option>
-                        <option value="undefined">undefined</option>
-                      </select>
-                      <button class="redButton">
-                        <i class="fa fa-trash" />
-                      </button>
-                      <button
-                        class="orangeButton"
-                        disabled={error.length > 0}
-                        on:click={() => createVariableFunction(variable)}
-                      >
-                        <i class="fa fa-arrow-right" />
-                      </button>
-                    </div>
-                  {/each}
-                {/if}
+                        class="valueInput"
+                        type="text"
+                        placeholder="value"
+                        name="value"
+                        value={variable.value}
+                        on:input={(e) => handleChange(e, variable._id)}
+                      />
+                    </span>
+                    <span class="variableEditorOperator">;</span>
+                    <select
+                      name="type"
+                      disabled={error.length > 0}
+                      bind:value={variable.type}
+                      on:change={(e) => handleChange(e, variable._id)}
+                    >
+                      <option value="number">number</option>
+                      <option value="string">string</option>
+                      <option value="boolean">boolean</option>
+                      <option value="object">object</option>
+                      <option value="array">array</option>
+                      <option value="null">null</option>
+                      <option value="undefined">undefined</option>
+                    </select>
+                    <button class="redButton">
+                      <i class="fa fa-trash" />
+                    </button>
+                    <button
+                      class="orangeButton"
+                      disabled={error.length > 0}
+                      on:click={() => createVariableFunction(variable)}
+                    >
+                      <i class="fa fa-arrow-right" />
+                    </button>
+                  </div>
+                {/each}
               </div>
             {/if}
           </div>

@@ -10,15 +10,15 @@
   import { tick } from "svelte";
   import { fly } from "svelte/transition";
 
-  let clickedElementFunctions = [];
   let hovered = null;
 
   const click = async (item) => {
+    console.log($width, $height);
     let createdFunction = await addFunction(
       $clickedElement._id,
       item,
       $width / 2,
-      $height / 2
+      150
     );
     if (createdFunction) {
       createdFunction = {

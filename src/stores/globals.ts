@@ -20,6 +20,9 @@ export const childPendingDeletion = writable(null);
 export const global = writable<any>({});
 export const outArrowClicked = writable(null);
 export const inArrowClicked = writable(null);
+export const outVariableClicked = writable(null);
+export const inVariableClicked = writable(null);
+export const outputClicked = writable(false);
 export const functionMoving = writable(null);
 export const showToolbar = writable(true);
 export const toolbarOpenStyle = writable(null);
@@ -30,6 +33,7 @@ export const windowScrollY = writable(0);
 export const lastInteractedWith = writable(null);
 export const variablesStore = writable([]);
 export const variableUpdated = writable(null);
+export const variablesFetched = writable(false);
 
 //export update function for elements
 export function updateLoading(newValue) {

@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
+  import { variablesFetched } from "../../stores//globals";
   import { getId } from "../../util";
-  import { fade } from "svelte/transition";
   import Div from "./Div.svelte";
 
   import { elementTooltipId, clickedElement } from "../../stores/globals";
@@ -64,6 +64,7 @@
     const onClick = element.grid.functions.find(
       (func) => func.name === "onClick"
     );
+    if (!onClick) return;
 
     const functionsToRun = getFunctionsToRun(onClick);
     functionsToRun.forEach((func) => runFunction(func));
@@ -154,6 +155,7 @@
       showTooltip = true;
       $elementTooltipId = element._id;
       $clickedElement = element;
+      $variablesFetched = false;
     }}
     on:click={(e) => {
       handleClick(e);

@@ -181,7 +181,6 @@ export const saveFunction = async (functionId, pendingDelete) => {
     rectX: functionToSave.rect.x,
     rectY: functionToSave.rect.y,
     inArrowX: functionToSave.rect.inArrowLocation.x,
-    inArrowYLocations: [functionToSave.rect.inArrowLocation.y],
     outArrowX: functionToSave.rect.outArrowLocation.x,
     outArrowYLocations: [functionToSave.rect.outArrowLocation.y],
   };
@@ -221,6 +220,7 @@ export const getConnectionById = async (connectionId) => {
 
 //delete connection by id
 export const deleteConnectionById = async (connectionId) => {
+  console.log("blah blah");
   updateLoading(true);
   const connections = await fetch(
     "http://localhost:3000/connections/" + connectionId,
@@ -271,6 +271,7 @@ export const deleteAllConnections = async () => {
 };
 
 //add connection
+//{in: functionId, out: functionId, elementId: elementId, inVariableId: variableId, outVariableId: variableId}
 export const addConnection = async (connection) => {
   updateLoading(true);
   const createdConnection = await fetch("http://localhost:3000/connections/", {

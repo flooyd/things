@@ -1,6 +1,5 @@
 <script lang="ts">
   import Toolbar from "./components/Toolbar.svelte";
-
   import Workbench from "./components/Workbench.svelte";
   import ElementTooltip from "./components/tooltips/ElementTooltip.svelte";
   import Grid from "./components/Grid.svelte";
@@ -21,11 +20,17 @@
     variablesStoresTooltipOpen,
     windowScrollX,
     windowScrollY,
+    variablesFetched,
+    variablesStore,
   } from "./stores/globals";
   import { elements } from "./stores/elements";
   import { onMount } from "svelte";
   import FunctionsTooltip from "./components/tooltips/FunctionsTooltip.svelte";
-  import { updateElement } from "./util";
+  import {
+    functionOutputs,
+    getVariablesForElement,
+    updateElement,
+  } from "./util";
   import HtmlTooltip from "./components/tooltips/HTMLTooltip.svelte";
   import VariablesStoresTooltip from "./components/tooltips/VariablesStoresTooltip.svelte";
   import { fade } from "svelte/transition";
@@ -55,6 +60,7 @@
   };
 
   const getConnectionLocations = () => {
+    console.log($clickedElement.grid.connections);
     const connectionLocations = [];
 
     $clickedElement.grid.connections.forEach((connection) => {
@@ -66,15 +72,31 @@
         $clickedElement.grid.functions.find((f) => f._id === connection.out)
           .rect?.outArrowLocation || null;
 
+      //get number of outpoints for in function
+      const inFunction = $clickedElement.grid.functions.find(
+        (f) => f._id === connection.in
+      );
+
+      const numOutputs = functionOutputs[inFunction.name].count;
+
       connectionLocations.push({
         inArrowLocation,
         outArrowLocation,
-        key: `${connection.in}-${connection.out}`,
+        isVariable: connection.outVariableId ? true : false,
+        inputIndex: connection.inputIndex ? connection.inputIndex : null,
+        outputIndex: connection.outputIndex ? connection.outputIndex : null,
+        numOutputs,
+        key: `${connection.in}-${connection.out}-${connection.inputIndex}`,
       });
     });
 
     $gridConnectionLocationsUpdatePending = false;
     return connectionLocations;
+  };
+
+  const getVariables = async () => {
+    const elementId = $clickedElement._id;
+    $variablesStore = await getVariablesForElement(elementId);
   };
 
   $: $showToolbar
@@ -83,6 +105,11 @@
 
   $: if ($gridConnectionLocationsUpdatePending) {
     connectionLocations = getConnectionLocations();
+  }
+
+  $: if ($clickedElement && !$variablesFetched) {
+    getVariables();
+    $variablesFetched = true;
   }
 
   setInterval(() => {
@@ -156,10 +183,18 @@
       style="position: absolute; top: 0; left: 0; pointer-events: none;"
       ><line
         x1={connection.inArrowLocation.x}
-        y1={connection.inArrowLocation.y}
+        y1={connection.inputIndex
+          ? connection.inArrowLocation.y +
+            37 * connection.inputIndex +
+            connection.numOutputs * 37
+          : connection.inArrowLocation.y}
         x2={connection.outArrowLocation.x}
-        y2={connection.outArrowLocation.y}
-        stroke="black"
+        y2={connection.isVariable
+          ? connection.outArrowLocation.y + 37
+          : connection.outputIndex
+          ? connection.outArrowLocation.y + 37 * connection.outputIndex
+          : connection.outArrowLocation.y}
+        stroke={connection.outputIndex ? "red" : "black"}
         stroke-width="5"
         stroke-linecap="round"
         stroke-dasharray="2,2"

@@ -5,12 +5,15 @@
     clickedElement,
     outArrowClicked,
     inArrowClicked,
+    outVariableClicked,
+    inVariableClicked,
     functionMoving,
     mouseDownStartedOnArrow,
     gridConnectionLocationsUpdatePending,
     lastInteractedWith,
     variablesStore,
     variableUpdated,
+    outputClicked,
   } from "../stores/globals";
   import {
     objects,
@@ -52,7 +55,6 @@
   let initialized = false;
   let variable = null;
   let variableTypeColor = null;
-  let variableInitialValue = null;
 
   onMount(() => {
     numOutputs = functionOutputs[gridFunction.name]?.count || 0;
@@ -125,15 +127,6 @@
         19, // center point of height (37) of row (topName in this case)
     };
 
-    let variableOutCircleLocation = null;
-
-    if (gridFunction.isVariable) {
-      variableOutCircleLocation = {
-        x: rect.x + width - 5 - 7 - 6,
-        y: rect.y + 3 + 6 + 16 + 4 + 1 + 8 + 19,
-      };
-    }
-
     $clickedElement.grid.functions.find(
       (f) => f._id === gridFunction._id
     ).rect = {
@@ -143,7 +136,6 @@
       outArrowLocation,
       width: width,
       height: height,
-      variableOutCircleLocation,
     };
 
     $clickedElement = $clickedElement;
@@ -151,7 +143,8 @@
     yLocation = rect.y;
   };
 
-  const handleClickArrow = async (type, e) => {
+  const handleClickArrow = async (type) => {
+    $outVariableClicked = null;
     $mouseDownStartedOnArrow = true;
     await tick();
     if (type === "out") {
@@ -161,6 +154,37 @@
     if (type === "in" && $outArrowClicked) {
       $inArrowClicked = gridFunction._id;
     }
+  };
+
+  const handleClickVariable = async (
+    type,
+    variableId = null,
+    inputIndex = null
+  ) => {
+    $outArrowClicked = null;
+    if (type === "out") {
+      $outVariableClicked = { variableId, functionId: gridFunction._id };
+    }
+
+    if (
+      (type === "in" && $outVariableClicked) ||
+      (type === "in" && $outputClicked)
+    ) {
+      $inVariableClicked = {
+        functionId: gridFunction._id,
+        inputIndex: inputIndex + 1,
+      };
+    }
+  };
+
+  const handleClickOutput = (outputIndex) => {
+    console.log("output clicked");
+    $outArrowClicked = null;
+    $outVariableClicked = null;
+    $outputClicked = {
+      functionId: gridFunction._id,
+      outputIndex: outputIndex + 1,
+    };
   };
 
   $: if (ready && element && !initialized) {
@@ -344,7 +368,7 @@
     </div>
     <div class="outputs">
       {#each Array(numOutputs) as _, i}
-        <div class="output">
+        <div class="output" on:click={() => handleClickOutput(i)}>
           <div class="outputCircle">
             <span class="outputCircleType">{typeOfOutput}</span>
             <i class={"fas fa-circle" + " " + typeColors[typeOfOutput]} />
@@ -352,7 +376,10 @@
         </div>
       {/each}
       {#if variable}
-        <div class={"output" + " " + variableTypeColor}>
+        <div
+          class={"output" + " " + variableTypeColor}
+          on:click={() => handleClickVariable("out", variable._id, null)}
+        >
           <div class="outputCircle">
             <span class={"outputCircleType" + " " + variableTypeColor}
               >{variable.type}</span
@@ -365,7 +392,7 @@
     </div>
     <div class="inputs">
       {#each Array(numInputs) as _, i}
-        <div class="input">
+        <div class="input" on:click={() => handleClickVariable("in", null, i)}>
           <i class={"fas fa-circle" + " " + typeColors[typesOfInput[i]]} />
           <span class="inputCircleType">{typesOfInput[i]}</span>
           {#if typesOfInput[i] === "number"}
@@ -594,12 +621,12 @@
     border-radius: 180px;
   }
 
-  .inputCircle,
-  .outputCircle {
+  .input,
+  .output {
     cursor: pointer;
   }
 
   textarea {
-    padding: 4px;
+    height: 30px;
   }
 </style>
