@@ -194,10 +194,13 @@
           : connection.outputIndex
           ? connection.outArrowLocation.y + 37 * connection.outputIndex
           : connection.outArrowLocation.y}
-        stroke={connection.outputIndex ? "red" : "black"}
+        stroke={connection.outputIndex
+          ? "grey"
+          : connection.inputIndex || connection.isVariable
+          ? "orange"
+          : "black"}
         stroke-width="5"
         stroke-linecap="round"
-        stroke-dasharray="2,2"
       /></svg
     >
   {/each}
