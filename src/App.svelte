@@ -38,18 +38,18 @@
   let ready = false;
   let connectionLocations = [];
 
+  $: console.log($clickedElement);
+
   onMount(async () => {
     ready = true;
   });
 
   const handleEdit = (property, value) => {
     $clickedElement[property] = value;
-    $clickedElement = $clickedElement;
   };
 
   const handleSave = async () => {
     await updateElement($clickedElement);
-    $clickedElement = $clickedElement;
   };
 
   const handleKeyPress = (e) => {
@@ -60,24 +60,25 @@
   };
 
   const getConnectionLocations = () => {
-    console.log($clickedElement.grid.connections);
     const connectionLocations = [];
+
+    console.log($clickedElement.grid.connections);
 
     $clickedElement.grid.connections.forEach((connection) => {
       const inArrowLocation =
         $clickedElement.grid.functions.find((f) => f._id === connection.in).rect
-          ?.inArrowLocation || null;
+          .inArrowLocation || null;
 
       const outArrowLocation =
         $clickedElement.grid.functions.find((f) => f._id === connection.out)
-          .rect?.outArrowLocation || null;
+          .rect.outArrowLocation || null;
 
       //get number of outpoints for in function
       const inFunction = $clickedElement.grid.functions.find(
         (f) => f._id === connection.in
       );
 
-      const numOutputs = functionOutputs[inFunction.name].count;
+      const numOutputs = functionOutputs[inFunction?.name]?.count || 0;
 
       connectionLocations.push({
         inArrowLocation,

@@ -220,7 +220,6 @@ export const getConnectionById = async (connectionId) => {
 
 //delete connection by id
 export const deleteConnectionById = async (connectionId) => {
-  console.log("blah blah");
   updateLoading(true);
   const connections = await fetch(
     "http://localhost:3000/connections/" + connectionId,
@@ -255,7 +254,6 @@ export const deleteAllConnectionsForFunction = async (functionId) => {
     updateLoading(false);
     return true;
   } catch (error) {
-    console.log(error);
     updateLoading(false);
     return false;
   }
@@ -376,7 +374,12 @@ export const functions = {
   getElementById: "gets an element by id",
   getElementsByClassName: "gets all elements with a given class name",
   getElementsByTagName: "gets all elements with a given tag name",
+
+  //element functions
   setStyle: "sets the style of the component",
+  getStyle: "gets the style of the component",
+  setAttribute: "sets an attribute of the component",
+  getAttribute: "gets an attribute of the component",
 
   //variable assignment
   setVariable: "sets a variable",
@@ -455,8 +458,18 @@ export const functionOutputs = {
     type: "array",
   },
   setStyle: {
-    count: 0,
+    count: 1,
+    type: "object",
   },
+  getStyle: {
+    count: 1,
+    type: "object",
+  },
+  setAttribute: {
+    count: 1,
+    type: "string",
+  },
+  getAttribute: { count: 1, type: "string" },
   setVariable: {
     count: 1,
     type: "any",
@@ -603,7 +616,31 @@ export const functionInputs = {
     count: 3,
     types: ["string", "string", "element"],
     names: ["property", "value", "element"],
-    description: "the style and value to set",
+    optional: [false, false, true],
+    description:
+      "the style and value to set, optionally the element to set it on",
+  },
+  getStyle: {
+    count: 2,
+    types: ["string", "element"],
+    names: ["property", "element"],
+    optional: [false, true],
+    description: "the style to get, optionally the element to get it from",
+  },
+  setAttribute: {
+    count: 3,
+    types: ["string", "string", "element"],
+    names: ["attribute", "value", "element"],
+    optional: [false, false, true],
+    description:
+      "the attribute and value to set, optionally the element to set it on",
+  },
+  getAttribute: {
+    count: 2,
+    types: ["string", "element"],
+    names: ["attribute", "element"],
+    optional: [false, true],
+    description: "the attribute to get, optionally the element to get it from",
   },
   setVariable: {
     count: 2,
@@ -793,6 +830,9 @@ export const executables = [
   "getElementsByClassName",
   "getElementsByTagName",
   "setStyle",
+  "getStyle",
+  "setAttribute",
+  "getAttribute",
   "setVariable",
   "getVariable",
   "if",
@@ -843,7 +883,6 @@ export const objects = {
   getElementById: "document",
   getElementsByClassName: "document",
   getElementsByTagName: "document",
-  setStyle: "element",
   setVariable: "variable",
   getVariable: "variable",
   if: "conditional",
@@ -871,6 +910,10 @@ export const objects = {
   continue: "jump",
   return: "return",
   element: "element",
+  setStyle: "element",
+  getStyle: "element",
+  setAttribute: "element",
+  getAttribute: "element",
 };
 
 export const objectColors = {

@@ -34,6 +34,8 @@ export const lastInteractedWith = writable(null);
 export const variablesStore = writable([]);
 export const variableUpdated = writable(null);
 export const variablesFetched = writable(false);
+export const usingSelectionTool = writable(false);
+export const elementUpdated = writable(false);
 
 //export update function for elements
 export function updateLoading(newValue) {

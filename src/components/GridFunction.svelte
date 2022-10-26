@@ -14,6 +14,8 @@
     variablesStore,
     variableUpdated,
     outputClicked,
+    usingSelectionTool,
+    elementUpdated,
   } from "../stores/globals";
   import {
     objects,
@@ -50,8 +52,6 @@
   let contextMenuOpen = false;
   let functionHovered = false;
   let pendingDelete = false;
-  let xLocation = null;
-  let yLocation = null;
   let initialized = false;
   let variable = null;
   let variableTypeColor = null;
@@ -65,7 +65,7 @@
   });
 
   const move = (e) => {
-    if (pendingDelete) return;
+    if (pendingDelete || $usingSelectionTool || !$functionMoving) return;
     if ($functionMoving === gridFunction._id) {
       setRect(
         e.movementX,
@@ -77,6 +77,9 @@
   };
 
   const stop = async (e) => {
+    console.log("stop");
+    $elementUpdated = true;
+    await tick();
     $functionMoving = null;
     functionDirty = true;
   };
@@ -137,10 +140,6 @@
       width: width,
       height: height,
     };
-
-    $clickedElement = $clickedElement;
-    xLocation = rect.x;
-    yLocation = rect.y;
   };
 
   const handleClickArrow = async (type) => {
@@ -178,7 +177,6 @@
   };
 
   const handleClickOutput = (outputIndex) => {
-    console.log("output clicked");
     $outArrowClicked = null;
     $outVariableClicked = null;
     $outputClicked = {
@@ -211,7 +209,7 @@
       saveFunction(gridFunction._id, pendingDelete);
       functionDirty = false;
     }
-  }, 5000);
+  }, 2000);
 
   const removeConnections = async () => {
     const deleted = await deleteAllConnectionsForFunction(gridFunction._id);
@@ -239,7 +237,6 @@
       $clickedElement.grid.functions = $clickedElement.grid.functions.filter(
         (func) => func._id !== gridFunction._id
       );
-      $clickedElement = $clickedElement;
     } else {
       alert(
         "Something went wrong trying to remove this function. It wasn't removed from the element."
@@ -271,7 +268,9 @@
     }}
     on:mouseenter={() => {
       inputDisabled = false;
-      functionHovered = gridFunction._id;
+      if (!$usingSelectionTool) {
+        functionHovered = gridFunction._id;
+      }
     }}
     on:mouseleave={() => {
       inputDisabled = true;
@@ -369,10 +368,8 @@
     <div class="outputs">
       {#each Array(numOutputs) as _, i}
         <div class="output" on:click={() => handleClickOutput(i)}>
-          <div class="outputCircle">
-            <span class="outputCircleType">{typeOfOutput}</span>
-            <i class={"fas fa-circle" + " " + typeColors[typeOfOutput]} />
-          </div>
+          <span class="outputCircleType">{typeOfOutput}</span>
+          <i class={"fas fa-circle" + " " + typeColors[typeOfOutput]} />
         </div>
       {/each}
       {#if variable}
@@ -395,6 +392,9 @@
         <div class="input" on:click={() => handleClickVariable("in", null, i)}>
           <i class={"fas fa-circle" + " " + typeColors[typesOfInput[i]]} />
           <span class="inputCircleType">{typesOfInput[i]}</span>
+          {#if functionInputs[gridFunction.name].optional && functionInputs[gridFunction.name].optional[i] === true}
+            <i class="fa fa-question" />
+          {/if}
           {#if typesOfInput[i] === "number"}
             <input
               class="inputCircleInput"
@@ -518,14 +518,10 @@
     width: 100%;
     justify-content: right;
     height: 37px;
-  }
-
-  .outputCircle {
-    padding: 5px;
+    gap: 8px;
   }
 
   .outputCircleType {
-    margin-right: 8px;
     color: black;
   }
 
@@ -535,16 +531,11 @@
     min-width: fit-content;
     justify-content: left;
     align-items: center;
-    gap: 4px;
+    gap: 8px;
     height: 37px;
   }
 
-  .inputCircle {
-    padding: 5px;
-  }
-
   .inputCircleType {
-    margin-left: 8px;
     color: black;
   }
 

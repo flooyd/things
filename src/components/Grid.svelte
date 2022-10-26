@@ -1,5 +1,5 @@
 <script>
-  import { onMount, tick } from "svelte";
+  import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import {
     clickedElement,
@@ -11,6 +11,8 @@
     outVariableClicked,
     inVariableClicked,
     outputClicked,
+    usingSelectionTool,
+    elementUpdated,
   } from "../stores/globals";
   import {
     addConnection,
@@ -94,6 +96,28 @@
     createOutputConnection();
   }
 
+  const removeOverlappingVariableConnection = async () => {
+    let existingConnectionDeleted = null;
+    for (let i = 0; i < $clickedElement.grid.connections.length; i++) {
+      if (
+        $clickedElement.grid.connections[i].in ===
+          $inVariableClicked.functionId &&
+        $clickedElement.grid.connections[i].inputIndex ===
+          $inVariableClicked.inputIndex
+      ) {
+        await deleteConnectionById($clickedElement.grid.connections[i]._id);
+        existingConnectionDeleted = $clickedElement.grid.connections[i]._id;
+      }
+
+      if (existingConnectionDeleted) {
+        $clickedElement.grid.connections =
+          $clickedElement.grid.connections.filter(
+            (conn) => conn._id != existingConnectionDeleted
+          );
+      }
+    }
+  };
+
   const createOutputConnection = async () => {
     let connectionExists = false;
     for (let i = 0; i < $clickedElement.grid.connections.length; i++) {
@@ -112,6 +136,8 @@
     }
 
     if (!connectionExists) {
+      await removeOverlappingVariableConnection();
+
       const connection = {
         outputIndex: $outputClicked.outputIndex,
         in: $inVariableClicked.functionId,
@@ -147,28 +173,8 @@
       }
     }
 
-    //{in: functionId, out: functionId, elementId: elementId, inVariableId: variableId, outVariableId: variableId}
     if (!connectionExists) {
-      let existingConnectionDeleted = null;
-      for (let i = 0; i < $clickedElement.grid.connections.length; i++) {
-        if (
-          $clickedElement.grid.connections[i].in ===
-            $inVariableClicked.functionId &&
-          $clickedElement.grid.connections[i].inputIndex ===
-            $inVariableClicked.inputIndex
-        ) {
-          console.log("delete connection by Id");
-          await deleteConnectionById($clickedElement.grid.connections[i]._id);
-          existingConnectionDeleted = $clickedElement.grid.connections[i]._id;
-        }
-
-        if (existingConnectionDeleted) {
-          $clickedElement.grid.connections =
-            $clickedElement.grid.connections.filter(
-              (conn) => conn._id != existingConnectionDeleted
-            );
-        }
-      }
+      await removeOverlappingVariableConnection();
       const createdConnection = await addConnection({
         in: $inVariableClicked.functionId,
         out: $outVariableClicked.functionId,
@@ -225,6 +231,8 @@
         x: e.clientX - rect.x,
         y: e.clientY - rect.y,
       };
+
+      $usingSelectionTool = true;
     }
   };
 
@@ -236,15 +244,40 @@
   };
 
   const finalizeSelectionTool = () => {
-    selectionToolStartLocation = null;
-    selectionToolMousePosition = null;
+    $usingSelectionTool = false;
+    const selectedFunctionIds = [];
+    for (let i = 0; i < $clickedElement.grid.functions.length; i++) {
+      if (
+        $clickedElement.grid.functions[i].rect.x >=
+          selectionToolStartLocation.x &&
+        $clickedElement.grid.functions[i].rect.x <=
+          selectionToolMousePosition.x &&
+        $clickedElement.grid.functions[i].rect.y >=
+          selectionToolStartLocation.y &&
+        $clickedElement.grid.functions[i].rect.y <= selectionToolMousePosition.y
+      ) {
+        selectedFunctionIds.push($clickedElement.grid.functions[i]._id);
+      }
+    }
   };
+
+  $: if ($elementUpdated === true) {
+    console.log("hi");
+    $elementUpdated = false;
+  }
 </script>
 
 <svelte:window
   on:mousemove={updateMousePosition}
   on:mouseup={(e) => {
-    finalizeSelectionTool(e);
+    if ($usingSelectionTool) {
+      finalizeSelectionTool();
+    }
+  }}
+  on:mouseleave={(e) => {
+    if ($usingSelectionTool) {
+      finalizeSelectionTool();
+    }
   }}
 />
 {#if !$clickedElement}
@@ -262,12 +295,10 @@
     bind:this={element}
     on:mousedown={(e) => updateSelectionToolProps(e)}
     on:mouseleave={() => {
-      selectionToolStartLocation = null;
-      selectionToolMousePosition = null;
       $functionMoving = null;
     }}
   >
-    {#if selectionToolStartLocation && selectionToolMousePosition && !$functionMoving}
+    {#if $usingSelectionTool && !$functionMoving}
       <SelectionTool
         gridRect={rect}
         startLocation={selectionToolStartLocation}

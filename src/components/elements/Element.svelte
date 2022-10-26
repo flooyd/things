@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { variablesFetched } from "../../stores//globals";
+  import { variablesFetched, elementUpdated } from "../../stores//globals";
   import { getId } from "../../util";
   import Div from "./Div.svelte";
 

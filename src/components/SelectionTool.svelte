@@ -8,7 +8,8 @@
   class="selection-tool"
   style="left: {startLocation.x -
     gridRect.x}px; top: {startLocation.y}px; width: {mousePosition.x -
-    startLocation.x}px; height: {mousePosition.y - startLocation.y}px;"
+    startLocation.x +
+    5}px; height: {mousePosition.y - startLocation.y + 5}px;"
 />
 
 <style>
@@ -16,6 +17,6 @@
     position: relative;
     background: rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(0, 0, 0, 0.3);
-    z-index: 1000;
+    z-index: 9000;
   }
 </style>

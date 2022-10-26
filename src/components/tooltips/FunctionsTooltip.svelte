@@ -13,7 +13,6 @@
   let hovered = null;
 
   const click = async (item) => {
-    console.log($width, $height);
     let createdFunction = await addFunction(
       $clickedElement._id,
       item,
