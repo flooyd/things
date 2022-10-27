@@ -10,9 +10,8 @@
 
   let styleString,
     showTooltip,
+    ctrlDown = false,
     ready = null;
-
-  let localVars = {};
 
   const id = getId("div");
 
@@ -32,24 +31,6 @@
 
   const runFunction = (func) => {
     switch (func.name) {
-      case "log":
-        console.log("Hello, world!");
-        break;
-      case "getElementsByName":
-        console.log("getting elements with name of ralwus");
-        break;
-      case "setVariable":
-        localVars["ralwuses"] = document.getElementsByName("ralwus");
-        break;
-      case "logError":
-        console.error(localVars.ralwuses);
-        break;
-      case "setStyle":
-        localVars.ralwuses.forEach((ralwus) => {
-          ralwus.style.background = "red";
-        });
-      default:
-        break;
     }
 
     const functionsToRun = getFunctionsToRun(func);
@@ -60,12 +41,14 @@
 
   //implement grid function onClick
   const handleClick = (e) => {
+    if (!ctrlDown) {
+      return;
+    }
     if (!element.grid) return;
     const onClick = element.grid.functions.find(
       (func) => func.name === "onClick"
     );
     if (!onClick) return;
-
     const functionsToRun = getFunctionsToRun(onClick);
     functionsToRun.forEach((func) => runFunction(func));
   };
@@ -145,8 +128,21 @@
   bottom: ${element.bottom};
   left: ${element.left};
   `;
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Control" && !ctrlDown) {
+      ctrlDown = true;
+    }
+  };
+
+  const handleKeyUp = (e) => {
+    if (e.key === "Control") {
+      ctrlDown = false;
+    }
+  };
 </script>
 
+<svelte:window on:keydown={handleKeyDown} />
 {#if ready}
   <div
     class="element"
@@ -159,6 +155,9 @@
     }}
     on:click={(e) => {
       handleClick(e);
+    }}
+    on:keypress={(e) => {
+      handleKeyDown(e);
     }}
   >
     {#if element.type === "div"}

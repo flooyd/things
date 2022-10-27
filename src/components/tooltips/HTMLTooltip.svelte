@@ -385,7 +385,11 @@
   }
 
   .htmlTooltip::-webkit-scrollbar {
-    width: 0px;
+    width: 8px;
+  }
+
+  .htmlTooltip::-webkit-scrollbar-thumb {
+    background: lightgreen;
   }
 
   .header {

@@ -1,5 +1,5 @@
 <script>
-  import { functions, addFunction, objects, objectColors } from "../../util";
+  import { epicFunctions, addFunction } from "../../util";
   import {
     clickedElement,
     toolbarOpenStyle,
@@ -47,7 +47,7 @@
 
   const setHovered = async (item) => {
     hovered = item;
-    await tick();
+    console.log(hovered);
   };
 </script>
 
@@ -78,7 +78,7 @@
       You can add functions to your app by clicking on the buttons below.
     </span>
   </div>
-  {#each Object.keys(functions) as item, i (item)}
+  {#each Object.keys(epicFunctions) as item, i (item)}
     <div
       on:click={() => {
         click(item);
@@ -92,51 +92,56 @@
       on:mouseleave={() => {
         setHovered(null);
       }}
-      class={`function ${objectColors[objects[item]]}`}
+      class={`function ${epicFunctions[item].categoryColor}`}
     >
       <div
         class="title"
         style={hovered === item
           ? "color: black"
-          : "color: " + objectColors[objects[item]]}
+          : "color: " + epicFunctions[item].categoryColor}
       >
-        {#if objects[item] === "lifecycle"}
+        {#if epicFunctions[item].category === "lifecycle"}
           <i class="fa-solid fa-arrows-rotate" />
           <img src="images/function.png" alt="function" />
-        {:else if objects[item] === "console"}
+        {:else if epicFunctions[item].category === "console"}
           <i class="fa-solid fa-terminal" />
           <img src="images/function.png" alt="function" />
-        {:else if objects[item] === "document"}
+        {:else if epicFunctions[item].category === "document"}
           <i class="fa-solid fa-file" />
           <img src="images/function.png" alt="function" />
-        {:else if objects[item] === "event"}
+        {:else if epicFunctions[item].category === "event"}
           <i class="fa-solid fa-mouse-pointer" />
           <img src="images/function.png" alt="function" />
-        {:else if objects[item] === "variable"}
+        {:else if epicFunctions[item].category === "variable"}
           <i class="fa-solid fa-database" />
           <img src="images/function.png" alt="function" />
-        {:else if objects[item] === "conditional"}
+        {:else if epicFunctions[item].category === "conditional"}
           <i class="fa-solid fa-code" />
           <img src="images/function.png" alt="function" />
-        {:else if objects[item] === "math"}
+        {:else if epicFunctions[item].category === "math"}
           <i class="fa-solid fa-calculator" />
           <img src="images/function.png" alt="function" />
-        {:else if objects[item] === "loop"}
+        {:else if epicFunctions[item].category === "loop"}
           <i class="fa-solid fa-repeat" />
           <img src="images/function.png" alt="function" />
-        {:else if objects[item] === "logic"}
+        {:else if epicFunctions[item].category === "logic"}
           <i class="fa-solid fa-microchip" />
           <img src="images/function.png" alt="function" />
-        {:else if objects[item] === "jump"}
+        {:else if epicFunctions[item].category === "jump"}
           <i class="fa-solid fa-arrow-right" />
-        {:else if objects[item] === "return"}
+        {:else if epicFunctions[item].category === "return"}
           <i class="fa-solid fa-arrow-left" />
-        {:else if objects[item] === "element"}
+        {:else if epicFunctions[item].category === "element"}
           <i class="fa-solid fa-square" />
         {/if}
         <div class="functionName">{item}</div>
+        <div class="functionCategory">{epicFunctions[item].category}</div>
       </div>
-      <div class="functionType">{functions[item]}</div>
+      <div class="functionInfo">
+        <div class="functionDescription">
+          {epicFunctions[item].description}
+        </div>
+      </div>
     </div>
   {/each}
   <div class="divider">Hello</div>
@@ -165,7 +170,11 @@
   }
 
   .functionsTooltip::-webkit-scrollbar {
-    width: 0px;
+    width: 8px;
+  }
+
+  .functionsTooltip::-webkit-scrollbar-thumb {
+    background: blue;
   }
 
   .function {
@@ -228,17 +237,30 @@
     gap: 8px;
   }
 
+  .title .functionCategory {
+    font-size: 13px;
+    font-style: italic;
+    flex-grow: 1;
+    text-align: right;
+  }
+
   .divider {
     width: 100%;
     height: 30px;
     color: transparent;
   }
 
-  .functionName {
+  .functionName,
+  .functionCategory {
     color: black;
   }
 
-  .functionType {
+  .functionInfo {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    font-size: 13px;
+    gap: 8px;
     color: black;
   }
 

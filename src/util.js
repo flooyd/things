@@ -341,664 +341,7 @@ export const updateVariableForElement = async (elementId, variable) => {
   }
 };
 
-export const addStore = async (store) => {};
-
-//update connection is not necessary
-
-export const functions = {
-  //life cycle
-  onMount: "runs when the component is mounted",
-  afterUpdate: "runs after the component is updated",
-  beforeUpdate: "runs before the component is updated",
-  beforeDestroy: "runs before the component is destroyed",
-  afterDestroy: "runs after the component is destroyed",
-
-  //log
-  log: "logs a message to the console",
-  logError: "logs an error to the console",
-  logWarning: "logs a warning to the console",
-  logInfo: "logs an info message to the console",
-
-  //events
-  onClick: "runs when the component is clicked",
-  onDblClick: "runs when the component is double clicked",
-  onMouseDown: "runs when the mouse is pressed down on the component",
-  onMouseUp: "runs when the mouse is released on the component",
-  onMouseEnter: "runs when the mouse enters the component",
-  onMouseLeave: "runs when the mouse leaves the component",
-  onMouseMove: "runs when the mouse moves over the component",
-  onContextMenu: "runs when the context menu is opened on the component",
-
-  //document object model functions (reference mdn)
-  getElementsByName: "gets all elements with a given name",
-  getElementById: "gets an element by id",
-  getElementsByClassName: "gets all elements with a given class name",
-  getElementsByTagName: "gets all elements with a given tag name",
-
-  //element functions
-  setStyle: "sets the style of the component",
-  getStyle: "gets the style of the component",
-  setAttribute: "sets an attribute of the component",
-  getAttribute: "gets an attribute of the component",
-
-  //variable assignment
-  setVariable: "sets a variable",
-  getVariable: "gets a variable",
-
-  //conditional
-  if: "runs a block of code if a condition is true",
-  elseIf:
-    "runs a block of code if a condition is true and the previous if statement was false",
-  else: "runs a block of code if a condition is false",
-
-  //loop
-  for: "runs a block of code a given number of times",
-  forEach: "runs a block of code for each item in an array",
-  while: "runs a block of code while a condition is true",
-
-  //operators
-  add: "adds two numbers",
-  subtract: "subtracts two numbers",
-  multiply: "multiplies two numbers",
-  divide: "divides two numbers",
-  modulo: "returns the remainder of two numbers",
-  power: "raises a number to a power",
-
-  //logic
-  and: "returns true if both values are true",
-  or: "returns true if either value is true",
-  not: "returns the opposite of the value",
-
-  //comparison
-  greaterThan: "returns true if the first value is greater than the second",
-  lessThan: "returns true if the first value is less than the second",
-  greaterThanOrEqual:
-    "returns true if the first value is greater than or equal to the second",
-  lessThanOrEqual:
-    "returns true if the first value is less than or equal to the second",
-  equal: "returns true if the two values are equal",
-  notEqual: "returns true if the two values are not equal",
-
-  //jump
-  break: "stops the current loop",
-  continue:
-    "stops the current iteration of the loop and continues to the next iteration",
-
-  //return
-  return: "returns a value from a function",
-};
-
-export const functionOutputs = {
-  log: {
-    count: 0,
-  },
-  logError: {
-    count: 0,
-  },
-  logWarning: {
-    count: 0,
-  },
-  logInfo: {
-    count: 0,
-  },
-  getElementsByName: {
-    count: 1,
-    type: "array",
-  },
-  getElementById: {
-    count: 1,
-    type: "object",
-  },
-  getElementsByClassName: {
-    count: 1,
-    type: "array",
-  },
-  getElementsByTagName: {
-    count: 1,
-    type: "array",
-  },
-  setStyle: {
-    count: 1,
-    type: "object",
-  },
-  getStyle: {
-    count: 1,
-    type: "object",
-  },
-  setAttribute: {
-    count: 1,
-    type: "string",
-  },
-  getAttribute: { count: 1, type: "string" },
-  setVariable: {
-    count: 1,
-    type: "any",
-  },
-  getVariable: {
-    count: 1,
-    type: "any",
-  },
-  if: {
-    count: 0,
-  },
-  else: {
-    count: 0,
-  },
-  elseIf: {
-    count: 0,
-  },
-  for: {
-    count: 0,
-  },
-  forEach: {
-    count: 0,
-  },
-  while: {
-    count: 0,
-  },
-  add: {
-    count: 1,
-    type: "number",
-  },
-  subtract: {
-    count: 1,
-    type: "number",
-  },
-  multiply: {
-    count: 1,
-    type: "number",
-  },
-  divide: {
-    count: 1,
-    type: "number",
-  },
-  modulo: {
-    count: 1,
-    type: "number",
-  },
-  power: {
-    count: 1,
-    type: "number",
-  },
-  and: {
-    count: 1,
-    type: "boolean",
-  },
-  or: {
-    count: 1,
-    type: "boolean",
-  },
-  not: {
-    count: 1,
-    type: "boolean",
-  },
-  greaterThan: {
-    count: 1,
-    type: "boolean",
-  },
-  lessThan: {
-    count: 1,
-    type: "boolean",
-  },
-  greaterThanOrEqual: {
-    count: 1,
-    type: "boolean",
-  },
-  lessThanOrEqual: {
-    count: 1,
-    type: "boolean",
-  },
-  equal: {
-    count: 1,
-    type: "boolean",
-  },
-  notEqual: {
-    count: 1,
-    type: "boolean",
-  },
-};
-
-export const functionInputs = {
-  log: {
-    count: 1,
-    types: ["any"],
-    names: ["message1"],
-    description: "the message to log",
-    extendable: true,
-    onExtend: () => {
-      names = [...names, "message" + (names.length + 1)];
-      types = [...types, "any"];
-    },
-  },
-  logError: {
-    count: 1,
-    types: ["any"],
-    names: ["message1"],
-    description: "the error to log",
-  },
-  logWarning: {
-    count: 1,
-    types: ["any"],
-    names: ["message1"],
-    description: "the warning to log",
-  },
-  logInfo: {
-    count: 1,
-    types: ["any"],
-    names: ["message1"],
-    description: "the info message to log",
-  },
-  getElementsByName: {
-    count: 1,
-    types: ["string"],
-    names: ["name"],
-    description: "the name of the elements to get",
-  },
-  getElementById: {
-    count: 1,
-    types: ["string"],
-    names: ["id"],
-    description: "the id of the element to get",
-  },
-  getElementsByClassName: {
-    count: 1,
-    types: ["string"],
-    names: ["className"],
-    description: "the class name of the elements to get",
-  },
-  getElementsByTagName: {
-    count: 1,
-    types: ["string"],
-    names: ["tagName"],
-    description: "the tag name of the elements to get",
-  },
-  setStyle: {
-    count: 3,
-    types: ["string", "string", "element"],
-    names: ["property", "value", "element"],
-    optional: [false, false, true],
-    description:
-      "the style and value to set, optionally the element to set it on",
-  },
-  getStyle: {
-    count: 2,
-    types: ["string", "element"],
-    names: ["property", "element"],
-    optional: [false, true],
-    description: "the style to get, optionally the element to get it from",
-  },
-  setAttribute: {
-    count: 3,
-    types: ["string", "string", "element"],
-    names: ["attribute", "value", "element"],
-    optional: [false, false, true],
-    description:
-      "the attribute and value to set, optionally the element to set it on",
-  },
-  getAttribute: {
-    count: 2,
-    types: ["string", "element"],
-    names: ["attribute", "element"],
-    optional: [false, true],
-    description: "the attribute to get, optionally the element to get it from",
-  },
-  setVariable: {
-    count: 2,
-    types: ["string", "any"],
-    names: ["name", "value"],
-    description: "the name of the variable to set",
-    description2: "the value of the variable to set",
-  },
-  getVariable: {
-    count: 1,
-    types: ["string"],
-    names: ["name"],
-    description: "the name of the variable to get",
-  },
-  if: {
-    count: 1,
-    types: ["boolean"],
-    names: ["condition"],
-    description: "the condition to check",
-  },
-  elseIf: {
-    count: 1,
-    types: ["boolean"],
-    names: ["condition"],
-    description: "the condition to check",
-  },
-  else: {
-    count: 0,
-  },
-  for: {
-    count: 1,
-    types: ["number"],
-    names: ["count"],
-    description: "the number of times to run the code",
-  },
-  forEach: {
-    count: 1,
-    types: ["array"],
-    names: ["array"],
-    description: "the array to loop through",
-  },
-  while: {
-    count: 1,
-    types: "boolean",
-    names: ["condition"],
-    description: "the condition to check",
-  },
-  add: {
-    count: 2,
-    types: ["number", "number"],
-    names: ["number1", "number2"],
-    description: "the numbers to add",
-    extendable: true,
-    onExtend: () => {
-      names = [...names, "number" + (names.length + 1)];
-      types = [...types, "number"];
-    },
-  },
-  subtract: {
-    count: 2,
-    types: ["number", "number"],
-    description: "the numbers to subtract",
-    extendable: true,
-    onExtend: () => {
-      names = [...names, "number" + (names.length + 1)];
-      types = [...types, "number"];
-    },
-  },
-  multiply: {
-    count: 2,
-    types: ["number"],
-    types: ["number", "number"],
-    description: "the numbers to multiply",
-    extendable: true,
-    onExtend: () => {
-      names = [...names, "number" + (names.length + 1)];
-      types = [...types, "number"];
-    },
-  },
-  divide: {
-    count: 2,
-    types: ["number"],
-    types: ["number", "number"],
-    description: "the numbers to divide",
-    extendable: true,
-    onExtend: () => {
-      names = [...names, "number" + (names.length + 1)];
-      types = [...types, "number"];
-    },
-  },
-  modulo: {
-    count: 2,
-    types: ["number", "number"],
-    names: ["number1", "number2"],
-    description: "the numbers to get the remainder of",
-    extendable: true,
-    onExtend: () => {
-      names = [...names, "number" + (names.length + 1)];
-      types = [...types, "number"];
-    },
-  },
-  power: {
-    count: 2,
-    types: ["number"],
-    types: ["number", "number"],
-    names: ["number1", "number2"],
-    description: "the numbers to get the power of",
-    extendable: true,
-    onExtend: () => {
-      names = [...names, "number" + (names.length + 1)];
-      types = [...types, "number"];
-    },
-  },
-  and: {
-    count: 2,
-    types: ["boolean", "boolean"],
-    names: ["boolean1", "boolean2"],
-    description: "the booleans to check",
-    extendable: true,
-    onExtend: () => {
-      names = [...names, "boolean" + (names.length + 1)];
-      types = [...types, "boolean"];
-    },
-  },
-  or: {
-    count: 2,
-    types: ["boolean", "boolean"],
-    names: ["boolean1", "boolean2"],
-    description: "the booleans to check",
-    extendable: true,
-    onExtend: () => {
-      names = [...names, "number" + (names.length + 1)];
-      types = [...types, "number"];
-    },
-  },
-  not: {
-    count: 1,
-    types: ["boolean"],
-    names: ["boolean"],
-    description: "the boolean to check",
-  },
-  greaterThan: {
-    count: 2,
-    types: ["number", "number"],
-    names: ["number1", "number2"],
-    description: "the numbers to check",
-  },
-  lessThan: {
-    count: 2,
-    types: ["number", "number"],
-    names: ["number1", "number2"],
-    description: "the numbers to check",
-  },
-  greaterThanOrEqual: {
-    count: 2,
-    types: ["number", "number"],
-    names: ["number1", "number2"],
-    description: "the numbers to check",
-  },
-  lessThanOrEqual: {
-    count: 2,
-    types: ["number", "number"],
-    names: ["number1", "number2"],
-    description: "the numbers to check",
-  },
-  equal: {
-    count: 2,
-    types: ["any", "any"],
-    names: ["value1", "value2"],
-    description: "the values to check",
-  },
-  notEqual: {
-    count: 2,
-    types: ["any", "any"],
-    names: ["value1", "value2"],
-    description: "the values to check",
-  },
-};
-
-export const executables = [
-  "log",
-  "logError",
-  "logWarning",
-  "logInfo",
-  "getElementsByName",
-  "getElementById",
-  "getElementsByClassName",
-  "getElementsByTagName",
-  "setStyle",
-  "getStyle",
-  "setAttribute",
-  "getAttribute",
-  "setVariable",
-  "getVariable",
-  "if",
-  "elseIf",
-  "else",
-  "for",
-  "forEach",
-  "while",
-  "add",
-  "subtract",
-  "multiply",
-  "divide",
-  "modulo",
-  "power",
-  "and",
-  "or",
-  "not",
-  "greaterThan",
-  "lessThan",
-  "greaterThanOrEqual",
-  "lessThanOrEqual",
-  "equal",
-  "notEqual",
-  "return",
-  "break",
-  "continue",
-];
-
-export const objects = {
-  onMount: "lifecycle",
-  afterUpdate: "lifecycle",
-  beforeUpdate: "lifecycle",
-  beforeDestroy: "lifecycle",
-  afterDestroy: "lifecycle",
-  log: "console",
-  logError: "console",
-  logWarning: "console",
-  logInfo: "console",
-  onClick: "event",
-  onDblClick: "event",
-  onMouseDown: "event",
-  onMouseUp: "event",
-  onMouseEnter: "event",
-  onMouseLeave: "event",
-  onMouseMove: "event",
-  onContextMenu: "event",
-  getElementsByName: "document",
-  getElementById: "document",
-  getElementsByClassName: "document",
-  getElementsByTagName: "document",
-  setVariable: "variable",
-  getVariable: "variable",
-  if: "conditional",
-  elseIf: "conditional",
-  else: "conditional",
-  for: "loop",
-  forEach: "loop",
-  while: "loop",
-  add: "math",
-  subtract: "math",
-  multiply: "math",
-  divide: "math",
-  modulo: "math",
-  power: "math",
-  and: "logic",
-  or: "logic",
-  not: "logic",
-  greaterThan: "logic",
-  lessThan: "logic",
-  greaterThanOrEqual: "logic",
-  lessThanOrEqual: "logic",
-  equal: "logic",
-  notEqual: "logic",
-  break: "jump",
-  continue: "jump",
-  return: "return",
-  element: "element",
-  setStyle: "element",
-  getStyle: "element",
-  setAttribute: "element",
-  getAttribute: "element",
-};
-
-export const objectColors = {
-  jump: "yellow",
-  lifecycle: "green",
-  console: "blue",
-  event: "purple",
-  document: "pink",
-  variable: "orange",
-  conditional: "red",
-  loop: "cyan",
-  math: "teal",
-  logic: "gray",
-  return: "gray",
-  element: "brown",
-};
-
-export const objectDescriptions = {
-  jump: "Jump",
-  lifecycle: "Lifecycle",
-  console: "Console",
-  event: "Event",
-  document: "Document",
-  variable: "Variable",
-  conditional: "Conditional",
-  loop: "Loop",
-  math: "Math",
-  logic: "Logic",
-  return: "Return",
-  element: "Element",
-};
-
-export const objectIcons = {
-  lifecycle: "fa-solid fa-arrows-rotate",
-  console: "fa-solid fa-terminal",
-  event: "fa-solid fa-mouse-pointer",
-  document: "fa-solid fa-file",
-  variable: "fa-solid fa-database",
-  conditional: "fa-solid fa-code",
-  loop: "fa-solid fa-repeat",
-  math: "fa-solid fa-calculator",
-  logic: "fa-solid fa-microchip",
-  jump: "fa-solid fa-arrow-right",
-  return: "fa-solid fa-arrow-left",
-  element: "fa-solid fa-square",
-};
-
-//7 from MDN
-const primitiveTypes = [
-  "string",
-  "number",
-  "bigint",
-  "boolean",
-  "undefined",
-  "symbol",
-  "null",
-];
-
-const primitiveTypeColors = {
-  string: "orange",
-  number: "blue",
-  bigint: "purple",
-  boolean: "red",
-  undefined: "gray",
-  symbol: "yellow",
-  null: "gray",
-};
-
-const otherTypes = ["any", "array", "object", "function"];
-
-const otherTypeColors = {
-  any: "gray",
-  array: "green",
-  object: "cyan",
-  function: "pink",
-  element: "brown",
-};
-
-export const types = [...primitiveTypes, ...otherTypes];
-
-export const typeColors = {
-  ...primitiveTypeColors,
-  ...otherTypeColors,
-};
-
+//function vars
 const createGridFunctionVar = async (body) => {
   updateLoading(true);
   const addedDoc = await fetch("http://localhost:3000/function-vars", {
@@ -1123,3 +466,757 @@ const getGridFunctionVar = async (id) => {
   updateLoading(false);
   return docJson;
 };
+
+export const functions = {
+  //life cycle
+  onMount: "runs when the component is mounted",
+  afterUpdate: "runs after the component is updated",
+  beforeUpdate: "runs before the component is updated",
+  beforeDestroy: "runs before the component is destroyed",
+  afterDestroy: "runs after the component is destroyed",
+
+  //log
+  log: "logs a message to the console",
+  logError: "logs an error to the console",
+  logWarning: "logs a warning to the console",
+  logInfo: "logs an info message to the console",
+
+  //events
+  onClick: "runs when the component is clicked",
+  onDblClick: "runs when the component is double clicked",
+  onMouseDown: "runs when the mouse is pressed down on the component",
+  onMouseUp: "runs when the mouse is released on the component",
+  onMouseEnter: "runs when the mouse enters the component",
+  onMouseLeave: "runs when the mouse leaves the component",
+  onMouseMove: "runs when the mouse moves over the component",
+  onContextMenu: "runs when the context menu is opened on the component",
+
+  //document object model functions (reference mdn)
+  getElementsByName: "gets all elements with a given name",
+  getElementById: "gets an element by id",
+  getElementsByClassName: "gets all elements with a given class name",
+  getElementsByTagName: "gets all elements with a given tag name",
+
+  //element functions
+  setStyle: "sets the style of the component",
+  getStyle: "gets the style of the component",
+  setAttribute: "sets an attribute of the component",
+  getAttribute: "gets an attribute of the component",
+
+  //variable assignment
+  setVariable: "sets a variable",
+  getVariable: "gets a variable",
+
+  //conditional
+  if: "runs a block of code if a condition is true",
+  elseIf:
+    "runs a block of code if a condition is true and the previous if statement was false",
+  else: "runs a block of code if a condition is false",
+
+  //loop
+  for: "runs a block of code a given number of times",
+  forEach: "runs a block of code for each item in an array",
+  while: "runs a block of code while a condition is true",
+
+  //operators
+  add: "adds two numbers",
+  subtract: "subtracts two numbers",
+  multiply: "multiplies two numbers",
+  divide: "divides two numbers",
+  modulo: "returns the remainder of two numbers",
+  power: "raises a number to a power",
+
+  //logic
+  and: "returns true if both values are true",
+  or: "returns true if either value is true",
+  not: "returns the opposite of the value",
+
+  //comparison
+  greaterThan: "returns true if the first value is greater than the second",
+  lessThan: "returns true if the first value is less than the second",
+  greaterThanOrEqual:
+    "returns true if the first value is greater than or equal to the second",
+  lessThanOrEqual:
+    "returns true if the first value is less than or equal to the second",
+  equal: "returns true if the two values are equal",
+  notEqual: "returns true if the two values are not equal",
+
+  //jump
+  break: "stops the current loop",
+  continue:
+    "stops the current iteration of the loop and continues to the next iteration",
+
+  //return
+  return: "returns a value from a function",
+};
+
+export const functionOutputs = {
+  onMount: {
+    count: 0,
+    types: [],
+  },
+  afterUpdate: {
+    count: 0,
+    types: [],
+  },
+  beforeUpdate: {
+    count: 0,
+    types: [],
+  },
+  afterDestroy: {
+    count: 0,
+    types: [],
+  },
+  beforeDestroy: {
+    count: 0,
+    types: [],
+  },
+  onClick: {
+    count: 0,
+    types: [],
+  },
+  onDblClick: {
+    count: 0,
+    types: [],
+  },
+  onMouseDown: {
+    count: 0,
+    types: [],
+  },
+  onMouseUp: {
+    count: 0,
+    types: [],
+  },
+  onMouseEnter: {
+    count: 0,
+    types: [],
+  },
+  onMouseLeave: {
+    count: 0,
+    types: [],
+  },
+  onMouseMove: {
+    count: 0,
+    types: [],
+  },
+  onContextMenu: {
+    count: 0,
+    types: [],
+  },
+  log: {
+    count: 0,
+    types: [],
+  },
+  logError: {
+    count: 0,
+    types: [],
+  },
+  logWarning: {
+    count: 0,
+    types: [],
+  },
+  logInfo: {
+    count: 0,
+    types: [],
+  },
+  getElementsByName: {
+    count: 1,
+    types: ["array"],
+  },
+  getElementById: {
+    count: 1,
+    types: ["object"],
+  },
+  getElementsByClassName: {
+    count: 1,
+    types: ["array"],
+  },
+  getElementsByTagName: {
+    count: 1,
+    types: ["array"],
+  },
+  setStyle: {
+    count: 1,
+    types: ["object"],
+  },
+  getStyle: {
+    count: 1,
+    types: ["object"],
+  },
+  setAttribute: {
+    count: 1,
+    types: ["string"],
+  },
+  getAttribute: { count: 1, types: ["string"] },
+  setVariable: {
+    count: 1,
+    types: ["any"],
+  },
+  getVariable: {
+    count: 1,
+    types: ["any"],
+  },
+  if: {
+    count: 0,
+    types: [],
+  },
+  else: {
+    count: 0,
+    types: [],
+  },
+  elseIf: {
+    count: 0,
+    types: [],
+  },
+  for: {
+    count: 0,
+    types: [],
+  },
+  forEach: {
+    count: 0,
+    types: [],
+  },
+  while: {
+    count: 0,
+    types: [],
+  },
+  add: {
+    count: 1,
+    types: ["number"],
+  },
+  subtract: {
+    count: 1,
+    types: ["number"],
+  },
+  multiply: {
+    count: 1,
+    types: ["number"],
+  },
+  divide: {
+    count: 1,
+    types: ["number"],
+  },
+  modulo: {
+    count: 1,
+    types: ["number"],
+  },
+  power: {
+    count: 1,
+    types: ["number"],
+  },
+  and: {
+    count: 1,
+    types: ["boolean"],
+  },
+  or: {
+    count: 1,
+    types: ["boolean"],
+  },
+  not: {
+    count: 1,
+    types: ["boolean"],
+  },
+  greaterThan: {
+    count: 1,
+    types: ["boolean"],
+  },
+  lessThan: {
+    count: 1,
+    types: ["boolean"],
+  },
+  greaterThanOrEqual: {
+    count: 1,
+    types: ["boolean"],
+  },
+  lessThanOrEqual: {
+    count: 1,
+    types: ["boolean"],
+  },
+  equal: {
+    count: 1,
+    types: ["boolean"],
+  },
+  notEqual: {
+    count: 1,
+    types: ["boolean"],
+  },
+};
+
+export const functionInputs = {
+  onMount: {
+    count: 0,
+    types: [],
+  },
+  afterUpdate: {
+    count: 0,
+    types: [],
+  },
+  beforeUpdate: {
+    count: 0,
+    types: [],
+  },
+  afterDestroy: {
+    count: 0,
+    types: [],
+  },
+  beforeDestroy: {
+    count: 0,
+    types: [],
+  },
+  onClick: {
+    count: 0,
+    types: [],
+  },
+  onDblClick: {
+    count: 0,
+    types: [],
+  },
+  onMouseDown: {
+    count: 0,
+    types: [],
+  },
+  onMouseUp: {
+    count: 0,
+    types: [],
+  },
+  onMouseEnter: {
+    count: 0,
+    types: [],
+  },
+  onMouseLeave: {
+    count: 0,
+    types: [],
+  },
+  onMouseMove: {
+    count: 0,
+    types: [],
+  },
+  onContextMenu: {
+    count: 0,
+    types: [],
+  },
+  log: {
+    count: 1,
+    types: ["any"],
+    names: ["message1"],
+    description: "the message to log",
+  },
+  logError: {
+    count: 1,
+    types: ["any"],
+    names: ["message1"],
+    description: "the error to log",
+  },
+  logWarning: {
+    count: 1,
+    types: ["any"],
+    names: ["message1"],
+    description: "the warning to log",
+  },
+  logInfo: {
+    count: 1,
+    types: ["any"],
+    names: ["message1"],
+    description: "the info message to log",
+  },
+  getElementsByName: {
+    count: 1,
+    types: ["string"],
+    names: ["name"],
+    description: "the name of the elements to get",
+  },
+  getElementById: {
+    count: 1,
+    types: ["string"],
+    names: ["id"],
+    description: "the id of the element to get",
+  },
+  getElementsByClassName: {
+    count: 1,
+    types: ["string"],
+    names: ["className"],
+    description: "the class name of the elements to get",
+  },
+  getElementsByTagName: {
+    count: 1,
+    types: ["string"],
+    names: ["tagName"],
+    description: "the tag name of the elements to get",
+  },
+  setStyle: {
+    count: 3,
+    types: ["string", "string", "element"],
+    names: ["property", "value", "element"],
+    optional: [false, false, true],
+    description:
+      "the style and value to set, optionally the element to set it on",
+  },
+  getStyle: {
+    count: 2,
+    types: ["string", "element"],
+    names: ["property", "element"],
+    optional: [false, true],
+    description: "the style to get, optionally the element to get it from",
+  },
+  setAttribute: {
+    count: 3,
+    types: ["string", "string", "element"],
+    names: ["attribute", "value", "element"],
+    optional: [false, false, true],
+    description:
+      "the attribute and value to set, optionally the element to set it on",
+  },
+  getAttribute: {
+    count: 2,
+    types: ["string", "element"],
+    names: ["attribute", "element"],
+    optional: [false, true],
+    description: "the attribute to get, optionally the element to get it from",
+  },
+  setVariable: {
+    count: 2,
+    types: ["string", "any"],
+    names: ["name", "value"],
+    description: "the name of the variable to set",
+    description2: "the value of the variable to set",
+  },
+  getVariable: {
+    count: 1,
+    types: ["string"],
+    names: ["name"],
+    description: "the name of the variable to get",
+  },
+  if: {
+    count: 1,
+    types: ["boolean"],
+    names: ["condition"],
+    description: "the condition to check",
+  },
+  elseIf: {
+    count: 1,
+    types: ["boolean"],
+    names: ["condition"],
+    description: "the condition to check",
+  },
+  else: {
+    count: 0,
+  },
+  for: {
+    count: 1,
+    types: ["number"],
+    names: ["count"],
+    description: "the number of times to run the code",
+  },
+  forEach: {
+    count: 1,
+    types: ["array"],
+    names: ["array"],
+    description: "the array to loop through",
+  },
+  while: {
+    count: 1,
+    types: "boolean",
+    names: ["condition"],
+    description: "the condition to check",
+  },
+  add: {
+    count: 2,
+    types: ["number", "number"],
+    names: ["number1", "number2"],
+    description: "the numbers to add",
+  },
+  subtract: {
+    count: 2,
+    types: ["number", "number"],
+    description: "the numbers to subtract",
+  },
+  multiply: {
+    count: 2,
+    types: ["number"],
+    types: ["number", "number"],
+    description: "the numbers to multiply",
+  },
+  divide: {
+    count: 2,
+    types: ["number"],
+    types: ["number", "number"],
+    description: "the numbers to divide",
+  },
+  modulo: {
+    count: 2,
+    types: ["number", "number"],
+    names: ["number1", "number2"],
+    description: "the numbers to get the remainder of",
+  },
+  power: {
+    count: 2,
+    types: ["number"],
+    types: ["number", "number"],
+    names: ["number1", "number2"],
+    description: "the numbers to get the power of",
+  },
+  and: {
+    count: 2,
+    types: ["boolean", "boolean"],
+    names: ["boolean1", "boolean2"],
+    description: "the booleans to check",
+  },
+  or: {
+    count: 2,
+    types: ["boolean", "boolean"],
+    names: ["boolean1", "boolean2"],
+    description: "the booleans to check",
+  },
+  not: {
+    count: 1,
+    types: ["boolean"],
+    names: ["boolean"],
+    description: "the boolean to check",
+  },
+  greaterThan: {
+    count: 2,
+    types: ["number", "number"],
+    names: ["number1", "number2"],
+    description: "the numbers to check",
+  },
+  lessThan: {
+    count: 2,
+    types: ["number", "number"],
+    names: ["number1", "number2"],
+    description: "the numbers to check",
+  },
+  greaterThanOrEqual: {
+    count: 2,
+    types: ["number", "number"],
+    names: ["number1", "number2"],
+    description: "the numbers to check",
+  },
+  lessThanOrEqual: {
+    count: 2,
+    types: ["number", "number"],
+    names: ["number1", "number2"],
+    description: "the numbers to check",
+  },
+  equal: {
+    count: 2,
+    types: ["any", "any"],
+    names: ["value1", "value2"],
+    description: "the values to check",
+  },
+  notEqual: {
+    count: 2,
+    types: ["any", "any"],
+    names: ["value1", "value2"],
+    description: "the values to check",
+  },
+};
+
+export const executables = [
+  "log",
+  "logError",
+  "logWarning",
+  "logInfo",
+  "getElementsByName",
+  "getElementById",
+  "getElementsByClassName",
+  "getElementsByTagName",
+  "setStyle",
+  "getStyle",
+  "setAttribute",
+  "getAttribute",
+  "setVariable",
+  "getVariable",
+  "if",
+  "elseIf",
+  "else",
+  "for",
+  "forEach",
+  "while",
+  "add",
+  "subtract",
+  "multiply",
+  "divide",
+  "modulo",
+  "power",
+  "and",
+  "or",
+  "not",
+  "greaterThan",
+  "lessThan",
+  "greaterThanOrEqual",
+  "lessThanOrEqual",
+  "equal",
+  "notEqual",
+  "return",
+  "break",
+  "continue",
+];
+
+export const categories = {
+  onMount: "lifecycle",
+  afterUpdate: "lifecycle",
+  beforeUpdate: "lifecycle",
+  beforeDestroy: "lifecycle",
+  afterDestroy: "lifecycle",
+  log: "console",
+  logError: "console",
+  logWarning: "console",
+  logInfo: "console",
+  onClick: "event",
+  onDblClick: "event",
+  onMouseDown: "event",
+  onMouseUp: "event",
+  onMouseEnter: "event",
+  onMouseLeave: "event",
+  onMouseMove: "event",
+  onContextMenu: "event",
+  getElementsByName: "document",
+  getElementById: "document",
+  getElementsByClassName: "document",
+  getElementsByTagName: "document",
+  setVariable: "variable",
+  getVariable: "variable",
+  if: "conditional",
+  elseIf: "conditional",
+  else: "conditional",
+  for: "loop",
+  forEach: "loop",
+  while: "loop",
+  add: "math",
+  subtract: "math",
+  multiply: "math",
+  divide: "math",
+  modulo: "math",
+  power: "math",
+  and: "logic",
+  or: "logic",
+  not: "logic",
+  greaterThan: "logic",
+  lessThan: "logic",
+  greaterThanOrEqual: "logic",
+  lessThanOrEqual: "logic",
+  equal: "logic",
+  notEqual: "logic",
+  break: "jump",
+  continue: "jump",
+  return: "return",
+  element: "element",
+  setStyle: "element",
+  getStyle: "element",
+  setAttribute: "element",
+  getAttribute: "element",
+};
+
+export const categoryColors = {
+  jump: "yellow",
+  lifecycle: "green",
+  console: "blue",
+  event: "purple",
+  document: "pink",
+  variable: "orange",
+  conditional: "red",
+  loop: "cyan",
+  math: "teal",
+  logic: "gray",
+  return: "gray",
+  element: "brown",
+};
+
+export const categoryDescriptions = {
+  jump: "Jump",
+  lifecycle: "Lifecycle",
+  console: "Console",
+  event: "Event",
+  document: "Document",
+  variable: "Variable",
+  conditional: "Conditional",
+  loop: "Loop",
+  math: "Math",
+  logic: "Logic",
+  return: "Return",
+  element: "Element",
+};
+
+export const categoryIcons = {
+  lifecycle: "fa-solid fa-arrows-rotate",
+  console: "fa-solid fa-terminal",
+  event: "fa-solid fa-mouse-pointer",
+  document: "fa-solid fa-file",
+  variable: "fa-solid fa-database",
+  conditional: "fa-solid fa-code",
+  loop: "fa-solid fa-repeat",
+  math: "fa-solid fa-calculator",
+  logic: "fa-solid fa-microchip",
+  jump: "fa-solid fa-arrow-right",
+  return: "fa-solid fa-arrow-left",
+  element: "fa-solid fa-square",
+};
+
+//7 from MDN
+const primitiveTypes = [
+  "string",
+  "number",
+  "bigint",
+  "boolean",
+  "undefined",
+  "symbol",
+  "null",
+];
+
+const primitiveTypeColors = {
+  string: "orange",
+  number: "blue",
+  bigint: "purple",
+  boolean: "red",
+  undefined: "gray",
+  symbol: "yellow",
+  null: "gray",
+};
+
+const otherTypes = ["any", "array", "object", "function"];
+
+const otherTypeColors = {
+  any: "gray",
+  array: "green",
+  object: "cyan",
+  function: "pink",
+  element: "brown",
+};
+
+export const types = [...primitiveTypes, ...otherTypes];
+
+export const typeColors = {
+  ...primitiveTypeColors,
+  ...otherTypeColors,
+};
+
+const epicFunctionsPre = [];
+
+Object.keys(functions).forEach((func) => {
+  const category = categories[func];
+  const categoryColor = categoryColors[category];
+  const categoryDescription = categoryDescriptions[category];
+  const categoryIcon = categoryIcons[category];
+  const executable = executables.includes(func);
+  const description = functions[func];
+  const inputs = functionInputs[func] || null;
+  const outputs = functionOutputs[func] || null;
+  const epicFunction = {
+    name: func,
+    category,
+    categoryColor,
+    categoryDescription,
+    categoryIcon,
+    executable,
+    description,
+    inputs: inputs,
+    outputs: outputs,
+  };
+  epicFunctionsPre.push(epicFunction);
+});
+
+export const epicFunctions = {};
+epicFunctionsPre.forEach((epic) => {
+  epicFunctions[epic.name] = epic;
+});
+console.log(epicFunctions);

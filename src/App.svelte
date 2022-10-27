@@ -38,8 +38,6 @@
   let ready = false;
   let connectionLocations = [];
 
-  $: console.log($clickedElement);
-
   onMount(async () => {
     ready = true;
   });
@@ -61,8 +59,6 @@
 
   const getConnectionLocations = () => {
     const connectionLocations = [];
-
-    console.log($clickedElement.grid.connections);
 
     $clickedElement.grid.connections.forEach((connection) => {
       const inArrowLocation =
@@ -111,6 +107,10 @@
   $: if ($clickedElement && !$variablesFetched) {
     getVariables();
     $variablesFetched = true;
+  }
+
+  $: if (!$showGrid && $clickedElement) {
+    $clickedElement.grid = null;
   }
 
   setInterval(() => {
@@ -172,7 +172,7 @@
 {/if}
 {#if ready && $clickedElement?.grid?.functions.length > 0 && $showGrid}
   {#each $clickedElement.grid.functions as item (item._id)}
-    <div out:fade={{ duration: 100 }}>
+    <div>
       <GridFunction gridFunction={item} />
     </div>
   {/each}

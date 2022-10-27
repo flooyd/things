@@ -420,7 +420,11 @@
   }
 
   .elementTooltip::-webkit-scrollbar {
-    width: 0px;
+    width: 8px;
+  }
+
+  .elementTooltip::-webkit-scrollbar-thumb {
+    background: brown;
   }
 
   .toolbar {

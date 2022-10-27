@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
   import { fade } from "svelte/transition";
   import {
     clickedElement,
@@ -262,7 +262,6 @@
   };
 
   $: if ($elementUpdated === true) {
-    console.log("hi");
     $elementUpdated = false;
   }
 </script>

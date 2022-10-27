@@ -389,9 +389,12 @@
   }
 
   .variablesStoresTooltip::-webkit-scrollbar {
-    width: 0px;
+    width: 8px;
   }
 
+  .variablesStoresTooltip::-webkit-scrollbar-thumb {
+    background: orange;
+  }
   .header {
     font-size: 20px;
     font-weight: bold;

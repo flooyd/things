@@ -18,16 +18,12 @@
     elementUpdated,
   } from "../stores/globals";
   import {
-    objects,
     executables,
-    functionOutputs,
-    functionInputs,
-    objectDescriptions,
     typeColors,
-    objectColors,
     saveFunction,
     deleteAllConnectionsForFunction,
     deleteFunctionById,
+    epicFunctions,
   } from "../util";
 
   export let gridFunction;
@@ -35,8 +31,8 @@
   let element = null;
   let numOutputs = 0;
   let numInputs = 0;
-  let typesOfInput = null;
-  let typeOfOutput;
+  let typesOfInputs = null;
+  let typesOfOutputs;
   let ready = false;
   let inputCircleInput = null;
   let inputCircleTextarea = null;
@@ -57,10 +53,10 @@
   let variableTypeColor = null;
 
   onMount(() => {
-    numOutputs = functionOutputs[gridFunction.name]?.count || 0;
-    numInputs = functionInputs[gridFunction.name]?.count || 0;
-    typeOfOutput = functionOutputs[gridFunction.name]?.type || "any";
-    typesOfInput = functionInputs[gridFunction.name]?.types || ["any"];
+    numOutputs = epicFunctions[gridFunction.name]?.outputs.count || 0;
+    numInputs = epicFunctions[gridFunction.name]?.inputs.count || 0;
+    typesOfOutputs = epicFunctions[gridFunction.name]?.outputs.types || [];
+    typesOfInputs = epicFunctions[gridFunction.name]?.inputs.types || [];
     ready = true;
   });
 
@@ -77,7 +73,6 @@
   };
 
   const stop = async (e) => {
-    console.log("stop");
     $elementUpdated = true;
     await tick();
     $functionMoving = null;
@@ -90,7 +85,7 @@
     }
   };
 
-  const setRect = (movementLeft = 0, movementTop = 0, width, height) => {
+  const setRect = async (movementLeft = 0, movementTop = 0, width, height) => {
     if (rect.x === 0 && movementLeft < 0) {
       return;
     }
@@ -193,6 +188,7 @@
       }
     }
     setRect(0, 0, element.clientWidth, element.clientHeight);
+
     initialized = true;
   }
 
@@ -340,12 +336,14 @@
       </div>
     {/if}
     <div class="label">
-      {objectDescriptions[objects[gridFunction.name]] || "Variable"}
+      {epicFunctions[gridFunction.name]?.category || "Variable"}
     </div>
     <div class="topName">
       {#if !gridFunction.isVariable && executables.includes(gridFunction.name)}
         <div
-          class={"inArrow" + " " + objectColors[objects[gridFunction.name]]}
+          class={"inArrow" +
+            " " +
+            epicFunctions[gridFunction.name].categoryColor}
           on:focus
           on:mousedown={(e) => handleClickArrow("in", e)}
         >
@@ -355,9 +353,11 @@
       <div class="gridFunctionName">
         {variable ? variable.name : gridFunction.name}
       </div>
-      {#if !gridFunction.isVariable && objects[gridFunction.name] !== "jump" && objects[gridFunction.name] !== "return"}
+      {#if !gridFunction.isVariable && epicFunctions[gridFunction.name].category !== "jump" && epicFunctions[gridFunction.name].category !== "return"}
         <div
-          class={"outArrow" + " " + objectColors[objects[gridFunction.name]]}
+          class={"outArrow" +
+            " " +
+            epicFunctions[gridFunction.name].categoryColor}
           on:focus
           on:mousedown={(e) => handleClickArrow("out", e)}
         >
@@ -368,8 +368,8 @@
     <div class="outputs">
       {#each Array(numOutputs) as _, i}
         <div class="output" on:click={() => handleClickOutput(i)}>
-          <span class="outputCircleType">{typeOfOutput}</span>
-          <i class={"fas fa-circle" + " " + typeColors[typeOfOutput]} />
+          <span class="outputCircleType">{typesOfOutputs}</span>
+          <i class={"fas fa-circle" + " " + typeColors[typesOfOutputs]} />
         </div>
       {/each}
       {#if variable}
@@ -390,12 +390,12 @@
     <div class="inputs">
       {#each Array(numInputs) as _, i}
         <div class="input" on:click={() => handleClickVariable("in", null, i)}>
-          <i class={"fas fa-circle" + " " + typeColors[typesOfInput[i]]} />
-          <span class="inputCircleType">{typesOfInput[i]}</span>
-          {#if functionInputs[gridFunction.name].optional && functionInputs[gridFunction.name].optional[i] === true}
+          <i class={"fas fa-circle" + " " + typeColors[typesOfInputs[i]]} />
+          <span class="inputCircleType">{typesOfInputs[i] || ""}</span>
+          {#if epicFunctions[gridFunction.name]?.inputs?.optional && epicFunctions[gridFunction.name]?.inputs.optional[i] === true}
             <i class="fa fa-question" />
           {/if}
-          {#if typesOfInput[i] === "number"}
+          {#if typesOfInputs[i] === "number"}
             <input
               class="inputCircleInput"
               bind:this={inputCircleInput}
@@ -403,7 +403,7 @@
               disabled={inputDisabled}
             />
           {/if}
-          {#if typesOfInput[i] === "string" || (typesOfInput[i] === "any" && objects[gridFunction.name] === "console")}
+          {#if typesOfInputs[i] === "string" || (typesOfInputs[i] === "any" && epicFunctions[gridFunction.name]?.category === "console")}
             <textarea
               class="inputCircleTextarea"
               bind:this={inputCircleTextarea}
