@@ -4,6 +4,7 @@
     variablesFetched,
     contextElement,
     childAssignmentPending,
+    pendingChildDropBackground,
   } from "../../stores//globals";
   import { elements } from "../../stores/elements";
   import { getId } from "../../util";
@@ -16,8 +17,6 @@
   let styleString,
     showTooltip,
     ctrlDown = false,
-    userBackground,
-    pendingChildDropBackground = null,
     ready = null;
 
   const id = getId("div");
@@ -51,7 +50,6 @@
     if (!ctrlDown) {
       return;
     }
-    console.log("simulating");
     if (!element.grid) return;
     const onClick = element.grid.functions.find(
       (func) => func.name === "onClick"
@@ -149,9 +147,9 @@
     }
   };
 
-  $: pendingChildDropBackground
+  $: $pendingChildDropBackground === element._id
     ? (styleString = styleString + "background: brown;")
-    : (styleString = styleString);
+    : (styleString = styleString + `background: ${element.background};`);
 </script>
 
 <svelte:window on:keydown={handleKeyDown} />
@@ -183,15 +181,17 @@
       $contextElement = element;
       $childAssignmentPending = false;
     }}
-    on:mouseenter={async (e) => {
+    on:mouseover={async (e) => {
       e.stopPropagation();
       if ($childAssignmentPending && $contextElement._id !== element._id) {
-        pendingChildDropBackground = true;
+        $pendingChildDropBackground = element._id;
       }
     }}
-    on:mouseleave={(e) => {
-      pendingChildDropBackground = false;
+    on:focus
+    on:mouseout={(e) => {
+      $pendingChildDropBackground = null;
     }}
+    on:blur
   >
     {#if element.type === "div"}
       <Div

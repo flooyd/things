@@ -39,6 +39,7 @@ export const elementUpdated = writable(false);
 export const contextElement = writable(null);
 export const contextElementId = writable(null);
 export const childAssignmentPending = writable(null);
+export const pendingChildDropBackground = writable(null);
 
 //export update function for elements
 export function updateLoading(newValue) {
