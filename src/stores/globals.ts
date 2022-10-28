@@ -36,6 +36,9 @@ export const variableUpdated = writable(null);
 export const variablesFetched = writable(false);
 export const usingSelectionTool = writable(false);
 export const elementUpdated = writable(false);
+export const contextElement = writable(null);
+export const contextElementId = writable(null);
+export const childAssignmentPending = writable(null);
 
 //export update function for elements
 export function updateLoading(newValue) {

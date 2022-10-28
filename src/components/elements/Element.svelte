@@ -1,6 +1,11 @@
 <script>
-  import { onMount } from "svelte";
-  import { variablesFetched, elementUpdated } from "../../stores//globals";
+  import { onMount, tick } from "svelte";
+  import {
+    variablesFetched,
+    contextElement,
+    childAssignmentPending,
+  } from "../../stores//globals";
+  import { elements } from "../../stores/elements";
   import { getId } from "../../util";
   import Div from "./Div.svelte";
 
@@ -11,6 +16,8 @@
   let styleString,
     showTooltip,
     ctrlDown = false,
+    userBackground,
+    pendingChildDropBackground = null,
     ready = null;
 
   const id = getId("div");
@@ -44,6 +51,7 @@
     if (!ctrlDown) {
       return;
     }
+    console.log("simulating");
     if (!element.grid) return;
     const onClick = element.grid.functions.find(
       (func) => func.name === "onClick"
@@ -54,16 +62,16 @@
   };
 
   onMount(() => {
-    element.width = element.width ? element.width : "400px";
-    element.height = element.height ? element.height : "300px";
-    element.background = element.background ? element.background : "black";
-    element.margin = element.margin ? element.margin : "0px auto";
-    element.padding = element.padding ? element.padding : "0px";
-    element.borderRadius = element.borderRadius ? element.borderRadius : "0px";
+    element.width = element.width ? element.width : "10px";
+    element.height = element.height ? element.height : "10px";
+    element.background = element.background ? element.background : "";
+    element.margin = element.margin ? element.margin : "";
+    element.padding = element.padding ? element.padding : "";
+    element.borderRadius = element.borderRadius ? element.borderRadius : "";
     element.border = element.border ? element.border : "";
-    element.boxShadow = element.boxShadow ? element.boxShadow : "none";
-    element.fontSize = element.fontSize ? element.fontSize : "16px";
-    element.color = element.color ? element.color : "white";
+    element.boxShadow = element.boxShadow ? element.boxShadow : "";
+    element.fontSize = element.fontSize ? element.fontSize : "";
+    element.color = element.color ? element.color : "";
     element.content = element.content ? element.content : "";
     element.id = element._id ? element._id : id;
     element.name = element.name ? element.name : "";
@@ -75,16 +83,16 @@
     element.paddingTop = element.paddingTop ? element.paddingTop : "";
     element.paddingLeft = element.paddingLeft ? element.paddingLeft : "";
     element.paddingRight = element.paddingRight ? element.paddingRight : "";
-    element.display = element.display ? element.display : "block";
-    element.gap = element.gap ? element.gap : "0px";
+    element.display = element.display ? element.display : "";
+    element.gap = element.gap ? element.gap : "";
     element.justifyContent = element.justifyContent
       ? element.justifyContent
-      : "flex-start";
-    element.alignItems = element.alignItems ? element.alignItems : "flex-start";
+      : "";
+    element.alignItems = element.alignItems ? element.alignItems : "";
     element.flexDirection = element.flexDirection
       ? element.flexDirection
       : "row";
-    element.flexWrap = element.flexWrap ? element.flexWrap : "nowrap";
+    element.flexWrap = element.flexWrap ? element.flexWrap : "";
     element.position = element.position ? element.position : "";
     element.top = element.top ? element.top : "";
     element.right = element.right ? element.right : "";
@@ -100,7 +108,7 @@
 
   $: styleString = `width: ${element.width};
   height: ${element.height}; 
-  background: ${element.background}; 
+  background:${element.background || pendingChildDropBackground}; 
   border: ${element.border}; 
   margin: ${element.margin}; 
   margin-left: ${element.marginLeft};
@@ -140,6 +148,10 @@
       ctrlDown = false;
     }
   };
+
+  $: pendingChildDropBackground
+    ? (styleString = styleString + "background: brown;")
+    : (styleString = styleString);
 </script>
 
 <svelte:window on:keydown={handleKeyDown} />
@@ -154,10 +166,31 @@
       $variablesFetched = false;
     }}
     on:click={(e) => {
+      if ($childAssignmentPending) {
+        $elements.find((el) => el._id === $contextElement._id).childOf =
+          element._id;
+        $childAssignmentPending = null;
+        $contextElement = null;
+      }
       handleClick(e);
     }}
     on:keypress={(e) => {
       handleKeyDown(e);
+    }}
+    on:contextmenu={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      $contextElement = element;
+      $childAssignmentPending = false;
+    }}
+    on:mouseenter={async (e) => {
+      e.stopPropagation();
+      if ($childAssignmentPending && $contextElement._id !== element._id) {
+        pendingChildDropBackground = true;
+      }
+    }}
+    on:mouseleave={(e) => {
+      pendingChildDropBackground = false;
     }}
   >
     {#if element.type === "div"}

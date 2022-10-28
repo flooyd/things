@@ -364,6 +364,7 @@
       </button>
     </div>
   {/if}
+  <div class="divider">Hello</div>
 </div>
 
 <style>

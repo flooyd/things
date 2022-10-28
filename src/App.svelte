@@ -4,6 +4,7 @@
   import ElementTooltip from "./components/tooltips/ElementTooltip.svelte";
   import Grid from "./components/Grid.svelte";
   import GridFunction from "./components/GridFunction.svelte";
+  import ContextMenu from "./components/ContextMenu.svelte";
   import {
     mousePosition,
     width,
@@ -22,6 +23,7 @@
     windowScrollY,
     variablesFetched,
     variablesStore,
+    contextElement,
   } from "./stores/globals";
   import { elements } from "./stores/elements";
   import { onMount } from "svelte";
@@ -201,6 +203,11 @@
       /></svg
     >
   {/each}
+{/if}
+{#if $contextElement}
+  <div transition:fade={{ duration: 75 }}>
+    <ContextMenu />
+  </div>
 {/if}
 
 <style>
