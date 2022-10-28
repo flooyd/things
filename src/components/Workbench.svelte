@@ -40,7 +40,6 @@
 
   const updateElements = async () => {
     $elements = await getElements();
-    console.log($elements);
   };
 
   $: if ($elementsPendingUpdate) {
@@ -54,16 +53,13 @@
     class="workbench"
     style={$toolbarOpenStyle}
   >
-    {#if $elements.length > 0}
-      <div class="view">
-        Hi
-        {#each $elements as element (element._id)}
-          {#if element.childOf?.length === 0 || !element.childOf}
-            <Element {element} />
-          {/if}
-        {/each}
-      </div>
-    {/if}
+    <div class="view">
+      {#each $elements as element (element._id)}
+        {#if !element.childOf}
+          <Element {element} />
+        {/if}
+      {/each}
+    </div>
   </div>
 {/if}
 

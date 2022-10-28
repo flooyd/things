@@ -16,6 +16,7 @@
 
   let styleString,
     showTooltip,
+    children = [],
     ctrlDown = false,
     ready = null;
 
@@ -60,7 +61,6 @@
   };
 
   onMount(() => {
-    console.log("mount");
     element.width = element.width ? element.width : "10px";
     element.height = element.height ? element.height : "10px";
     element.background = element.background ? element.background : "";
@@ -97,11 +97,10 @@
     element.right = element.right ? element.right : "";
     element.bottom = element.bottom ? element.bottom : "";
     element.left = element.left ? element.left : "";
-
     ready = true;
   });
 
-  $: if ($clickedElement && $clickedElement.id === element.id) {
+  $: if (element && $clickedElement?._id === element._id) {
     element = $clickedElement;
   }
 
@@ -155,6 +154,12 @@
         `background: ${element.background}; border: ${
           element.border || "none"
         };`);
+
+  $: if (element.parentOf) {
+    children = element.parentOf.map((childId) => {
+      return $elements.find((element) => element._id === childId);
+    });
+  }
 </script>
 
 <svelte:window on:keydown={handleKeyDown} />
@@ -170,12 +175,26 @@
       $variablesFetched = false;
     }}
     on:click={async (e) => {
+      e.stopPropagation();
       if ($childAssignmentPending && $contextElement._id !== element._id) {
+        const oldParent = $elements.find(
+          (el) => el._id === $contextElement.childOf
+        );
+        if (oldParent) {
+          oldParent.parentOf = oldParent.parentOf.filter(
+            (child) => child !== $contextElement._id
+          );
+        }
+        console.log("old parent");
+        console.log("old prent", oldParent);
         $elements.find((el) => el._id === $contextElement._id).childOf =
           element._id;
+
+        element.parentOf = [...element.parentOf, $contextElement._id];
         await updateElement($contextElement);
         $childAssignmentPending = null;
         $contextElement = null;
+        $elements = $elements;
       }
       handleClick(e);
     }}
@@ -206,13 +225,15 @@
   >
     {#if element.type === "div"}
       <Div
-        id={element.id}
-        key={id}
+        id={element._id}
+        key={element._id}
+        name={element.name || element._id}
         {styleString}
-        content={element.content}
-        parentOf={element.parentOf}
-        name={element.name}
-      />
+      >
+        {#each children as child}
+          <svelte:self element={child} />
+        {/each}
+      </Div>
     {/if}
   </div>
 {/if}

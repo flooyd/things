@@ -5,7 +5,7 @@
     showToolbar,
   } from "../stores/globals";
   import { updateElement } from "../util";
-  import { elements, elementsPendingUpdate } from "../stores/elements";
+  import { elements } from "../stores/elements";
   import { fly, fade } from "svelte/transition";
 
   let topOrBottom = "bottom";
@@ -32,10 +32,17 @@
     <button
       class="brownButton"
       on:click={async () => {
+        const parentElement = $elements.find((e) =>
+          e.parentOf.includes($contextElement._id)
+        );
+        parentElement.parentOf = parentElement.parentOf.filter(
+          (id) => id !== $contextElement._id
+        );
+
         $elements.find((el) => el._id === $contextElement._id).childOf = null;
         await updateElement($contextElement);
-        $elementsPendingUpdate = true;
         $elements = $elements;
+        $contextElement = null;
       }}>Remove as Child</button
     >
     <button class="redButton">Delete</button>
