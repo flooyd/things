@@ -1,6 +1,4 @@
 <script>
-  import { doc, getDoc, updateDoc } from "firebase/firestore";
-  import { fly, fade } from "svelte/transition";
   import { onMount } from "svelte";
   import {
     db,
@@ -8,8 +6,12 @@
     parentOfChildPendingDeletion,
     childPendingDeletion,
   } from "../../stores/globals";
-  import { elements as elementsStore } from "../../stores/elements";
+  import {
+    elements as elementsStore,
+    elementsPendingUpdate,
+  } from "../../stores/elements";
   import Element from "./Element.svelte";
+  import { element } from "svelte/internal";
 
   export let styleString;
   export let content = "";
@@ -23,16 +25,20 @@
   let hoverBorder = "3px solid red";
 
   onMount(() => {
+    getChildElements();
+  });
+
+  const getChildElements = () => {
     if (parentOf.length > 0) {
       parentOf.forEach(async (child, index, arr) => {
         //child is the id of the child element. get the element from the store and add it to the elements array
         const childElement = $elementsStore.find(
           (element) => element._id === child
-        );
+        )._id;
         elements = [...elements, childElement];
       });
     }
-  });
+  };
 
   $: if ($parentOfChildPendingDeletion === id) {
     elements = elements.filter((e) => e.id !== $childPendingDeletion);
@@ -40,24 +46,21 @@
     $parentOfChildPendingDeletion = null;
   }
 
-  $: if ($elementTooltipId === key) {
-    hoverBorder = "hoverBorder";
-  } else {
-    hoverBorder = "";
-  }
+  console.log("hi fromd div", id);
 </script>
 
-{#key unique}
-  <div {id} style={styleString} class={`thingDiv`} {name}>
-    {#each elements as element (element.id)}
+<div {id} style={styleString} class={`thingDiv`} {name}>
+  {#each $elementsStore as element (element._id)}
+    {#if elements.includes(element._id)}
       <Element {element} />
-    {/each}
-    {content}
-  </div>
-{/key}
+    {/if}
+  {/each}
+  {content}
+</div>
 
 <style>
   div {
     color: black;
+    opacity: 1 !important;
   }
 </style>

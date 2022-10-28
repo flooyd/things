@@ -31,7 +31,7 @@
   import { epicFunctions, getVariablesForElement, updateElement } from "./util";
   import HtmlTooltip from "./components/tooltips/HTMLTooltip.svelte";
   import VariablesStoresTooltip from "./components/tooltips/VariablesStoresTooltip.svelte";
-  import { fade } from "svelte/transition";
+  import { fade, fly } from "svelte/transition";
 
   let ready = false;
   let connectionLocations = [];
@@ -205,7 +205,7 @@
   {/each}
 {/if}
 {#if $contextElement}
-  <div transition:fade={{ duration: 75 }}>
+  <div>
     <ContextMenu />
   </div>
 {/if}

@@ -6,8 +6,8 @@
     childAssignmentPending,
     pendingChildDropBackground,
   } from "../../stores//globals";
-  import { elements } from "../../stores/elements";
-  import { getId } from "../../util";
+  import { elements, elementsPendingUpdate } from "../../stores/elements";
+  import { getId, updateElement } from "../../util";
   import Div from "./Div.svelte";
 
   import { elementTooltipId, clickedElement } from "../../stores/globals";
@@ -60,6 +60,7 @@
   };
 
   onMount(() => {
+    console.log("mount");
     element.width = element.width ? element.width : "10px";
     element.height = element.height ? element.height : "10px";
     element.background = element.background ? element.background : "";
@@ -147,9 +148,13 @@
     }
   };
 
-  $: $pendingChildDropBackground === element._id
-    ? (styleString = styleString + "background: brown;")
-    : (styleString = styleString + `background: ${element.background};`);
+  $: $contextElement && $contextElement._id === element._id
+    ? (styleString = styleString + "border: 5px solid orange;")
+    : (styleString =
+        styleString +
+        `background: ${element.background}; border: ${
+          element.border || "none"
+        };`);
 </script>
 
 <svelte:window on:keydown={handleKeyDown} />
@@ -157,16 +162,18 @@
   <div
     class="element"
     on:dblclick={(e) => {
+      if ($childAssignmentPending) return;
       e.stopPropagation();
       showTooltip = true;
       $elementTooltipId = element._id;
       $clickedElement = element;
       $variablesFetched = false;
     }}
-    on:click={(e) => {
-      if ($childAssignmentPending) {
+    on:click={async (e) => {
+      if ($childAssignmentPending && $contextElement._id !== element._id) {
         $elements.find((el) => el._id === $contextElement._id).childOf =
           element._id;
+        await updateElement($contextElement);
         $childAssignmentPending = null;
         $contextElement = null;
       }
@@ -178,7 +185,11 @@
     on:contextmenu={(e) => {
       e.preventDefault();
       e.stopPropagation();
-      $contextElement = element;
+      if ($contextElement?._id === element._id) {
+        $contextElement = null;
+      } else {
+        $contextElement = element;
+      }
       $childAssignmentPending = false;
     }}
     on:mouseover={async (e) => {

@@ -242,12 +242,6 @@
     text-align: right;
   }
 
-  .divider {
-    width: 100%;
-    height: 30px;
-    color: transparent;
-  }
-
   .functionName,
   .functionCategory {
     color: black;

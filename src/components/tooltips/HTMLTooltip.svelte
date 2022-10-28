@@ -507,4 +507,10 @@
     margin-top: 3px;
     color: transparent;
   }
+
+  .divider {
+    width: 100%;
+    height: 30px;
+    color: transparent;
+  }
 </style>

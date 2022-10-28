@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { fetchElements } from "../util.js";
 
-  import { elements } from "../stores/elements";
+  import { elements, elementsPendingUpdate } from "../stores/elements";
   import { toolbarOpenStyle } from "../stores/globals";
 
   import Element from "./elements/Element.svelte";
@@ -37,6 +37,15 @@
 
     return mappedElements;
   };
+
+  const updateElements = async () => {
+    $elements = await getElements();
+    console.log($elements);
+  };
+
+  $: if ($elementsPendingUpdate) {
+    updateElements();
+  }
 </script>
 
 {#if ready}
@@ -45,13 +54,16 @@
     class="workbench"
     style={$toolbarOpenStyle}
   >
-    <div class="view">
-      {#each $elements as element (element._id)}
-        {#if element.childOf?.length === 0 || !element.childOf}
-          <Element {element} />
-        {/if}
-      {/each}
-    </div>
+    {#if $elements.length > 0}
+      <div class="view">
+        Hi
+        {#each $elements as element (element._id)}
+          {#if element.childOf?.length === 0 || !element.childOf}
+            <Element {element} />
+          {/if}
+        {/each}
+      </div>
+    {/if}
   </div>
 {/if}
 
