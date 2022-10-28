@@ -47,7 +47,6 @@
 
   const setHovered = async (item) => {
     hovered = item;
-    console.log(hovered);
   };
 </script>
 
@@ -165,7 +164,6 @@
     left: calc(100vw - 433px);
     overflow-x: auto;
     pointer-events: all;
-    border-right: 3px solid blue;
     opacity: 0.95;
   }
 

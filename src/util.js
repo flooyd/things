@@ -467,691 +467,6 @@ const getGridFunctionVar = async (id) => {
   return docJson;
 };
 
-export const functions = {
-  //life cycle
-  onMount: "runs when the component is mounted",
-  afterUpdate: "runs after the component is updated",
-  beforeUpdate: "runs before the component is updated",
-  beforeDestroy: "runs before the component is destroyed",
-  afterDestroy: "runs after the component is destroyed",
-
-  //log
-  log: "logs a message to the console",
-  logError: "logs an error to the console",
-  logWarning: "logs a warning to the console",
-  logInfo: "logs an info message to the console",
-
-  //events
-  onClick: "runs when the component is clicked",
-  onDblClick: "runs when the component is double clicked",
-  onMouseDown: "runs when the mouse is pressed down on the component",
-  onMouseUp: "runs when the mouse is released on the component",
-  onMouseEnter: "runs when the mouse enters the component",
-  onMouseLeave: "runs when the mouse leaves the component",
-  onMouseMove: "runs when the mouse moves over the component",
-  onContextMenu: "runs when the context menu is opened on the component",
-
-  //document object model functions (reference mdn)
-  getElementsByName: "gets all elements with a given name",
-  getElementById: "gets an element by id",
-  getElementsByClassName: "gets all elements with a given class name",
-  getElementsByTagName: "gets all elements with a given tag name",
-
-  //element functions
-  setStyle: "sets the style of the component",
-  getStyle: "gets the style of the component",
-  setAttribute: "sets an attribute of the component",
-  getAttribute: "gets an attribute of the component",
-
-  //variable assignment
-  setVariable: "sets a variable",
-  getVariable: "gets a variable",
-
-  //conditional
-  if: "runs a block of code if a condition is true",
-  elseIf:
-    "runs a block of code if a condition is true and the previous if statement was false",
-  else: "runs a block of code if a condition is false",
-
-  //loop
-  for: "runs a block of code a given number of times",
-  forEach: "runs a block of code for each item in an array",
-  while: "runs a block of code while a condition is true",
-
-  //operators
-  add: "adds two numbers",
-  subtract: "subtracts two numbers",
-  multiply: "multiplies two numbers",
-  divide: "divides two numbers",
-  modulo: "returns the remainder of two numbers",
-  power: "raises a number to a power",
-
-  //logic
-  and: "returns true if both values are true",
-  or: "returns true if either value is true",
-  not: "returns the opposite of the value",
-
-  //comparison
-  greaterThan: "returns true if the first value is greater than the second",
-  lessThan: "returns true if the first value is less than the second",
-  greaterThanOrEqual:
-    "returns true if the first value is greater than or equal to the second",
-  lessThanOrEqual:
-    "returns true if the first value is less than or equal to the second",
-  equal: "returns true if the two values are equal",
-  notEqual: "returns true if the two values are not equal",
-
-  //jump
-  break: "stops the current loop",
-  continue:
-    "stops the current iteration of the loop and continues to the next iteration",
-
-  //return
-  return: "returns a value from a function",
-};
-
-export const functionOutputs = {
-  onMount: {
-    count: 0,
-    types: [],
-  },
-  afterUpdate: {
-    count: 0,
-    types: [],
-  },
-  beforeUpdate: {
-    count: 0,
-    types: [],
-  },
-  afterDestroy: {
-    count: 0,
-    types: [],
-  },
-  beforeDestroy: {
-    count: 0,
-    types: [],
-  },
-  onClick: {
-    count: 0,
-    types: [],
-  },
-  onDblClick: {
-    count: 0,
-    types: [],
-  },
-  onMouseDown: {
-    count: 0,
-    types: [],
-  },
-  onMouseUp: {
-    count: 0,
-    types: [],
-  },
-  onMouseEnter: {
-    count: 0,
-    types: [],
-  },
-  onMouseLeave: {
-    count: 0,
-    types: [],
-  },
-  onMouseMove: {
-    count: 0,
-    types: [],
-  },
-  onContextMenu: {
-    count: 0,
-    types: [],
-  },
-  log: {
-    count: 0,
-    types: [],
-  },
-  logError: {
-    count: 0,
-    types: [],
-  },
-  logWarning: {
-    count: 0,
-    types: [],
-  },
-  logInfo: {
-    count: 0,
-    types: [],
-  },
-  getElementsByName: {
-    count: 1,
-    types: ["array"],
-  },
-  getElementById: {
-    count: 1,
-    types: ["object"],
-  },
-  getElementsByClassName: {
-    count: 1,
-    types: ["array"],
-  },
-  getElementsByTagName: {
-    count: 1,
-    types: ["array"],
-  },
-  setStyle: {
-    count: 1,
-    types: ["object"],
-  },
-  getStyle: {
-    count: 1,
-    types: ["object"],
-  },
-  setAttribute: {
-    count: 1,
-    types: ["string"],
-  },
-  getAttribute: { count: 1, types: ["string"] },
-  setVariable: {
-    count: 1,
-    types: ["any"],
-  },
-  getVariable: {
-    count: 1,
-    types: ["any"],
-  },
-  if: {
-    count: 0,
-    types: [],
-  },
-  else: {
-    count: 0,
-    types: [],
-  },
-  elseIf: {
-    count: 0,
-    types: [],
-  },
-  for: {
-    count: 0,
-    types: [],
-  },
-  forEach: {
-    count: 0,
-    types: [],
-  },
-  while: {
-    count: 0,
-    types: [],
-  },
-  add: {
-    count: 1,
-    types: ["number"],
-  },
-  subtract: {
-    count: 1,
-    types: ["number"],
-  },
-  multiply: {
-    count: 1,
-    types: ["number"],
-  },
-  divide: {
-    count: 1,
-    types: ["number"],
-  },
-  modulo: {
-    count: 1,
-    types: ["number"],
-  },
-  power: {
-    count: 1,
-    types: ["number"],
-  },
-  and: {
-    count: 1,
-    types: ["boolean"],
-  },
-  or: {
-    count: 1,
-    types: ["boolean"],
-  },
-  not: {
-    count: 1,
-    types: ["boolean"],
-  },
-  greaterThan: {
-    count: 1,
-    types: ["boolean"],
-  },
-  lessThan: {
-    count: 1,
-    types: ["boolean"],
-  },
-  greaterThanOrEqual: {
-    count: 1,
-    types: ["boolean"],
-  },
-  lessThanOrEqual: {
-    count: 1,
-    types: ["boolean"],
-  },
-  equal: {
-    count: 1,
-    types: ["boolean"],
-  },
-  notEqual: {
-    count: 1,
-    types: ["boolean"],
-  },
-};
-
-export const functionInputs = {
-  onMount: {
-    count: 0,
-    types: [],
-  },
-  afterUpdate: {
-    count: 0,
-    types: [],
-  },
-  beforeUpdate: {
-    count: 0,
-    types: [],
-  },
-  afterDestroy: {
-    count: 0,
-    types: [],
-  },
-  beforeDestroy: {
-    count: 0,
-    types: [],
-  },
-  onClick: {
-    count: 0,
-    types: [],
-  },
-  onDblClick: {
-    count: 0,
-    types: [],
-  },
-  onMouseDown: {
-    count: 0,
-    types: [],
-  },
-  onMouseUp: {
-    count: 0,
-    types: [],
-  },
-  onMouseEnter: {
-    count: 0,
-    types: [],
-  },
-  onMouseLeave: {
-    count: 0,
-    types: [],
-  },
-  onMouseMove: {
-    count: 0,
-    types: [],
-  },
-  onContextMenu: {
-    count: 0,
-    types: [],
-  },
-  log: {
-    count: 1,
-    types: ["any"],
-    names: ["message1"],
-    description: "the message to log",
-  },
-  logError: {
-    count: 1,
-    types: ["any"],
-    names: ["message1"],
-    description: "the error to log",
-  },
-  logWarning: {
-    count: 1,
-    types: ["any"],
-    names: ["message1"],
-    description: "the warning to log",
-  },
-  logInfo: {
-    count: 1,
-    types: ["any"],
-    names: ["message1"],
-    description: "the info message to log",
-  },
-  getElementsByName: {
-    count: 1,
-    types: ["string"],
-    names: ["name"],
-    description: "the name of the elements to get",
-  },
-  getElementById: {
-    count: 1,
-    types: ["string"],
-    names: ["id"],
-    description: "the id of the element to get",
-  },
-  getElementsByClassName: {
-    count: 1,
-    types: ["string"],
-    names: ["className"],
-    description: "the class name of the elements to get",
-  },
-  getElementsByTagName: {
-    count: 1,
-    types: ["string"],
-    names: ["tagName"],
-    description: "the tag name of the elements to get",
-  },
-  setStyle: {
-    count: 3,
-    types: ["string", "string", "element"],
-    names: ["property", "value", "element"],
-    optional: [false, false, true],
-    description:
-      "the style and value to set, optionally the element to set it on",
-  },
-  getStyle: {
-    count: 2,
-    types: ["string", "element"],
-    names: ["property", "element"],
-    optional: [false, true],
-    description: "the style to get, optionally the element to get it from",
-  },
-  setAttribute: {
-    count: 3,
-    types: ["string", "string", "element"],
-    names: ["attribute", "value", "element"],
-    optional: [false, false, true],
-    description:
-      "the attribute and value to set, optionally the element to set it on",
-  },
-  getAttribute: {
-    count: 2,
-    types: ["string", "element"],
-    names: ["attribute", "element"],
-    optional: [false, true],
-    description: "the attribute to get, optionally the element to get it from",
-  },
-  setVariable: {
-    count: 2,
-    types: ["string", "any"],
-    names: ["name", "value"],
-    description: "the name of the variable to set",
-    description2: "the value of the variable to set",
-  },
-  getVariable: {
-    count: 1,
-    types: ["string"],
-    names: ["name"],
-    description: "the name of the variable to get",
-  },
-  if: {
-    count: 1,
-    types: ["boolean"],
-    names: ["condition"],
-    description: "the condition to check",
-  },
-  elseIf: {
-    count: 1,
-    types: ["boolean"],
-    names: ["condition"],
-    description: "the condition to check",
-  },
-  else: {
-    count: 0,
-  },
-  for: {
-    count: 1,
-    types: ["number"],
-    names: ["count"],
-    description: "the number of times to run the code",
-  },
-  forEach: {
-    count: 1,
-    types: ["array"],
-    names: ["array"],
-    description: "the array to loop through",
-  },
-  while: {
-    count: 1,
-    types: "boolean",
-    names: ["condition"],
-    description: "the condition to check",
-  },
-  add: {
-    count: 2,
-    types: ["number", "number"],
-    names: ["number1", "number2"],
-    description: "the numbers to add",
-  },
-  subtract: {
-    count: 2,
-    types: ["number", "number"],
-    description: "the numbers to subtract",
-  },
-  multiply: {
-    count: 2,
-    types: ["number"],
-    types: ["number", "number"],
-    description: "the numbers to multiply",
-  },
-  divide: {
-    count: 2,
-    types: ["number"],
-    types: ["number", "number"],
-    description: "the numbers to divide",
-  },
-  modulo: {
-    count: 2,
-    types: ["number", "number"],
-    names: ["number1", "number2"],
-    description: "the numbers to get the remainder of",
-  },
-  power: {
-    count: 2,
-    types: ["number"],
-    types: ["number", "number"],
-    names: ["number1", "number2"],
-    description: "the numbers to get the power of",
-  },
-  and: {
-    count: 2,
-    types: ["boolean", "boolean"],
-    names: ["boolean1", "boolean2"],
-    description: "the booleans to check",
-  },
-  or: {
-    count: 2,
-    types: ["boolean", "boolean"],
-    names: ["boolean1", "boolean2"],
-    description: "the booleans to check",
-  },
-  not: {
-    count: 1,
-    types: ["boolean"],
-    names: ["boolean"],
-    description: "the boolean to check",
-  },
-  greaterThan: {
-    count: 2,
-    types: ["number", "number"],
-    names: ["number1", "number2"],
-    description: "the numbers to check",
-  },
-  lessThan: {
-    count: 2,
-    types: ["number", "number"],
-    names: ["number1", "number2"],
-    description: "the numbers to check",
-  },
-  greaterThanOrEqual: {
-    count: 2,
-    types: ["number", "number"],
-    names: ["number1", "number2"],
-    description: "the numbers to check",
-  },
-  lessThanOrEqual: {
-    count: 2,
-    types: ["number", "number"],
-    names: ["number1", "number2"],
-    description: "the numbers to check",
-  },
-  equal: {
-    count: 2,
-    types: ["any", "any"],
-    names: ["value1", "value2"],
-    description: "the values to check",
-  },
-  notEqual: {
-    count: 2,
-    types: ["any", "any"],
-    names: ["value1", "value2"],
-    description: "the values to check",
-  },
-};
-
-export const executables = [
-  "log",
-  "logError",
-  "logWarning",
-  "logInfo",
-  "getElementsByName",
-  "getElementById",
-  "getElementsByClassName",
-  "getElementsByTagName",
-  "setStyle",
-  "getStyle",
-  "setAttribute",
-  "getAttribute",
-  "setVariable",
-  "getVariable",
-  "if",
-  "elseIf",
-  "else",
-  "for",
-  "forEach",
-  "while",
-  "add",
-  "subtract",
-  "multiply",
-  "divide",
-  "modulo",
-  "power",
-  "and",
-  "or",
-  "not",
-  "greaterThan",
-  "lessThan",
-  "greaterThanOrEqual",
-  "lessThanOrEqual",
-  "equal",
-  "notEqual",
-  "return",
-  "break",
-  "continue",
-];
-
-export const categories = {
-  onMount: "lifecycle",
-  afterUpdate: "lifecycle",
-  beforeUpdate: "lifecycle",
-  beforeDestroy: "lifecycle",
-  afterDestroy: "lifecycle",
-  log: "console",
-  logError: "console",
-  logWarning: "console",
-  logInfo: "console",
-  onClick: "event",
-  onDblClick: "event",
-  onMouseDown: "event",
-  onMouseUp: "event",
-  onMouseEnter: "event",
-  onMouseLeave: "event",
-  onMouseMove: "event",
-  onContextMenu: "event",
-  getElementsByName: "document",
-  getElementById: "document",
-  getElementsByClassName: "document",
-  getElementsByTagName: "document",
-  setVariable: "variable",
-  getVariable: "variable",
-  if: "conditional",
-  elseIf: "conditional",
-  else: "conditional",
-  for: "loop",
-  forEach: "loop",
-  while: "loop",
-  add: "math",
-  subtract: "math",
-  multiply: "math",
-  divide: "math",
-  modulo: "math",
-  power: "math",
-  and: "logic",
-  or: "logic",
-  not: "logic",
-  greaterThan: "logic",
-  lessThan: "logic",
-  greaterThanOrEqual: "logic",
-  lessThanOrEqual: "logic",
-  equal: "logic",
-  notEqual: "logic",
-  break: "jump",
-  continue: "jump",
-  return: "return",
-  element: "element",
-  setStyle: "element",
-  getStyle: "element",
-  setAttribute: "element",
-  getAttribute: "element",
-};
-
-export const categoryColors = {
-  jump: "yellow",
-  lifecycle: "green",
-  console: "blue",
-  event: "purple",
-  document: "pink",
-  variable: "orange",
-  conditional: "red",
-  loop: "cyan",
-  math: "teal",
-  logic: "gray",
-  return: "gray",
-  element: "brown",
-};
-
-export const categoryDescriptions = {
-  jump: "Jump",
-  lifecycle: "Lifecycle",
-  console: "Console",
-  event: "Event",
-  document: "Document",
-  variable: "Variable",
-  conditional: "Conditional",
-  loop: "Loop",
-  math: "Math",
-  logic: "Logic",
-  return: "Return",
-  element: "Element",
-};
-
-export const categoryIcons = {
-  lifecycle: "fa-solid fa-arrows-rotate",
-  console: "fa-solid fa-terminal",
-  event: "fa-solid fa-mouse-pointer",
-  document: "fa-solid fa-file",
-  variable: "fa-solid fa-database",
-  conditional: "fa-solid fa-code",
-  loop: "fa-solid fa-repeat",
-  math: "fa-solid fa-calculator",
-  logic: "fa-solid fa-microchip",
-  jump: "fa-solid fa-arrow-right",
-  return: "fa-solid fa-arrow-left",
-  element: "fa-solid fa-square",
-};
-
 //7 from MDN
 const primitiveTypes = [
   "string",
@@ -1190,33 +505,930 @@ export const typeColors = {
   ...otherTypeColors,
 };
 
-const epicFunctionsPre = [];
-
-Object.keys(functions).forEach((func) => {
-  const category = categories[func];
-  const categoryColor = categoryColors[category];
-  const categoryDescription = categoryDescriptions[category];
-  const categoryIcon = categoryIcons[category];
-  const executable = executables.includes(func);
-  const description = functions[func];
-  const inputs = functionInputs[func] || null;
-  const outputs = functionOutputs[func] || null;
-  const epicFunction = {
-    name: func,
-    category,
-    categoryColor,
-    categoryDescription,
-    categoryIcon,
-    executable,
-    description,
-    inputs: inputs,
-    outputs: outputs,
-  };
-  epicFunctionsPre.push(epicFunction);
-});
-
-export const epicFunctions = {};
-epicFunctionsPre.forEach((epic) => {
-  epicFunctions[epic.name] = epic;
-});
-console.log(epicFunctions);
+export const epicFunctions = {
+  onMount: {
+    name: "onMount",
+    category: "lifecycle",
+    categoryColor: "green",
+    categoryDescription: "Lifecycle",
+    categoryIcon: "fa-solid fa-arrows-rotate",
+    executable: false,
+    description: "runs when the component is mounted",
+    inputs: {
+      count: 0,
+      types: [],
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  afterUpdate: {
+    name: "afterUpdate",
+    category: "lifecycle",
+    categoryColor: "green",
+    categoryDescription: "Lifecycle",
+    categoryIcon: "fa-solid fa-arrows-rotate",
+    executable: false,
+    description: "runs after the component is updated",
+    inputs: {
+      count: 0,
+      types: [],
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  beforeUpdate: {
+    name: "beforeUpdate",
+    category: "lifecycle",
+    categoryColor: "green",
+    categoryDescription: "Lifecycle",
+    categoryIcon: "fa-solid fa-arrows-rotate",
+    executable: false,
+    description: "runs before the component is updated",
+    inputs: {
+      count: 0,
+      types: [],
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  beforeDestroy: {
+    name: "beforeDestroy",
+    category: "lifecycle",
+    categoryColor: "green",
+    categoryDescription: "Lifecycle",
+    categoryIcon: "fa-solid fa-arrows-rotate",
+    executable: false,
+    description: "runs before the component is destroyed",
+    inputs: {
+      count: 0,
+      types: [],
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  afterDestroy: {
+    name: "afterDestroy",
+    category: "lifecycle",
+    categoryColor: "green",
+    categoryDescription: "Lifecycle",
+    categoryIcon: "fa-solid fa-arrows-rotate",
+    executable: false,
+    description: "runs after the component is destroyed",
+    inputs: {
+      count: 0,
+      types: [],
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  log: {
+    name: "log",
+    category: "console",
+    categoryColor: "blue",
+    categoryDescription: "Console",
+    categoryIcon: "fa-solid fa-terminal",
+    executable: true,
+    description: "logs a message to the console",
+    inputs: {
+      count: 1,
+      types: ["any"],
+      names: ["message1"],
+      description: "the message to log",
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  logError: {
+    name: "logError",
+    category: "console",
+    categoryColor: "blue",
+    categoryDescription: "Console",
+    categoryIcon: "fa-solid fa-terminal",
+    executable: true,
+    description: "logs an error to the console",
+    inputs: {
+      count: 1,
+      types: ["any"],
+      names: ["message1"],
+      description: "the error to log",
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  logWarning: {
+    name: "logWarning",
+    category: "console",
+    categoryColor: "blue",
+    categoryDescription: "Console",
+    categoryIcon: "fa-solid fa-terminal",
+    executable: true,
+    description: "logs a warning to the console",
+    inputs: {
+      count: 1,
+      types: ["any"],
+      names: ["message1"],
+      description: "the warning to log",
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  logInfo: {
+    name: "logInfo",
+    category: "console",
+    categoryColor: "blue",
+    categoryDescription: "Console",
+    categoryIcon: "fa-solid fa-terminal",
+    executable: true,
+    description: "logs an info message to the console",
+    inputs: {
+      count: 1,
+      types: ["any"],
+      names: ["message1"],
+      description: "the info message to log",
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  onClick: {
+    name: "onClick",
+    category: "event",
+    categoryColor: "purple",
+    categoryDescription: "Event",
+    categoryIcon: "fa-solid fa-mouse-pointer",
+    executable: false,
+    description: "runs when the component is clicked",
+    inputs: {
+      count: 0,
+      types: [],
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  onDblClick: {
+    name: "onDblClick",
+    category: "event",
+    categoryColor: "purple",
+    categoryDescription: "Event",
+    categoryIcon: "fa-solid fa-mouse-pointer",
+    executable: false,
+    description: "runs when the component is double clicked",
+    inputs: {
+      count: 0,
+      types: [],
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  onMouseDown: {
+    name: "onMouseDown",
+    category: "event",
+    categoryColor: "purple",
+    categoryDescription: "Event",
+    categoryIcon: "fa-solid fa-mouse-pointer",
+    executable: false,
+    description: "runs when the mouse is pressed down on the component",
+    inputs: {
+      count: 0,
+      types: [],
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  onMouseUp: {
+    name: "onMouseUp",
+    category: "event",
+    categoryColor: "purple",
+    categoryDescription: "Event",
+    categoryIcon: "fa-solid fa-mouse-pointer",
+    executable: false,
+    description: "runs when the mouse is released on the component",
+    inputs: {
+      count: 0,
+      types: [],
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  onMouseEnter: {
+    name: "onMouseEnter",
+    category: "event",
+    categoryColor: "purple",
+    categoryDescription: "Event",
+    categoryIcon: "fa-solid fa-mouse-pointer",
+    executable: false,
+    description: "runs when the mouse enters the component",
+    inputs: {
+      count: 0,
+      types: [],
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  onMouseLeave: {
+    name: "onMouseLeave",
+    category: "event",
+    categoryColor: "purple",
+    categoryDescription: "Event",
+    categoryIcon: "fa-solid fa-mouse-pointer",
+    executable: false,
+    description: "runs when the mouse leaves the component",
+    inputs: {
+      count: 0,
+      types: [],
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  onMouseMove: {
+    name: "onMouseMove",
+    category: "event",
+    categoryColor: "purple",
+    categoryDescription: "Event",
+    categoryIcon: "fa-solid fa-mouse-pointer",
+    executable: false,
+    description: "runs when the mouse moves over the component",
+    inputs: {
+      count: 0,
+      types: [],
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  onContextMenu: {
+    name: "onContextMenu",
+    category: "event",
+    categoryColor: "purple",
+    categoryDescription: "Event",
+    categoryIcon: "fa-solid fa-mouse-pointer",
+    executable: false,
+    description: "runs when the context menu is opened on the component",
+    inputs: {
+      count: 0,
+      types: [],
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  getElementsByName: {
+    name: "getElementsByName",
+    category: "document",
+    categoryColor: "pink",
+    categoryDescription: "Document",
+    categoryIcon: "fa-solid fa-file",
+    executable: true,
+    description: "gets all elements with a given name",
+    inputs: {
+      count: 1,
+      types: ["string"],
+      names: ["name"],
+      description: "the name of the elements to get",
+    },
+    outputs: {
+      count: 1,
+      types: ["array"],
+    },
+  },
+  getElementById: {
+    name: "getElementById",
+    category: "document",
+    categoryColor: "pink",
+    categoryDescription: "Document",
+    categoryIcon: "fa-solid fa-file",
+    executable: true,
+    description: "gets an element by id",
+    inputs: {
+      count: 1,
+      types: ["string"],
+      names: ["id"],
+      description: "the id of the element to get",
+    },
+    outputs: {
+      count: 1,
+      types: ["object"],
+    },
+  },
+  getElementsByClassName: {
+    name: "getElementsByClassName",
+    category: "document",
+    categoryColor: "pink",
+    categoryDescription: "Document",
+    categoryIcon: "fa-solid fa-file",
+    executable: true,
+    description: "gets all elements with a given class name",
+    inputs: {
+      count: 1,
+      types: ["string"],
+      names: ["className"],
+      description: "the class name of the elements to get",
+    },
+    outputs: {
+      count: 1,
+      types: ["array"],
+    },
+  },
+  getElementsByTagName: {
+    name: "getElementsByTagName",
+    category: "document",
+    categoryColor: "pink",
+    categoryDescription: "Document",
+    categoryIcon: "fa-solid fa-file",
+    executable: true,
+    description: "gets all elements with a given tag name",
+    inputs: {
+      count: 1,
+      types: ["string"],
+      names: ["tagName"],
+      description: "the tag name of the elements to get",
+    },
+    outputs: {
+      count: 1,
+      types: ["array"],
+    },
+  },
+  setStyle: {
+    name: "setStyle",
+    category: "element",
+    categoryColor: "brown",
+    categoryDescription: "Element",
+    categoryIcon: "fa-solid fa-square",
+    executable: true,
+    description: "sets the style of the component",
+    inputs: {
+      count: 3,
+      types: ["string", "string", "element"],
+      names: ["property", "value", "element"],
+      optional: [false, false, true],
+      description:
+        "the style and value to set, optionally the element to set it on",
+    },
+    outputs: {
+      count: 1,
+      types: ["object"],
+    },
+  },
+  getStyle: {
+    name: "getStyle",
+    category: "element",
+    categoryColor: "brown",
+    categoryDescription: "Element",
+    categoryIcon: "fa-solid fa-square",
+    executable: true,
+    description: "gets the style of the component",
+    inputs: {
+      count: 2,
+      types: ["string", "element"],
+      names: ["property", "element"],
+      optional: [false, true],
+      description: "the style to get, optionally the element to get it from",
+    },
+    outputs: {
+      count: 1,
+      types: ["object"],
+    },
+  },
+  setAttribute: {
+    name: "setAttribute",
+    category: "element",
+    categoryColor: "brown",
+    categoryDescription: "Element",
+    categoryIcon: "fa-solid fa-square",
+    executable: true,
+    description: "sets an attribute of the component",
+    inputs: {
+      count: 3,
+      types: ["string", "string", "element"],
+      names: ["attribute", "value", "element"],
+      optional: [false, false, true],
+      description:
+        "the attribute and value to set, optionally the element to set it on",
+    },
+    outputs: {
+      count: 1,
+      types: ["string"],
+    },
+  },
+  getAttribute: {
+    name: "getAttribute",
+    category: "element",
+    categoryColor: "brown",
+    categoryDescription: "Element",
+    categoryIcon: "fa-solid fa-square",
+    executable: true,
+    description: "gets an attribute of the component",
+    inputs: {
+      count: 2,
+      types: ["string", "element"],
+      names: ["attribute", "element"],
+      optional: [false, true],
+      description:
+        "the attribute to get, optionally the element to get it from",
+    },
+    outputs: {
+      count: 1,
+      types: ["string"],
+    },
+  },
+  setVariable: {
+    name: "setVariable",
+    category: "variable",
+    categoryColor: "orange",
+    categoryDescription: "Variable",
+    categoryIcon: "fa-solid fa-database",
+    executable: true,
+    description: "sets a variable",
+    inputs: {
+      count: 2,
+      types: ["string", "any"],
+      names: ["name", "value"],
+      description: "the name of the variable to set",
+      description2: "the value of the variable to set",
+    },
+    outputs: {
+      count: 1,
+      types: ["any"],
+    },
+  },
+  getVariable: {
+    name: "getVariable",
+    category: "variable",
+    categoryColor: "orange",
+    categoryDescription: "Variable",
+    categoryIcon: "fa-solid fa-database",
+    executable: true,
+    description: "gets a variable",
+    inputs: {
+      count: 1,
+      types: ["string"],
+      names: ["name"],
+      description: "the name of the variable to get",
+    },
+    outputs: {
+      count: 1,
+      types: ["any"],
+    },
+  },
+  if: {
+    name: "if",
+    category: "conditional",
+    categoryColor: "red",
+    categoryDescription: "Conditional",
+    categoryIcon: "fa-solid fa-code",
+    executable: true,
+    description: "runs a block of code if a condition is true",
+    inputs: {
+      count: 1,
+      types: ["boolean"],
+      names: ["condition"],
+      description: "the condition to check",
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  elseIf: {
+    name: "elseIf",
+    category: "conditional",
+    categoryColor: "red",
+    categoryDescription: "Conditional",
+    categoryIcon: "fa-solid fa-code",
+    executable: true,
+    description:
+      "runs a block of code if a condition is true and the previous if statement was false",
+    inputs: {
+      count: 1,
+      types: ["boolean"],
+      names: ["condition"],
+      description: "the condition to check",
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  else: {
+    name: "else",
+    category: "conditional",
+    categoryColor: "red",
+    categoryDescription: "Conditional",
+    categoryIcon: "fa-solid fa-code",
+    executable: true,
+    description: "runs a block of code if a condition is false",
+    inputs: {
+      count: 0,
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  for: {
+    name: "for",
+    category: "loop",
+    categoryColor: "cyan",
+    categoryDescription: "Loop",
+    categoryIcon: "fa-solid fa-repeat",
+    executable: true,
+    description: "runs a block of code a given number of times",
+    inputs: {
+      count: 1,
+      types: ["number"],
+      names: ["count"],
+      description: "the number of times to run the code",
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  forEach: {
+    name: "forEach",
+    category: "loop",
+    categoryColor: "cyan",
+    categoryDescription: "Loop",
+    categoryIcon: "fa-solid fa-repeat",
+    executable: true,
+    description: "runs a block of code for each item in an array",
+    inputs: {
+      count: 1,
+      types: ["array"],
+      names: ["array"],
+      description: "the array to loop through",
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  while: {
+    name: "while",
+    category: "loop",
+    categoryColor: "cyan",
+    categoryDescription: "Loop",
+    categoryIcon: "fa-solid fa-repeat",
+    executable: true,
+    description: "runs a block of code while a condition is true",
+    inputs: {
+      count: 1,
+      types: ["boolean"],
+      names: ["condition"],
+      description: "the condition to check",
+    },
+    outputs: {
+      count: 0,
+      types: [],
+    },
+  },
+  add: {
+    name: "add",
+    category: "math",
+    categoryColor: "teal",
+    categoryDescription: "Math",
+    categoryIcon: "fa-solid fa-calculator",
+    executable: true,
+    description: "adds two numbers",
+    inputs: {
+      count: 2,
+      types: ["number", "number"],
+      names: ["number1", "number2"],
+      description: "the numbers to add",
+    },
+    outputs: {
+      count: 1,
+      types: ["number"],
+    },
+  },
+  subtract: {
+    name: "subtract",
+    category: "math",
+    categoryColor: "teal",
+    categoryDescription: "Math",
+    categoryIcon: "fa-solid fa-calculator",
+    executable: true,
+    description: "subtracts two numbers",
+    inputs: {
+      count: 2,
+      types: ["number", "number"],
+      description: "the numbers to subtract",
+    },
+    outputs: {
+      count: 1,
+      types: ["number"],
+    },
+  },
+  multiply: {
+    name: "multiply",
+    category: "math",
+    categoryColor: "teal",
+    categoryDescription: "Math",
+    categoryIcon: "fa-solid fa-calculator",
+    executable: true,
+    description: "multiplies two numbers",
+    inputs: {
+      count: 2,
+      types: ["number", "number"],
+      description: "the numbers to multiply",
+    },
+    outputs: {
+      count: 1,
+      types: ["number"],
+    },
+  },
+  divide: {
+    name: "divide",
+    category: "math",
+    categoryColor: "teal",
+    categoryDescription: "Math",
+    categoryIcon: "fa-solid fa-calculator",
+    executable: true,
+    description: "divides two numbers",
+    inputs: {
+      count: 2,
+      types: ["number", "number"],
+      description: "the numbers to divide",
+    },
+    outputs: {
+      count: 1,
+      types: ["number"],
+    },
+  },
+  modulo: {
+    name: "modulo",
+    category: "math",
+    categoryColor: "teal",
+    categoryDescription: "Math",
+    categoryIcon: "fa-solid fa-calculator",
+    executable: true,
+    description: "returns the remainder of two numbers",
+    inputs: {
+      count: 2,
+      types: ["number", "number"],
+      names: ["number1", "number2"],
+      description: "the numbers to get the remainder of",
+    },
+    outputs: {
+      count: 1,
+      types: ["number"],
+    },
+  },
+  power: {
+    name: "power",
+    category: "math",
+    categoryColor: "teal",
+    categoryDescription: "Math",
+    categoryIcon: "fa-solid fa-calculator",
+    executable: true,
+    description: "raises a number to a power",
+    inputs: {
+      count: 2,
+      types: ["number", "number"],
+      names: ["number1", "number2"],
+      description: "the numbers to get the power of",
+    },
+    outputs: {
+      count: 1,
+      types: ["number"],
+    },
+  },
+  and: {
+    name: "and",
+    category: "logic",
+    categoryColor: "gray",
+    categoryDescription: "Logic",
+    categoryIcon: "fa-solid fa-microchip",
+    executable: true,
+    description: "returns true if both values are true",
+    inputs: {
+      count: 2,
+      types: ["boolean", "boolean"],
+      names: ["boolean1", "boolean2"],
+      description: "the booleans to check",
+    },
+    outputs: {
+      count: 1,
+      types: ["boolean"],
+    },
+  },
+  or: {
+    name: "or",
+    category: "logic",
+    categoryColor: "gray",
+    categoryDescription: "Logic",
+    categoryIcon: "fa-solid fa-microchip",
+    executable: true,
+    description: "returns true if either value is true",
+    inputs: {
+      count: 2,
+      types: ["boolean", "boolean"],
+      names: ["boolean1", "boolean2"],
+      description: "the booleans to check",
+    },
+    outputs: {
+      count: 1,
+      types: ["boolean"],
+    },
+  },
+  not: {
+    name: "not",
+    category: "logic",
+    categoryColor: "gray",
+    categoryDescription: "Logic",
+    categoryIcon: "fa-solid fa-microchip",
+    executable: true,
+    description: "returns the opposite of the value",
+    inputs: {
+      count: 1,
+      types: ["boolean"],
+      names: ["boolean"],
+      description: "the boolean to check",
+    },
+    outputs: {
+      count: 1,
+      types: ["boolean"],
+    },
+  },
+  greaterThan: {
+    name: "greaterThan",
+    category: "logic",
+    categoryColor: "gray",
+    categoryDescription: "Logic",
+    categoryIcon: "fa-solid fa-microchip",
+    executable: true,
+    description: "returns true if the first value is greater than the second",
+    inputs: {
+      count: 2,
+      types: ["number", "number"],
+      names: ["number1", "number2"],
+      description: "the numbers to check",
+    },
+    outputs: {
+      count: 1,
+      types: ["boolean"],
+    },
+  },
+  lessThan: {
+    name: "lessThan",
+    category: "logic",
+    categoryColor: "gray",
+    categoryDescription: "Logic",
+    categoryIcon: "fa-solid fa-microchip",
+    executable: true,
+    description: "returns true if the first value is less than the second",
+    inputs: {
+      count: 2,
+      types: ["number", "number"],
+      names: ["number1", "number2"],
+      description: "the numbers to check",
+    },
+    outputs: {
+      count: 1,
+      types: ["boolean"],
+    },
+  },
+  greaterThanOrEqual: {
+    name: "greaterThanOrEqual",
+    category: "logic",
+    categoryColor: "gray",
+    categoryDescription: "Logic",
+    categoryIcon: "fa-solid fa-microchip",
+    executable: true,
+    description:
+      "returns true if the first value is greater than or equal to the second",
+    inputs: {
+      count: 2,
+      types: ["number", "number"],
+      names: ["number1", "number2"],
+      description: "the numbers to check",
+    },
+    outputs: {
+      count: 1,
+      types: ["boolean"],
+    },
+  },
+  lessThanOrEqual: {
+    name: "lessThanOrEqual",
+    category: "logic",
+    categoryColor: "gray",
+    categoryDescription: "Logic",
+    categoryIcon: "fa-solid fa-microchip",
+    executable: true,
+    description:
+      "returns true if the first value is less than or equal to the second",
+    inputs: {
+      count: 2,
+      types: ["number", "number"],
+      names: ["number1", "number2"],
+      description: "the numbers to check",
+    },
+    outputs: {
+      count: 1,
+      types: ["boolean"],
+    },
+  },
+  equal: {
+    name: "equal",
+    category: "logic",
+    categoryColor: "gray",
+    categoryDescription: "Logic",
+    categoryIcon: "fa-solid fa-microchip",
+    executable: true,
+    description: "returns true if the two values are equal",
+    inputs: {
+      count: 2,
+      types: ["any", "any"],
+      names: ["value1", "value2"],
+      description: "the values to check",
+    },
+    outputs: {
+      count: 1,
+      types: ["boolean"],
+    },
+  },
+  notEqual: {
+    name: "notEqual",
+    category: "logic",
+    categoryColor: "gray",
+    categoryDescription: "Logic",
+    categoryIcon: "fa-solid fa-microchip",
+    executable: true,
+    description: "returns true if the two values are not equal",
+    inputs: {
+      count: 2,
+      types: ["any", "any"],
+      names: ["value1", "value2"],
+      description: "the values to check",
+    },
+    outputs: {
+      count: 1,
+      types: ["boolean"],
+    },
+  },
+  break: {
+    name: "break",
+    category: "jump",
+    categoryColor: "yellow",
+    categoryDescription: "Jump",
+    categoryIcon: "fa-solid fa-arrow-right",
+    executable: true,
+    description: "stops the current loop",
+    inputs: null,
+    outputs: null,
+  },
+  continue: {
+    name: "continue",
+    category: "jump",
+    categoryColor: "yellow",
+    categoryDescription: "Jump",
+    categoryIcon: "fa-solid fa-arrow-right",
+    executable: true,
+    description:
+      "stops the current iteration of the loop and continues to the next iteration",
+    inputs: null,
+    outputs: null,
+  },
+  return: {
+    name: "return",
+    category: "return",
+    categoryColor: "gray",
+    categoryDescription: "Return",
+    categoryIcon: "fa-solid fa-arrow-left",
+    executable: true,
+    description: "returns a value from a function",
+    inputs: null,
+    outputs: null,
+  },
+};

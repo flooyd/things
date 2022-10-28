@@ -22,9 +22,16 @@ body {
   margin: 0px;
 }
 
-/* ::-webkit-scrollbar {
-  display: none;
-} */
+::-webkit-scrollbar {
+  width: 13px;
+  height: 13px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: white;
+  border: 1px solid black;
+  border-radius: 5px;
+}
 
 ::-webkit-scrollbar-scr html,
 body,

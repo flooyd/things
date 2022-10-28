@@ -18,7 +18,6 @@
     elementUpdated,
   } from "../stores/globals";
   import {
-    executables,
     typeColors,
     saveFunction,
     deleteAllConnectionsForFunction,
@@ -339,7 +338,7 @@
       {epicFunctions[gridFunction.name]?.category || "Variable"}
     </div>
     <div class="topName">
-      {#if !gridFunction.isVariable && executables.includes(gridFunction.name)}
+      {#if !gridFunction.isVariable && epicFunctions[gridFunction.name].executable}
         <div
           class={"inArrow" +
             " " +

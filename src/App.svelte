@@ -26,11 +26,7 @@
   import { elements } from "./stores/elements";
   import { onMount } from "svelte";
   import FunctionsTooltip from "./components/tooltips/FunctionsTooltip.svelte";
-  import {
-    functionOutputs,
-    getVariablesForElement,
-    updateElement,
-  } from "./util";
+  import { epicFunctions, getVariablesForElement, updateElement } from "./util";
   import HtmlTooltip from "./components/tooltips/HTMLTooltip.svelte";
   import VariablesStoresTooltip from "./components/tooltips/VariablesStoresTooltip.svelte";
   import { fade } from "svelte/transition";
@@ -74,7 +70,7 @@
         (f) => f._id === connection.in
       );
 
-      const numOutputs = functionOutputs[inFunction?.name]?.count || 0;
+      const numOutputs = epicFunctions[inFunction?.name]?.outputs.count || 0;
 
       connectionLocations.push({
         inArrowLocation,

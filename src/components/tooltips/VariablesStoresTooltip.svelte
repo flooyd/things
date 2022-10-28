@@ -384,7 +384,6 @@
     left: calc(100vw - 433px);
     overflow-x: auto;
     pointer-events: all;
-    border-right: 3px solid orange;
     opacity: 0.95;
   }
 
