@@ -139,15 +139,13 @@
   const click = async (tag) => {
     pendingTag = {
       tag: tag,
-      position: "absolute",
-      top: "100px",
-      left: "100px",
+      position: "relative",
+      top: "0px",
+      left: "0px",
       width: "100px",
       height: "100px",
-      background: "white",
-      border: "1px solid black",
-      content: "Hello, world!",
-      color: "black",
+      background: "black",
+      color: "white",
     };
     showOptions = true;
   };

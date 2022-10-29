@@ -138,7 +138,9 @@
       <Workbench />
     {/if}
     {#if ready && $showToolbar}
-      <Toolbar />
+      <div transition:fade={{ duration: 150 }}>
+        <Toolbar />
+      </div>
     {/if}
   </main>
 {/if}
@@ -159,6 +161,7 @@
       {handleSave}
       on:delete={() => {
         $elements = $elements.filter((e) => e.id !== $clickedElement.id);
+        $clickedElement = null;
         $elementTooltipId = null;
       }}
     />

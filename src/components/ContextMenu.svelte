@@ -15,8 +15,8 @@
   class={`contextMenu ${topOrBottom} ${
     $showToolbar ? "toolbarOpen" : "toolbarClosed"
   }`}
-  in:fly={{ x: -500, duration: 300 }}
-  out:fly={{ x: -500, duration: 300 }}
+  in:fly={{ x: -500, duration: 150 }}
+  out:fly={{ x: -500, duration: 150 }}
 >
   <div class="features">
     <button

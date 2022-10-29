@@ -5,7 +5,7 @@
     contextElement,
     childAssignmentPending,
     pendingChildDropBackground,
-  } from "../../stores//globals";
+  } from "../../stores/globals";
   import { elements, elementsPendingUpdate } from "../../stores/elements";
   import { getId, updateElement } from "../../util";
   import Div from "./Div.svelte";
@@ -63,6 +63,7 @@
   onMount(() => {
     element.width = element.width ? element.width : "10px";
     element.height = element.height ? element.height : "10px";
+    element.boxSizing = element.boxSizing ? element.boxSizing : "border-box";
     element.background = element.background ? element.background : "";
     element.margin = element.margin ? element.margin : "";
     element.padding = element.padding ? element.padding : "";
@@ -105,8 +106,9 @@
   }
 
   $: styleString = `width: ${element.width};
-  height: ${element.height}; 
-  background:${element.background || pendingChildDropBackground}; 
+  height: ${element.height};
+  box-sizing: ${element.boxSizing};
+  background:${element.background}; 
   border: ${element.border}; 
   margin: ${element.margin}; 
   margin-left: ${element.marginLeft};
@@ -155,6 +157,12 @@
           element.border || "none"
         };`);
 
+  $: $childAssignmentPending && $pendingChildDropBackground === element._id
+    ? (styleString = styleString + "background: #f0f0f0;")
+    : $pendingChildDropBackground !== element._id
+    ? (styleString = styleString)
+    : null;
+
   $: if (element.parentOf) {
     children = element.parentOf.map((childId) => {
       return $elements.find((element) => element._id === childId);
@@ -166,6 +174,7 @@
 {#if ready}
   <div
     class="element"
+    style={`width: ${element.width}; height: ${element.height};`}
     on:dblclick={(e) => {
       if ($childAssignmentPending) return;
       e.stopPropagation();
@@ -229,6 +238,7 @@
         key={element._id}
         name={element.name || element._id}
         {styleString}
+        content={element.content}
       >
         {#each children as child}
           <svelte:self element={child} />
