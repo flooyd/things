@@ -194,8 +194,6 @@
             (child) => child !== $contextElement._id
           );
         }
-        console.log("old parent");
-        console.log("old prent", oldParent);
         $elements.find((el) => el._id === $contextElement._id).childOf =
           element._id;
 
