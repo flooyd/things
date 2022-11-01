@@ -216,6 +216,10 @@
       } else {
         $contextElement = element;
       }
+      if ($elementTooltipId) {
+        $clickedElement = element;
+        $elementTooltipId = element._id;
+      }
       $childAssignmentPending = false;
     }}
     on:mouseover={async (e) => {

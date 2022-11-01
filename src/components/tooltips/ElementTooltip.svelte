@@ -2,8 +2,6 @@
   import {
     loading,
     elementTooltipId,
-    width,
-    mousePosition,
     childPendingDeletion,
     parentOfChildPendingDeletion,
     showGrid,
@@ -15,22 +13,6 @@
   export let element;
   export let handleEdit;
   export let handleSave;
-
-  let style =
-    $mousePosition.x > $width / 2 ? "left: -3px" : "left: calc(100vw - 433px)";
-
-  let infoGroups = [
-    "gap",
-    "justifyContent",
-    "alignItems",
-    "flexDirection",
-    "flexWrap",
-    "position",
-    "top",
-    "left",
-    "right",
-    "bottom",
-  ];
 </script>
 
 <div
@@ -38,7 +20,7 @@
     e.stopPropagation();
   }}
   class="elementTooltip"
-  style={style + $toolbarOpenStyle}
+  style={$toolbarOpenStyle}
   in:fly={{ duration: 75, x: -500 }}
   out:fade={{ duration: 75 }}
 >
@@ -127,8 +109,9 @@
   {#each cssObject.experimental as property}
     <div class="infoGroup">
       <label for={property} class="infoLabel">
-        {"EXPERIMENTAL - " + property}
+        {property}
       </label>
+      <i class="fa fa-flask" />
       <input
         autocomplete="off"
         name={property}

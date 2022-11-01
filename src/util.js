@@ -1849,5 +1849,3 @@ export const cssObject = {
     }
   }),
 };
-
-console.log(cssObject);
