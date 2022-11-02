@@ -31,7 +31,7 @@
   import { epicFunctions, getVariablesForElement, updateElement } from "./util";
   import HtmlTooltip from "./components/tooltips/HTMLTooltip.svelte";
   import VariablesStoresTooltip from "./components/tooltips/VariablesStoresTooltip.svelte";
-  import { fade, fly } from "svelte/transition";
+  import { fade } from "svelte/transition";
 
   let ready = false;
   let connectionLocations = [];
@@ -41,6 +41,8 @@
   });
 
   const handleEdit = (property, value) => {
+    //convert property to camelCase
+    property = property.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
     $clickedElement[property] = value;
   };
 
@@ -171,7 +173,7 @@
 {#if ready && $showGrid}
   <Grid />
 {/if}
-{#if ready && $clickedElement?.grid?.functions.length > 0 && $showGrid}
+{#if ready && $clickedElement?.grid?.functions?.length > 0 && $showGrid}
   {#each $clickedElement.grid.functions as item (item._id)}
     <div>
       <GridFunction gridFunction={item} />

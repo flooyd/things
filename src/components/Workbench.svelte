@@ -11,7 +11,8 @@
   let ready = false;
 
   onMount(async () => {
-    $elements = await getElements();
+    console.log($elements);
+    $elements = $elements ? $elements : await getElements();
     ready = true;
   });
 

@@ -66,17 +66,6 @@ export const updateElement = async (element) => {
     },
     body: JSON.stringify(element),
   });
-  const updatedDocJson = await updatedDoc.json();
-  // let newElement = updatedDocJson;
-  // updateElements(
-  //   elements.map((element) => {
-  //     if (element._id === newElement._id) {
-  //       return newElement;
-  //     } else {
-  //       return element;
-  //     }
-  //   })
-  // );
   updateLoading(false);
 };
 
@@ -1849,3 +1838,12 @@ export const cssObject = {
     }
   }),
 };
+
+let styleString = [...cssObject.css, ...cssObject.experimental]
+  .map((prop) => {
+    let camelCase = prop.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+    return (
+      prop + ": ${" + "element" + "." + camelCase + " || " + "null" + "}; "
+    );
+  })
+  .join("");
