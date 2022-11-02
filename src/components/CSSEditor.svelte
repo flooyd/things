@@ -3,6 +3,10 @@
 
   export let element;
   export let handleEdit;
+
+  let filter = "";
+  let filtered = [];
+
   const properties = [...cssObject.css, ...cssObject.experimental]
     .filter(
       (key) =>
@@ -19,26 +23,43 @@
       });
     });
 
+  $: filtered = filtered.length > 0 ? filtered : properties;
+
   //sort properties alphabetically and put the ones that are not null at the top
   properties.sort((a, b) => {
     if (element[a] && !element[b]) return -1;
     if (!element[a] && element[b]) return 1;
     return a.localeCompare(b);
   });
+
+  const handleFilterInput = (e) => {
+    filter = e.target.value;
+    filtered = filter.split(",").map((f) => f.trim().toLowerCase());
+    //for each filter, check for exact match in properties and add to array
+    filtered = properties.filter((prop) => {
+      return filtered.some(
+        (f) =>
+          prop === //f to camelCase
+            f.replace(/-([a-z])/g, function (g) {
+              return g[1].toUpperCase();
+            }) || prop.toLowerCase() === f.toLowerCase()
+      );
+    });
+  };
 </script>
 
 <div class="cssEditor">
   <div class="header">
-    <span class="style">&lt;style&gt;</span>
-    <div>
-      <input
-        class="filterInput"
-        placeholder="filter by prop name, prop name, etc."
-      />
-      <button class="brownButton">Show All</button>
-    </div>
+    <i class="fa-solid fa-filter" />
+    <input
+      class="filterInput"
+      placeholder="property, property, etc..."
+      value={filter}
+      on:input={(e) => handleFilterInput(e)}
+    />
   </div>
-  {#each properties as property (property)}
+  <span class="style">&lt;style&gt;</span>
+  {#each filtered as property (property)}
     <div class="property">
       <input type="text" class="propertyName" value={property} disabled />
       <span>:</span>
@@ -75,10 +96,11 @@
     width: 100%;
     justify-content: space-between;
     align-items: center;
+    gap: 8px;
   }
 
   .filterInput {
-    width: 280px;
+    width: 100%;
   }
 
   span {
@@ -104,5 +126,10 @@
   input.propertyValue {
     background: white;
     color: black;
+  }
+
+  button {
+    background: #1e1e1e;
+    color: white;
   }
 </style>

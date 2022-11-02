@@ -21,7 +21,6 @@
   onMount(() => {
     setTimeout(() => {
       ready = true;
-      console.log(element);
     }, 25);
   });
 

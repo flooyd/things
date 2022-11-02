@@ -544,7 +544,6 @@
 
   $: if (styleString) {
     finalStyleString = getFinalStyleString();
-    console.log(finalStyleString);
   }
 
   const getFinalStyleString = () => {
@@ -584,7 +583,7 @@
 {#if ready}
   <div
     class="element"
-    style={finalStyleString}
+    style={`width: ${element.width}; height: ${element.height};`}
     on:dblclick={(e) => {
       if ($childAssignmentPending) return;
       e.stopPropagation();
