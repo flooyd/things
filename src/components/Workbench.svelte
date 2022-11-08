@@ -7,6 +7,7 @@
 
   import Element from "./elements/Element.svelte";
   import { fade } from "svelte/transition";
+  import HtmlTree from "./HTMLTree.svelte";
 
   let ready = false;
 
@@ -54,6 +55,7 @@
     style={$toolbarOpenStyle}
   >
     <div class="view">
+      <HtmlTree />
       {#each $elements as element (element._id)}
         {#if !element.childOf}
           <Element {element} />
