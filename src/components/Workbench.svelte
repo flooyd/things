@@ -24,25 +24,7 @@
   const getElements = async () => {
     //fetches all elements from the database
     const fetchedElements = await fetchElements();
-    console.log("fetchedElements", fetchedElements);
     return fetchedElements;
-
-    // //gets all children in the fetched elements
-    // const children = fetchedElements.filter(
-    //   (e) => e.childOf !== null && e.childOf !== undefined
-    // );
-
-    // //for each element, find its children and add them to the parentOf property of the element
-    // const mappedElements = fetchedElements.map((e) => {
-    //   const childrenIds = children
-    //     .filter((c) => c.childOf === e._id)
-    //     .map((c) => c._id);
-    //   return {
-    //     ...e,
-    //     parentOf: [...childrenIds],
-    //   };
-    // });
-    // return mappedElements;
   };
 
   const updateElements = async () => {
@@ -85,5 +67,18 @@
     background: white;
     height: 100%;
     width: 100%;
+  }
+
+  .container {
+    display: flex;
+    margin: 0px auto;
+    width: 80%;
+    background: blue;
+    height: 50px;
+  }
+  .item {
+    background: red;
+    width: 100px;
+    height: 50px;
   }
 </style>

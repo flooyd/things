@@ -14,7 +14,13 @@
   });
 </script>
 
-<div {id} {key} {name} style={styleString} class="saeDiv">
+<div
+  {id}
+  {key}
+  {name}
+  style={styleString + "width: 100%; height: 100%;"}
+  class="saeDiv"
+>
   <slot />
   {content}
 </div>

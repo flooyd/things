@@ -14,6 +14,7 @@
       let level = 1;
       let parent = element.childOf;
       while (parent) {
+        console.log(true);
         level++;
         parent = $elementsStore.find((e) => e._id === parent)?.childOf || null;
       }
@@ -27,6 +28,8 @@
       }
       tree[level].push(element.background);
     });
+
+    console.log(tree);
 
     makeTree($elementsStore.find((e) => e.childOf === undefined)?._id);
   });
