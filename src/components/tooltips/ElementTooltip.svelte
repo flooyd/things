@@ -7,10 +7,11 @@
     showGrid,
     toolbarOpenStyle,
   } from "../../stores/globals";
-  import { deleteElement, cssObject } from "../../util";
+  import { deleteElement, cssObject, updateElement } from "../../util";
   import { fly, fade } from "svelte/transition";
   import { onMount } from "svelte";
   import CSSEditor from "../CSSEditor.svelte";
+  import { elements } from "../../stores/elements";
 
   export let element;
   export let handleEdit;
@@ -61,6 +62,15 @@
         on:click={async (e) => {
           e.stopPropagation();
           $elementTooltipId = null;
+          const parentElement = $elements.find((el) =>
+            el.parentOf.includes(element._id)
+          );
+          if (parentElement) {
+            parentElement.parentOf = parentElement.parentOf.filter(
+              (id) => id !== element._id
+            );
+            await updateElement(parentElement);
+          }
           await deleteElement(element._id);
           $childPendingDeletion = element._id;
           $parentOfChildPendingDeletion = element.childOf;

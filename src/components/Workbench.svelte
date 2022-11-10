@@ -1,8 +1,12 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { afterUpdate, onMount } from "svelte";
   import { fetchElements } from "../util.js";
 
-  import { elements, elementsPendingUpdate } from "../stores/elements";
+  import {
+    elements,
+    elementsPendingUpdate,
+    elementUpdated,
+  } from "../stores/elements";
   import { toolbarOpenStyle } from "../stores/globals";
 
   import Element from "./elements/Element.svelte";
@@ -13,30 +17,32 @@
 
   onMount(async () => {
     $elements = $elements ? $elements : await getElements();
+    console.log($elements);
     ready = true;
   });
 
   const getElements = async () => {
     //fetches all elements from the database
     const fetchedElements = await fetchElements();
+    console.log("fetchedElements", fetchedElements);
+    return fetchedElements;
 
-    //gets all children in the fetched elements
-    const children = fetchedElements.filter(
-      (e) => e.childOf !== null && e.childOf !== undefined
-    );
+    // //gets all children in the fetched elements
+    // const children = fetchedElements.filter(
+    //   (e) => e.childOf !== null && e.childOf !== undefined
+    // );
 
-    //for each element, find its children and add them to the parentOf property of the element
-    const mappedElements = fetchedElements.map((e) => {
-      const childrenIds = children
-        .filter((c) => c.childOf === e._id)
-        .map((c) => c._id);
-      return {
-        ...e,
-        parentOf: [...childrenIds],
-      };
-    });
-
-    return mappedElements;
+    // //for each element, find its children and add them to the parentOf property of the element
+    // const mappedElements = fetchedElements.map((e) => {
+    //   const childrenIds = children
+    //     .filter((c) => c.childOf === e._id)
+    //     .map((c) => c._id);
+    //   return {
+    //     ...e,
+    //     parentOf: [...childrenIds],
+    //   };
+    // });
+    // return mappedElements;
   };
 
   const updateElements = async () => {
@@ -55,7 +61,9 @@
     style={$toolbarOpenStyle}
   >
     <div class="view">
-      <HtmlTree />
+      {#if $elementUpdated}
+        <HtmlTree />
+      {/if}
       {#each $elements as element (element._id)}
         {#if !element.childOf}
           <Element {element} />

@@ -1,12 +1,12 @@
 <script>
-  import { onMount, tick } from "svelte";
+  import { onMount } from "svelte";
   import {
     variablesFetched,
     contextElement,
     childAssignmentPending,
     pendingChildDropBackground,
   } from "../../stores/globals";
-  import { elements, elementsPendingUpdate } from "../../stores/elements";
+  import { elements } from "../../stores/elements";
   import { cssObject, getId, updateElement } from "../../util";
   import Div from "./Div.svelte";
 
@@ -583,7 +583,7 @@
 {#if ready}
   <div
     class="element"
-    style={`width: ${element.width}; height: ${element.height};`}
+    style={`${finalStyleString}`}
     on:dblclick={(e) => {
       if ($childAssignmentPending) return;
       e.stopPropagation();
@@ -607,7 +607,8 @@
           element._id;
 
         element.parentOf = [...element.parentOf, $contextElement._id];
-        await updateElement($contextElement);
+        await updateElement({ ...$contextElement });
+        await updateElement({ ...element });
         $childAssignmentPending = null;
         $contextElement = null;
         $elements = $elements;

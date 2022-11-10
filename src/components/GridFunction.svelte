@@ -15,7 +15,6 @@
     variableUpdated,
     outputClicked,
     usingSelectionTool,
-    elementUpdated,
   } from "../stores/globals";
   import {
     typeColors,
@@ -72,7 +71,6 @@
   };
 
   const stop = async (e) => {
-    $elementUpdated = true;
     await tick();
     $functionMoving = null;
     functionDirty = true;

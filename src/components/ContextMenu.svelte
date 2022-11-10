@@ -41,6 +41,7 @@
 
         $elements.find((el) => el._id === $contextElement._id).childOf = null;
         await updateElement($contextElement);
+        await updateElement(parentElement);
         $elements = $elements;
         $contextElement = null;
       }}>Remove as Child</button

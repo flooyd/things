@@ -12,7 +12,6 @@
     inVariableClicked,
     outputClicked,
     usingSelectionTool,
-    elementUpdated,
   } from "../stores/globals";
   import {
     addConnection,
@@ -260,10 +259,6 @@
       }
     }
   };
-
-  $: if ($elementUpdated === true) {
-    $elementUpdated = false;
-  }
 </script>
 
 <svelte:window
