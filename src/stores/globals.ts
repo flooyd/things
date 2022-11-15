@@ -39,6 +39,13 @@ export const contextElement = writable(null);
 export const contextElementId = writable(null);
 export const childAssignmentPending = writable(null);
 export const pendingChildDropBackground = writable(null);
+export const mimic = writable(null);
+
+//things and such
+export const functions = writable([]);
+export const variables = writable([]);
+export const connections = writable([]);
+export const things = writable([]);
 
 //export update function for elements
 export function updateLoading(newValue) {

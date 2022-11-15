@@ -11,7 +11,6 @@
     height,
     functionsTooltipOpen,
     clickedElement,
-    elementTooltipId,
     showGrid,
     showToolbar,
     toolbarOpenStyle,
@@ -24,6 +23,7 @@
     variablesFetched,
     variablesStore,
     contextElement,
+    mimic,
   } from "./stores/globals";
   import { elements } from "./stores/elements";
   import { onMount } from "svelte";
@@ -31,24 +31,49 @@
   import { epicFunctions, getVariablesForElement, updateElement } from "./util";
   import HtmlTooltip from "./components/tooltips/HTMLTooltip.svelte";
   import VariablesStoresTooltip from "./components/tooltips/VariablesStoresTooltip.svelte";
-  import { fade } from "svelte/transition";
+  import { fade, fly } from "svelte/transition";
 
   let ready = false;
   let connectionLocations = [];
+  let dirtyElements = [];
+  let second = 0;
 
   onMount(async () => {
     ready = true;
   });
 
-  const handleEdit = (property, value) => {
-    //convert property to camelCase
+  const handleEdit = (property, value, elementFromTree) => {
+    //remove ";" from value
+    if (value.includes(";")) {
+      value = value.replace(";", "");
+      return;
+    }
+
+    second = 5;
     property = property.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
     $clickedElement[property] = value;
+    if (dirtyElements.indexOf($clickedElement._id) === -1) {
+      dirtyElements.push($clickedElement._id);
+    }
+    dirtyElements = dirtyElements;
   };
 
   const handleSave = async () => {
-    await updateElement($clickedElement);
+    dirtyElements.forEach(async (elementId) => {
+      const element = $elements.find((element) => element._id === elementId);
+      await updateElement(element);
+    });
+    dirtyElements = [];
   };
+
+  setInterval(() => {
+    if (second === 0) return;
+    second--;
+  }, 1000);
+
+  $: if (second === 0) {
+    handleSave();
+  }
 
   const handleKeyPress = (e) => {
     if (e.key === "Escape") {
@@ -59,18 +84,18 @@
 
   const getConnectionLocations = () => {
     const connectionLocations = [];
-
-    $clickedElement.grid.connections.forEach((connection) => {
+    let containingObject = $mimic ? $mimic : $clickedElement;
+    containingObject.grid.connections.forEach((connection) => {
       const inArrowLocation =
-        $clickedElement.grid.functions.find((f) => f._id === connection.in).rect
-          .inArrowLocation || null;
+        containingObject.grid.functions.find((f) => f._id === connection.in)
+          .rect.inArrowLocation || null;
 
       const outArrowLocation =
-        $clickedElement.grid.functions.find((f) => f._id === connection.out)
+        containingObject.grid.functions.find((f) => f._id === connection.out)
           .rect.outArrowLocation || null;
 
       //get number of outpoints for in function
-      const inFunction = $clickedElement.grid.functions.find(
+      const inFunction = containingObject.grid.functions.find(
         (f) => f._id === connection.in
       );
 
@@ -137,7 +162,7 @@
 {#if ready}
   <main bind:clientWidth={$width} bind:clientHeight={$height}>
     {#if ready && !$showGrid}
-      <Workbench />
+      <Workbench {handleEdit} />
     {/if}
     {#if ready && $showToolbar}
       <div transition:fade={{ duration: 150 }}>
@@ -156,19 +181,22 @@
   {#if ready && $variablesStoresTooltipOpen}
     <VariablesStoresTooltip />
   {/if}
-  {#if ready && $elementTooltipId === $clickedElement?._id}
-    <ElementTooltip
-      element={$clickedElement}
-      {handleEdit}
-      {handleSave}
-      on:delete={() => {
-        $elements = $elements.filter((e) => e.id !== $clickedElement.id);
-        $clickedElement = null;
-        $elementTooltipId = null;
-      }}
-    />
-  {/if}
 </div>
+{#if second !== 0}
+  <div
+    in:fly={{ duration: 200, y: 3000 }}
+    out:fade={{ duration: 200 }}
+    class="save-indicator"
+  >
+    <!-- <p>Save in {}</p> -->
+    <!-- Saving in {second} second(s)... -->
+    Saving in {second}
+    {second > 1 ? "seconds" : "second"}...
+  </div>
+{/if}
+{#if ready && $contextElement}
+  <ContextMenu />
+{/if}
 
 {#if ready && $showGrid}
   <Grid />
@@ -233,5 +261,22 @@
     left: 0px;
     height: 100vh;
     width: 100vw;
+  }
+
+  .save-indicator {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: fit-content;
+    background: #333;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    color: white;
+    box-sizing: border-box;
+    font-size: 20px;
+    z-index: 99999;
+    padding: 13px;
+    border-radius: 90px;
   }
 </style>

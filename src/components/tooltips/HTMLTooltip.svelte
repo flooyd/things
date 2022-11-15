@@ -1,6 +1,7 @@
 <script>
   import { addElement } from "../../util";
   import { toolbarOpenStyle, htmlTooltipOpen } from "../../stores/globals";
+  import { elementUpdated } from "../../stores/elements";
   import { fly } from "svelte/transition";
 
   let hovered = null;
@@ -152,6 +153,7 @@
 
   const createElement = async () => {
     await addElement(pendingTag);
+    $elementUpdated++;
     pendingTag = null;
     showOptions = false;
     $htmlTooltipOpen = false;
@@ -161,7 +163,7 @@
 <div
   class="htmlTooltip"
   style={$toolbarOpenStyle}
-  transition:fly={{ duration: 75, x: -500 }}
+  transition:fly={{ duration: 75, y: -500 }}
 >
   <div class="header">
     <div class="headerTitle">

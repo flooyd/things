@@ -1,11 +1,13 @@
 <script>
   import { cssObject } from "../util";
+  import { clickedElement } from "../stores/globals";
 
   export let element;
   export let handleEdit;
 
   let filter = "";
   let filtered = [];
+  let clientHeight = null;
 
   const properties = [...cssObject.css, ...cssObject.experimental]
     .filter(
@@ -48,7 +50,7 @@
   };
 </script>
 
-<div class="cssEditor">
+<div class="cssEditor" bind:clientHeight>
   <div class="header">
     <i class="fa-solid fa-filter" />
     <input
@@ -68,6 +70,10 @@
         class="propertyValue"
         value={element[property] || null}
         on:input={(e) => {
+          if (e.target.value.includes(";")) {
+            e.target.value = e.target.value.replace(";", "");
+            return;
+          }
           handleEdit(property, e.target.value);
         }}
       />
@@ -126,10 +132,5 @@
   input.propertyValue {
     background: white;
     color: black;
-  }
-
-  button {
-    background: #1e1e1e;
-    color: white;
   }
 </style>

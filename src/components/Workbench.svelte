@@ -5,7 +5,7 @@
   import {
     elements,
     elementsPendingUpdate,
-    elementUpdated,
+    visualizeDOM,
   } from "../stores/elements";
   import { toolbarOpenStyle } from "../stores/globals";
 
@@ -13,11 +13,12 @@
   import { fade } from "svelte/transition";
   import HtmlTree from "./HTMLTree.svelte";
 
+  export let handleEdit;
+
   let ready = false;
 
   onMount(async () => {
     $elements = $elements ? $elements : await getElements();
-    console.log($elements);
     ready = true;
   });
 
@@ -43,8 +44,8 @@
     style={$toolbarOpenStyle}
   >
     <div class="view">
-      {#if $elementUpdated}
-        <HtmlTree />
+      {#if $visualizeDOM}
+        <HtmlTree {handleEdit} />
       {/if}
       {#each $elements as element (element._id)}
         {#if !element.childOf}
@@ -65,20 +66,5 @@
 
   .view {
     background: white;
-    height: 100%;
-    width: 100%;
-  }
-
-  .container {
-    display: flex;
-    margin: 0px auto;
-    width: 80%;
-    background: blue;
-    height: 50px;
-  }
-  .item {
-    background: red;
-    width: 100px;
-    height: 50px;
   }
 </style>

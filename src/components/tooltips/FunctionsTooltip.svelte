@@ -53,7 +53,7 @@
 <div
   class="functionsTooltip"
   style={$toolbarOpenStyle}
-  transition:fly={{ duration: 75, x: -500 }}
+  transition:fly={{ duration: 75, y: -500 }}
 >
   <div class="header">
     <div class="headerTitle">

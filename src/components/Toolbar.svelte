@@ -7,6 +7,11 @@
     htmlTooltipOpen,
     showGrid,
   } from "../stores/globals";
+  import {
+    visualizeDOM,
+    openedInDOM,
+    DOMScrollToOnOpen,
+  } from "../stores/elements";
 
   const handleClickId = (e) => {
     $elementTooltipId === $clickedElement._id
@@ -46,6 +51,16 @@
           : $clickedElement._id}
       </button>
     {/if}
+    <button
+      on:click={() => {
+        $visualizeDOM = !$visualizeDOM;
+        $openedInDOM = null;
+        $DOMScrollToOnOpen = null;
+      }}
+      class="threethreesbutton"
+    >
+      {$visualizeDOM ? "Hide DOM" : "Show DOM"}
+    </button>
     {#if $showGrid}
       <button class="threethreesbutton" on:click={() => ($showGrid = false)}>
         Close Grid

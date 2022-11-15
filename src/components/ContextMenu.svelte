@@ -3,9 +3,10 @@
     contextElement,
     childAssignmentPending,
     showToolbar,
+    width,
   } from "../stores/globals";
   import { updateElement } from "../util";
-  import { elements } from "../stores/elements";
+  import { elements, elementUpdated } from "../stores/elements";
   import { fly, fade } from "svelte/transition";
 
   let topOrBottom = "bottom";
@@ -15,8 +16,8 @@
   class={`contextMenu ${topOrBottom} ${
     $showToolbar ? "toolbarOpen" : "toolbarClosed"
   }`}
-  in:fly={{ x: -500, duration: 150 }}
-  out:fly={{ x: -500, duration: 150 }}
+  in:fly={{ x: -500, duration: 100 }}
+  out:fade={{ duration: 100 }}
 >
   <div class="features">
     <button

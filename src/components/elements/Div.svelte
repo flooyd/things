@@ -1,24 +1,18 @@
 <script>
-  import { onMount, afterUpdate } from "svelte";
-  import { elementUpdated } from "../../stores/elements";
-
   export let id;
   export let key;
   export let name;
   export let styleString;
   export let content;
 
-  afterUpdate(() => {
-    $elementUpdated++;
-    console.log($elementUpdated);
-  });
+  let className = "saeDiv";
 </script>
 
 <div
   {id}
   {key}
   {name}
-  style={styleString + "width: 100%; height: 100%;"}
+  style={styleString + "width: 100%; height: 100%; margin: 0px"}
   class="saeDiv"
 >
   <slot />
@@ -26,4 +20,10 @@
 </div>
 
 <style>
+  .saeDiv {
+    background: white;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+  }
 </style>

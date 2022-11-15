@@ -277,7 +277,7 @@
     class="gridFunction"
     bind:this={element}
     {style}
-    in:fly={{ x: -500, duration: 100 }}
+    in:fly={{ y: -500, duration: 100 }}
   >
     {#if contextMenuOpen}
       <div

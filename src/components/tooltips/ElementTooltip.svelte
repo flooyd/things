@@ -6,18 +6,26 @@
     parentOfChildPendingDeletion,
     showGrid,
     toolbarOpenStyle,
+    clickedElement,
   } from "../../stores/globals";
   import { deleteElement, cssObject, updateElement } from "../../util";
   import { fly, fade } from "svelte/transition";
   import { onMount } from "svelte";
   import CSSEditor from "../CSSEditor.svelte";
-  import { elements } from "../../stores/elements";
+  import {
+    elements,
+    elementUpdated,
+    DOMScrollToOnOpen,
+  } from "../../stores/elements";
 
   export let element;
+  export let fromTree;
   export let handleEdit;
   export let handleSave;
+  export let mouseInTooltip = null;
 
   let ready = false;
+  let clientHeight;
 
   onMount(() => {
     setTimeout(() => {
@@ -25,37 +33,48 @@
     }, 25);
   });
 
-  let border = "5px solid redd";
-  let borderB = "green";
-
-  let style = `border: ${border}; border-bottom-color: ${borderB};`;
+  $: clientHeight > 72 ? ($DOMScrollToOnOpen = element._id) : null;
+  $: console.log(clientHeight);
 </script>
 
 <div
+  bind:clientHeight
   on:click={(e) => {
     e.stopPropagation();
   }}
   class="elementTooltip"
-  style={$toolbarOpenStyle}
-  in:fly={{ duration: 75, x: -500 }}
-  out:fade={{ duration: 75 }}
+  style={!fromTree ? $toolbarOpenStyle : ""}
+  in:fade={{
+    duration: 100,
+  }}
+  on:mouseenter={() => {
+    if (fromTree) {
+      $clickedElement = element;
+      mouseInTooltip(element._id);
+    }
+  }}
+  on:mouseleave={() => {
+    if (fromTree) {
+      mouseInTooltip(null);
+    }
+  }}
 >
   <div class="header">
     <div class="headerTitle">
       <span>Element</span>
       <i class="fa fa-code" />
     </div>
-    <button
-      {style}
-      class="headerClose"
-      on:click={() => ($elementTooltipId = null)}
-    >
+    <button class="headerClose" on:click={() => ($elementTooltipId = null)}>
       <i class="fa-solid fa-times" />
     </button>
     <div class="headerDivider" />
   </div>
   {#if ready}
-    <div class="toolbar">
+    <div
+      in:fade={{ duration: 50 }}
+      out:fade={{ duration: 100 }}
+      class="toolbar"
+    >
       <button class="blueButton" on:click={() => handleSave()}>Save</button>
       <button
         type="button"
@@ -72,6 +91,7 @@
             await updateElement(parentElement);
           }
           await deleteElement(element._id);
+          $elementUpdated++;
           $childPendingDeletion = element._id;
           $parentOfChildPendingDeletion = element.childOf;
         }}
@@ -85,7 +105,11 @@
         >{#if $showGrid}Close{:else}Open{/if} Grid</button
       >
     </div>
-    <div class="attributes">
+    <div
+      in:fade={{ duration: 50, easing: (t) => t }}
+      out:fade={{ duration: 100 }}
+      class="attributes"
+    >
       <div class="infoGroup">
         <label for="type" class="infoLabel">Element type</label>
         <input
@@ -115,6 +139,10 @@
           class="infoInput"
           value={element.name || ""}
           on:input={(e) => {
+            if (e.target.value.includes(";")) {
+              e.target.value = e.target.value.replace(";", "");
+              return;
+            }
             handleEdit("name", e.target.value);
           }}
         />
@@ -128,6 +156,10 @@
           class="infoInput"
           value={element.childOf || ""}
           on:input={(e) => {
+            if (e.target.value.includes(";")) {
+              e.target.value = e.target.value.replace(";", "");
+              return;
+            }
             handleEdit("childOf", e.target.value);
           }}
         />
@@ -144,15 +176,15 @@
         />
       </div>
     </div>
-    <div class="cssEditor">
+    <div
+      in:fade={{ duration: 50, y: -500, easing: (t) => t }}
+      out:fade={{ duration: 100 }}
+      class="cssEditor"
+    >
       <CSSEditor {element} {handleEdit} />
     </div>
+    <div class="placeholder" />
   {/if}
-  {#if !ready}
-    <div class="loading">Loading element info...</div>
-  {/if}
-
-  <div class="placeholder" />
 </div>
 
 <style @charset="utf-8">
@@ -162,12 +194,11 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    min-width: 500px;
-    max-width: 500px;
+    width: calc(100% - 26px);
     background: white;
     font-size: 13px;
     padding: 0px 13px;
-    overflow-y: auto;
+    overflow-y: scroll;
     color: black;
     z-index: 200;
     pointer-events: all;
@@ -184,7 +215,7 @@
     color: brown;
     justify-content: space-between;
     align-items: center;
-    padding: 13px 0px;
+    padding-bottom: 8px;
     flex-wrap: wrap;
     position: sticky;
     top: 0px;
@@ -255,18 +286,6 @@
     border-top: 3px solid brown;
     margin-top: 3px;
     color: transparent;
-  }
-
-  .loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100px;
-    width: 100%;
-    font-size: 20px;
-    font-weight: bold;
-    color: brown;
-    margin-top: 10px;
   }
 
   .cssEditor {

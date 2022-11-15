@@ -12,11 +12,12 @@
     inVariableClicked,
     outputClicked,
     usingSelectionTool,
+    mimic,
   } from "../stores/globals";
   import {
     addConnection,
     deleteConnectionById,
-    fetchFunctionsForElement,
+    fetchFunctions,
     getAllConnectionsForElement,
   } from "../util.js";
   import SelectionTool from "./SelectionTool.svelte";
@@ -26,14 +27,22 @@
   let ready = false;
   let selectionToolStartLocation = null;
   let selectionToolMousePosition = null;
+  let containingObject = null;
+
+  $: $mimic && !$mimic.isThing
+    ? (containingObject = $mimic)
+    : $clickedElement
+    ? (containingObject = $clickedElement)
+    : null;
 
   onMount(async () => {
-    if (!$clickedElement) return;
-    let functionsForElement = await fetchFunctionsForElement(
-      $clickedElement._id
+    if (!$clickedElement && !$mimic) return;
+    //add mimic as mimicId to fetchFunctionsForElement params in util.js
+    let functionsForElement = await fetchFunctions(
+      $mimic ? $mimic._id : $clickedElement._id
     );
-    $clickedElement.grid = [];
-    $clickedElement.grid.connections = [];
+    containingObject.grid = [];
+    containingObject.grid.connections = [];
     functionsForElement = functionsForElement.map((func) => {
       return {
         blah: "5",
@@ -64,17 +73,17 @@
       };
     });
 
-    $clickedElement.grid.functions = functionsForElement;
+    containingObject.grid.functions = functionsForElement;
 
     const connectionsForElement = await getAllConnectionsForElement(
-      $clickedElement._id
+      containingObject._id
     );
 
     if (connectionsForElement.length > 0) {
-      $clickedElement.grid.connections = connectionsForElement;
+      containingObject.grid.connections = connectionsForElement;
     }
 
-    $clickedElement.grid.connections = connectionsForElement;
+    containingObject.grid.connections = connectionsForElement;
     $gridConnectionLocationsUpdatePending = true;
     ready = true;
   });
@@ -97,20 +106,20 @@
 
   const removeOverlappingVariableConnection = async () => {
     let existingConnectionDeleted = null;
-    for (let i = 0; i < $clickedElement.grid.connections.length; i++) {
+    for (let i = 0; i < containingObject.grid.connections.length; i++) {
       if (
-        $clickedElement.grid.connections[i].in ===
+        containingObject.grid.connections[i].in ===
           $inVariableClicked.functionId &&
-        $clickedElement.grid.connections[i].inputIndex ===
+        containingObject.grid.connections[i].inputIndex ===
           $inVariableClicked.inputIndex
       ) {
-        await deleteConnectionById($clickedElement.grid.connections[i]._id);
-        existingConnectionDeleted = $clickedElement.grid.connections[i]._id;
+        await deleteConnectionById(containingObject.grid.connections[i]._id);
+        existingConnectionDeleted = containingObject.grid.connections[i]._id;
       }
 
       if (existingConnectionDeleted) {
-        $clickedElement.grid.connections =
-          $clickedElement.grid.connections.filter(
+        containingObject.grid.connections =
+          containingObject.grid.connections.filter(
             (conn) => conn._id != existingConnectionDeleted
           );
       }
@@ -119,15 +128,15 @@
 
   const createOutputConnection = async () => {
     let connectionExists = false;
-    for (let i = 0; i < $clickedElement.grid.connections.length; i++) {
+    for (let i = 0; i < containingObject.grid.connections.length; i++) {
       if (
-        $clickedElement.grid.connections[i].outputIndex ===
+        containingObject.grid.connections[i].outputIndex ===
           $outputClicked.outputIndex &&
-        $clickedElement.grid.connections[i].in ===
+        containingObject.grid.connections[i].in ===
           $inVariableClicked.functionId &&
-        $clickedElement.grid.connections[i].inputIndex ===
+        containingObject.grid.connections[i].inputIndex ===
           $inVariableClicked.inputIndex &&
-        $clickedElement.grid.connections[i].out === $outputClicked.functionId
+        containingObject.grid.connections[i].out === $outputClicked.functionId
       ) {
         connectionExists = true;
         break;
@@ -142,12 +151,12 @@
         in: $inVariableClicked.functionId,
         inputIndex: $inVariableClicked.inputIndex,
         out: $outputClicked.functionId,
-        elementId: $clickedElement._id,
+        elementId: containingObject._id,
       };
 
       const createdConnection = await addConnection(connection);
       if (createdConnection) {
-        $clickedElement.grid.connections.push(createdConnection);
+        containingObject.grid.connections.push(createdConnection);
         $gridConnectionLocationsUpdatePending = true;
       }
 
@@ -158,13 +167,13 @@
 
   const createVariableConnection = async () => {
     let connectionExists = false;
-    for (let i = 0; i < $clickedElement.grid.connections.length; i++) {
+    for (let i = 0; i < containingObject.grid.connections.length; i++) {
       if (
-        $clickedElement.grid.connections[i].inputIndex ===
+        containingObject.grid.connections[i].inputIndex ===
           $inVariableClicked.inputIndex &&
-        $clickedElement.grid.connections[i].in ===
+        containingObject.grid.connections[i].in ===
           $inVariableClicked.functionId &&
-        $clickedElement.grid.connections[i].outVariableId ===
+        containingObject.grid.connections[i].outVariableId ===
           $outVariableClicked.variableId
       ) {
         connectionExists = true;
@@ -177,13 +186,13 @@
       const createdConnection = await addConnection({
         in: $inVariableClicked.functionId,
         out: $outVariableClicked.functionId,
-        elementId: $clickedElement._id,
+        elementId: containingObject._id,
         inputIndex: $inVariableClicked.inputIndex,
         outVariableId: $outVariableClicked.variableId,
       });
 
       if (createdConnection) {
-        $clickedElement.grid.connections.push(createdConnection);
+        containingObject.grid.connections.push(createdConnection);
         $gridConnectionLocationsUpdatePending = true;
       }
     }
@@ -194,10 +203,10 @@
 
   const createConnection = async () => {
     let connectionExists = false;
-    for (let i = 0; i < $clickedElement.grid.connections.length; i++) {
+    for (let i = 0; i < containingObject.grid.connections.length; i++) {
       if (
-        $clickedElement.grid.connections[i].in === $inArrowClicked &&
-        $clickedElement.grid.connections[i].out === $outArrowClicked
+        containingObject.grid.connections[i].in === $inArrowClicked &&
+        containingObject.grid.connections[i].out === $outArrowClicked
       ) {
         connectionExists = true;
         break;
@@ -208,11 +217,11 @@
       const createdConnection = await addConnection({
         in: $inArrowClicked,
         out: $outArrowClicked,
-        elementId: $clickedElement._id,
+        elementId: containingObject._id,
       });
 
       if (createdConnection) {
-        $clickedElement.grid.connections.push(createdConnection);
+        containingObject.grid.connections.push(createdConnection);
       }
     }
 
@@ -245,17 +254,18 @@
   const finalizeSelectionTool = () => {
     $usingSelectionTool = false;
     const selectedFunctionIds = [];
-    for (let i = 0; i < $clickedElement.grid.functions.length; i++) {
+    for (let i = 0; i < containingObject.grid.functions.length; i++) {
       if (
-        $clickedElement.grid.functions[i].rect.x >=
+        containingObject.grid.functions[i].rect.x >=
           selectionToolStartLocation.x &&
-        $clickedElement.grid.functions[i].rect.x <=
+        containingObject.grid.functions[i].rect.x <=
           selectionToolMousePosition.x &&
-        $clickedElement.grid.functions[i].rect.y >=
+        containingObject.grid.functions[i].rect.y >=
           selectionToolStartLocation.y &&
-        $clickedElement.grid.functions[i].rect.y <= selectionToolMousePosition.y
+        containingObject.grid.functions[i].rect.y <=
+          selectionToolMousePosition.y
       ) {
-        selectedFunctionIds.push($clickedElement.grid.functions[i]._id);
+        selectedFunctionIds.push(containingObject.grid.functions[i]._id);
       }
     }
   };
@@ -274,7 +284,7 @@
     }
   }}
 />
-{#if !$clickedElement}
+{#if !containingObject}
   <div class="noElement">
     <div class="title">No Element Selected</div>
     <div class="hideGrid">
