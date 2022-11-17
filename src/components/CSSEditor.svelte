@@ -1,6 +1,5 @@
 <script>
   import { cssObject } from "../util";
-  import { clickedElement } from "../stores/globals";
 
   export let element;
   export let handleEdit;

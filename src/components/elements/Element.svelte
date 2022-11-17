@@ -23,7 +23,6 @@
   let styleString,
     finalStyleString,
     brownFinalStyleString,
-    showTooltip,
     className = "element",
     children = [],
     ctrlDown = false,

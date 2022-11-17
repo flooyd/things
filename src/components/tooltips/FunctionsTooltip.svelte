@@ -5,9 +5,7 @@
     toolbarOpenStyle,
     functionsTooltipOpen,
     width,
-    height,
   } from "../../stores/globals";
-  import { tick } from "svelte";
   import { fly } from "svelte/transition";
 
   let hovered = null;

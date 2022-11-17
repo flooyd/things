@@ -3,7 +3,6 @@
     contextElement,
     childAssignmentPending,
     showToolbar,
-    width,
   } from "../stores/globals";
   import { updateElement } from "../util";
   import { elements, elementUpdated } from "../stores/elements";

@@ -1,5 +1,5 @@
 <script>
-  import { onMount, tick } from "svelte";
+  import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import {
     clickedElement,

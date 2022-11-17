@@ -43,16 +43,14 @@
     class="workbench"
     style={$toolbarOpenStyle}
   >
-    <div class="view">
-      {#if $visualizeDOM}
-        <HtmlTree {handleEdit} />
+    {#if $visualizeDOM}
+      <HtmlTree {handleEdit} />
+    {/if}
+    {#each $elements as element (element._id)}
+      {#if !element.childOf}
+        <Element {element} />
       {/if}
-      {#each $elements as element (element._id)}
-        {#if !element.childOf}
-          <Element {element} />
-        {/if}
-      {/each}
-    </div>
+    {/each}
   </div>
 {/if}
 
@@ -62,9 +60,5 @@
     color: black;
     overflow-y: auto;
     overflow-x: auto;
-  }
-
-  .view {
-    background: white;
   }
 </style>

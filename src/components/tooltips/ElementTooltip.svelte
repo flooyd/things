@@ -8,8 +8,8 @@
     toolbarOpenStyle,
     clickedElement,
   } from "../../stores/globals";
-  import { deleteElement, cssObject, updateElement } from "../../util";
-  import { fly, fade } from "svelte/transition";
+  import { deleteElement, updateElement } from "../../util";
+  import { fade } from "svelte/transition";
   import { onMount } from "svelte";
   import CSSEditor from "../CSSEditor.svelte";
   import {
