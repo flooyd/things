@@ -699,10 +699,6 @@
 
 <style>
   .element {
-    height: fit-content;
-    width: fit-content;
-    border: none !important;
-    background: none !important;
     cursor: pointer;
   }
 

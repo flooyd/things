@@ -27,22 +27,16 @@
   let ready = false;
   let selectionToolStartLocation = null;
   let selectionToolMousePosition = null;
-  let containingObject = null;
-
-  $: $mimic && !$mimic.isThing
-    ? (containingObject = $mimic)
-    : $clickedElement
-    ? (containingObject = $clickedElement)
-    : null;
 
   onMount(async () => {
-    if (!$clickedElement && !$mimic) return;
-    //add mimic as mimicId to fetchFunctionsForElement params in util.js
-    let functionsForElement = await fetchFunctions(
-      $mimic ? $mimic._id : $clickedElement._id
-    );
-    containingObject.grid = [];
-    containingObject.grid.connections = [];
+    if (!$clickedElement) return;
+    if ($clickedElement.programmingGrid) {
+      ready = true;
+      return;
+    }
+    let functionsForElement = await fetchFunctions($clickedElement._id);
+    $clickedElement.programmingGrid = [];
+    $clickedElement.programmingGrid.connections = [];
     functionsForElement = functionsForElement.map((func) => {
       return {
         blah: "5",
@@ -73,18 +67,18 @@
       };
     });
 
-    containingObject.grid.functions = functionsForElement;
+    $clickedElement.programmingGrid.functions = functionsForElement;
 
     const connectionsForElement = await getAllConnectionsForElement(
-      containingObject._id
+      $clickedElement._id
     );
 
     if (connectionsForElement.length > 0) {
-      containingObject.grid.connections = connectionsForElement;
+      $clickedElement.programmingGrid.connections = connectionsForElement;
     }
 
-    containingObject.grid.connections = connectionsForElement;
-    $gridConnectionLocationsUpdatePending = true;
+    $clickedElement.programmingGrid.connections = connectionsForElement;
+    $gridConnectionLocationsUpdatePending++;
     ready = true;
   });
 
@@ -106,20 +100,27 @@
 
   const removeOverlappingVariableConnection = async () => {
     let existingConnectionDeleted = null;
-    for (let i = 0; i < containingObject.grid.connections.length; i++) {
+    for (
+      let i = 0;
+      i < $clickedElement.programmingGrid.connections.length;
+      i++
+    ) {
       if (
-        containingObject.grid.connections[i].in ===
+        $clickedElement.programmingGrid.connections[i].in ===
           $inVariableClicked.functionId &&
-        containingObject.grid.connections[i].inputIndex ===
+        $clickedElement.programmingGrid.connections[i].inputIndex ===
           $inVariableClicked.inputIndex
       ) {
-        await deleteConnectionById(containingObject.grid.connections[i]._id);
-        existingConnectionDeleted = containingObject.grid.connections[i]._id;
+        await deleteConnectionById(
+          $clickedElement.programmingGrid.connections[i]._id
+        );
+        existingConnectionDeleted =
+          $clickedElement.programmingGrid.connections[i]._id;
       }
 
       if (existingConnectionDeleted) {
-        containingObject.grid.connections =
-          containingObject.grid.connections.filter(
+        $clickedElement.programmingGrid.connections =
+          $clickedElement.programmingGrid.connections.filter(
             (conn) => conn._id != existingConnectionDeleted
           );
       }
@@ -128,15 +129,20 @@
 
   const createOutputConnection = async () => {
     let connectionExists = false;
-    for (let i = 0; i < containingObject.grid.connections.length; i++) {
+    for (
+      let i = 0;
+      i < $clickedElement.programmingGrid.connections.length;
+      i++
+    ) {
       if (
-        containingObject.grid.connections[i].outputIndex ===
+        $clickedElement.programmingGrid.connections[i].outputIndex ===
           $outputClicked.outputIndex &&
-        containingObject.grid.connections[i].in ===
+        $clickedElement.programmingGrid.connections[i].in ===
           $inVariableClicked.functionId &&
-        containingObject.grid.connections[i].inputIndex ===
+        $clickedElement.programmingGrid.connections[i].inputIndex ===
           $inVariableClicked.inputIndex &&
-        containingObject.grid.connections[i].out === $outputClicked.functionId
+        $clickedElement.programmingGrid.connections[i].out ===
+          $outputClicked.functionId
       ) {
         connectionExists = true;
         break;
@@ -151,13 +157,13 @@
         in: $inVariableClicked.functionId,
         inputIndex: $inVariableClicked.inputIndex,
         out: $outputClicked.functionId,
-        elementId: containingObject._id,
+        elementId: $clickedElement._id,
       };
 
       const createdConnection = await addConnection(connection);
       if (createdConnection) {
-        containingObject.grid.connections.push(createdConnection);
-        $gridConnectionLocationsUpdatePending = true;
+        $clickedElement.programmingGrid.connections.push(createdConnection);
+        $gridConnectionLocationsUpdatePending++;
       }
 
       $outputClicked = null;
@@ -167,13 +173,17 @@
 
   const createVariableConnection = async () => {
     let connectionExists = false;
-    for (let i = 0; i < containingObject.grid.connections.length; i++) {
+    for (
+      let i = 0;
+      i < $clickedElement.programmingGrid.connections.length;
+      i++
+    ) {
       if (
-        containingObject.grid.connections[i].inputIndex ===
+        $clickedElement.programmingGrid.connections[i].inputIndex ===
           $inVariableClicked.inputIndex &&
-        containingObject.grid.connections[i].in ===
+        $clickedElement.programmingGrid.connections[i].in ===
           $inVariableClicked.functionId &&
-        containingObject.grid.connections[i].outVariableId ===
+        $clickedElement.programmingGrid.connections[i].outVariableId ===
           $outVariableClicked.variableId
       ) {
         connectionExists = true;
@@ -186,14 +196,14 @@
       const createdConnection = await addConnection({
         in: $inVariableClicked.functionId,
         out: $outVariableClicked.functionId,
-        elementId: containingObject._id,
+        elementId: $clickedElement._id,
         inputIndex: $inVariableClicked.inputIndex,
         outVariableId: $outVariableClicked.variableId,
       });
 
       if (createdConnection) {
-        containingObject.grid.connections.push(createdConnection);
-        $gridConnectionLocationsUpdatePending = true;
+        $clickedElement.programmingGrid.connections.push(createdConnection);
+        $gridConnectionLocationsUpdatePending++;
       }
     }
 
@@ -203,10 +213,14 @@
 
   const createConnection = async () => {
     let connectionExists = false;
-    for (let i = 0; i < containingObject.grid.connections.length; i++) {
+    for (
+      let i = 0;
+      i < $clickedElement.programmingGrid.connections.length;
+      i++
+    ) {
       if (
-        containingObject.grid.connections[i].in === $inArrowClicked &&
-        containingObject.grid.connections[i].out === $outArrowClicked
+        $clickedElement.programmingGrid.connections[i].in === $inArrowClicked &&
+        $clickedElement.programmingGrid.connections[i].out === $outArrowClicked
       ) {
         connectionExists = true;
         break;
@@ -217,11 +231,11 @@
       const createdConnection = await addConnection({
         in: $inArrowClicked,
         out: $outArrowClicked,
-        elementId: containingObject._id,
+        elementId: $clickedElement._id,
       });
 
       if (createdConnection) {
-        containingObject.grid.connections.push(createdConnection);
+        $clickedElement.programmingGrid.connections.push(createdConnection);
       }
     }
 
@@ -254,18 +268,20 @@
   const finalizeSelectionTool = () => {
     $usingSelectionTool = false;
     const selectedFunctionIds = [];
-    for (let i = 0; i < containingObject.grid.functions.length; i++) {
+    for (let i = 0; i < $clickedElement.programmingGrid.functions.length; i++) {
       if (
-        containingObject.grid.functions[i].rect.x >=
+        $clickedElement.programmingGrid.functions[i].rect.x >=
           selectionToolStartLocation.x &&
-        containingObject.grid.functions[i].rect.x <=
+        $clickedElement.programmingGrid.functions[i].rect.x <=
           selectionToolMousePosition.x &&
-        containingObject.grid.functions[i].rect.y >=
+        $clickedElement.programmingGrid.functions[i].rect.y >=
           selectionToolStartLocation.y &&
-        containingObject.grid.functions[i].rect.y <=
+        $clickedElement.programmingGrid.functions[i].rect.y <=
           selectionToolMousePosition.y
       ) {
-        selectedFunctionIds.push(containingObject.grid.functions[i]._id);
+        selectedFunctionIds.push(
+          $clickedElement.programmingGrid.functions[i]._id
+        );
       }
     }
   };
@@ -284,7 +300,7 @@
     }
   }}
 />
-{#if !containingObject}
+{#if !$clickedElement}
   <div class="noElement">
     <div class="title">No Element Selected</div>
     <div class="hideGrid">
@@ -294,8 +310,8 @@
 {/if}
 {#if ready}
   <div
-    class="grid"
-    transition:fade={{ duration: 100 }}
+    class="programmingGrid"
+    in:fade={{ duration: 100 }}
     bind:this={element}
     on:mousedown={(e) => updateSelectionToolProps(e)}
     on:mouseleave={() => {
@@ -313,7 +329,7 @@
 {/if}
 
 <style>
-  .grid {
+  .programmingGrid {
     height: 5000px;
     width: 5000px;
     position: absolute;

@@ -12,7 +12,8 @@
   {id}
   {key}
   {name}
-  style={styleString + "width: 100%; height: 100%; margin: 0px"}
+  style={styleString +
+    "width: 100%; height: 100%; margin: 0px; padding: 0px; border: none; background: none;"}
   class="saeDiv"
 >
   <slot />
@@ -21,7 +22,6 @@
 
 <style>
   .saeDiv {
-    background: white;
     width: 100%;
     height: 100%;
     margin: 0px;

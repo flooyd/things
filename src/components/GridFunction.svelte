@@ -211,7 +211,7 @@
         $clickedElement.programmingGrid.connections.filter((conn) => {
           return conn.in !== gridFunction._id && conn.out !== gridFunction._id;
         });
-      $gridConnectionLocationsUpdatePending = true;
+      $gridConnectionLocationsUpdatePending++;
     } else {
       alert(
         "Something went wrong trying to remove this function. All of their connections weren't removed."
@@ -246,6 +246,10 @@
   } else {
     style = `top:${rect?.y || 0}px; left: ${rect?.x || 0}px;`;
   }
+
+  const randInRange = (min, max) => {
+    return Math.random() * (max - min) + min;
+  };
 </script>
 
 <svelte:window on:mousemove={move} />
@@ -278,7 +282,11 @@
     class="gridFunction"
     bind:this={element}
     {style}
-    in:fly={{ y: -500, duration: 100 }}
+    in:fly={{
+      y: randInRange(-5000, 5000),
+      x: randInRange(-5000, 5000),
+      duration: 500,
+    }}
   >
     {#if contextMenuOpen}
       <div

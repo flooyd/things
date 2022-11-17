@@ -1,7 +1,6 @@
 <script lang="ts">
   import Toolbar from "./components/Toolbar.svelte";
   import Workbench from "./components/Workbench.svelte";
-  import ElementModal from "./components/modals/ElementModal.svelte";
   import Grid from "./components/Grid.svelte";
   import GridFunction from "./components/GridFunction.svelte";
   import ContextMenu from "./components/ContextMenu.svelte";
@@ -23,9 +22,8 @@
     variablesFetched,
     variablesStore,
     contextElement,
-    mimic,
   } from "./stores/globals";
-  import { elements, elementUpdated } from "./stores/elements";
+  import { elements, elementUpdated, visualizeDOM } from "./stores/elements";
   import { onMount } from "svelte";
   import FunctionsModal from "./components/modals/FunctionsModal.svelte";
   import { epicFunctions, getVariablesForElement, updateElement } from "./util";
@@ -83,18 +81,19 @@
 
   const getConnectionLocations = () => {
     const connectionLocations = [];
-    let containingObject = $mimic ? $mimic : $clickedElement;
-    containingObject.grid.connections.forEach((connection) => {
+    $clickedElement.programmingGrid.connections.forEach((connection) => {
       const inArrowLocation =
-        containingObject.grid.functions.find((f) => f._id === connection.in)
-          .rect.inArrowLocation || null;
+        $clickedElement.programmingGrid.functions.find(
+          (f) => f._id === connection.in
+        ).rect.inArrowLocation || null;
 
       const outArrowLocation =
-        containingObject.grid.functions.find((f) => f._id === connection.out)
-          .rect.outArrowLocation || null;
+        $clickedElement.programmingGrid.functions.find(
+          (f) => f._id === connection.out
+        ).rect.outArrowLocation || null;
 
       //get number of outpoints for in function
-      const inFunction = containingObject.grid.functions.find(
+      const inFunction = $clickedElement.programmingGrid.functions.find(
         (f) => f._id === connection.in
       );
 
@@ -111,7 +110,7 @@
       });
     });
 
-    $gridConnectionLocationsUpdatePending = false;
+    $gridConnectionLocationsUpdatePending++;
     return connectionLocations;
   };
 
@@ -133,8 +132,8 @@
     $variablesFetched = true;
   }
 
-  $: if (!$showGrid && $clickedElement) {
-    $clickedElement.programmingGrid = null;
+  $: if (!$showGrid && $clickedElement?.programmingGrid) {
+    console.log($clickedElement);
   }
 
   setInterval(() => {
@@ -198,7 +197,7 @@
 {#if ready && $showGrid}
   <Grid />
 {/if}
-{#if ready && $clickedElement?.grid?.functions?.length > 0 && $showGrid}
+{#if ready && $clickedElement?.programmingGrid?.functions?.length > 0 && $showGrid}
   {#each $clickedElement.programmingGrid.functions as item (item._id)}
     <div>
       <GridFunction gridFunction={item} />
@@ -206,7 +205,7 @@
   {/each}
   {#each connectionLocations as connection (connection.key)}
     <svg
-      transition:fade={{ duration: 100 }}
+      in:fade={{ duration: 100 }}
       height="5000px"
       width="5000px"
       style="position: absolute; top: 0; left: 0; pointer-events: none;"

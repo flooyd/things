@@ -52,11 +52,23 @@
       {$visualizeDOM ? "Hide DOM" : "Show DOM"}
     </button>
     {#if $showGrid}
-      <button class="threethreesbutton" on:click={() => ($showGrid = false)}>
+      <button
+        class="threethreesbutton"
+        on:click={() => {
+          $visualizeDOM = false;
+          $showGrid = false;
+        }}
+      >
         Close Grid
       </button>
     {:else}
-      <button class="threethreesbutton" on:click={() => ($showGrid = true)}>
+      <button
+        class="threethreesbutton"
+        on:click={() => {
+          $visualizeDOM = false;
+          $showGrid = true;
+        }}
+      >
         Open Grid
       </button>
     {/if}

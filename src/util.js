@@ -162,7 +162,7 @@ export const removeAllFunctions = async () => {
 
 export const saveFunction = async (functionId, pendingDelete) => {
   if (pendingDelete) return;
-  const functions = get(clickedElement).grid.functions;
+  const functions = get(clickedElement).programmingGrid.functions;
   const functionToSave = functions.find((func) => func._id === functionId);
   const functionFlattend = {
     _id: functionToSave._id,
@@ -1589,21 +1589,21 @@ export const cssProperties = [
   "font-weight",
   "forced-color-adjust",
   "gap",
-  // "grid",
-  // "grid-area",
-  // "grid-auto-columns",
-  // "grid-auto-flow",
-  // "grid-auto-rows",
-  // "grid-column",
-  // "grid-column-end",
-  // "grid-column-start",
-  // "grid-row",
-  // "grid-row-end",
-  // "grid-row-start",
-  // "grid-template",
-  // "grid-template-areas",
-  // "grid-template-columns",
-  // "grid-template-rows",
+  "grid",
+  "grid-area",
+  "grid-auto-columns",
+  "grid-auto-flow",
+  "grid-auto-rows",
+  "grid-column",
+  "grid-column-end",
+  "grid-column-start",
+  "grid-row",
+  "grid-row-end",
+  "grid-row-start",
+  "grid-template",
+  "grid-template-areas",
+  "grid-template-columns",
+  "grid-template-rows",
   "hanging-punctuation",
   "height",
   "hyphenate-character",
