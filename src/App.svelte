@@ -1,7 +1,7 @@
 <script lang="ts">
   import Toolbar from "./components/Toolbar.svelte";
   import Workbench from "./components/Workbench.svelte";
-  import ElementTooltip from "./components/tooltips/ElementTooltip.svelte";
+  import ElementModal from "./components/modals/ElementModal.svelte";
   import Grid from "./components/Grid.svelte";
   import GridFunction from "./components/GridFunction.svelte";
   import ContextMenu from "./components/ContextMenu.svelte";
@@ -9,15 +9,15 @@
     mousePosition,
     width,
     height,
-    functionsTooltipOpen,
+    functionsModalOpen,
     clickedElement,
     showGrid,
     showToolbar,
     toolbarOpenStyle,
-    htmlTooltipOpen,
+    htmlModalOpen,
     gridConnectionLocationsUpdatePending,
     functionMoving,
-    variablesStoresTooltipOpen,
+    variablesStoresModalOpen,
     windowScrollX,
     windowScrollY,
     variablesFetched,
@@ -27,10 +27,10 @@
   } from "./stores/globals";
   import { elements, elementUpdated } from "./stores/elements";
   import { onMount } from "svelte";
-  import FunctionsTooltip from "./components/tooltips/FunctionsTooltip.svelte";
+  import FunctionsModal from "./components/modals/FunctionsModal.svelte";
   import { epicFunctions, getVariablesForElement, updateElement } from "./util";
-  import HtmlTooltip from "./components/tooltips/HTMLTooltip.svelte";
-  import VariablesStoresTooltip from "./components/tooltips/VariablesStoresTooltip.svelte";
+  import HtmlModal from "./components/modals/HTMLModal.svelte";
+  import VariablesStoresModal from "./components/modals/VariablesStoresModal.svelte";
   import { fade, fly } from "svelte/transition";
 
   let ready = false;
@@ -170,15 +170,15 @@
     {/if}
   </main>
 {/if}
-<div class="tooltips">
-  {#if ready && $htmlTooltipOpen}
-    <HtmlTooltip />
+<div class="modals">
+  {#if ready && $htmlModalOpen}
+    <HtmlModal />
   {/if}
-  {#if ready && $functionsTooltipOpen}
-    <FunctionsTooltip />
+  {#if ready && $functionsModalOpen}
+    <FunctionsModal />
   {/if}
-  {#if ready && $variablesStoresTooltipOpen}
-    <VariablesStoresTooltip />
+  {#if ready && $variablesStoresModalOpen}
+    <VariablesStoresModal />
   {/if}
 </div>
 {#if second !== 0}
@@ -187,8 +187,6 @@
     out:fade={{ duration: 200 }}
     class="save-indicator"
   >
-    <!-- <p>Save in {}</p> -->
-    <!-- Saving in {second} second(s)... -->
     Saving in {second}
     {second > 1 ? "seconds" : "second"}...
   </div>
@@ -248,7 +246,7 @@
     background: white;
   }
 
-  .tooltips {
+  .modals {
     display: flex;
     background: transparent;
     top: 0px;

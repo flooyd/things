@@ -7,7 +7,7 @@
   } from "../../util";
   import {
     toolbarOpenStyle,
-    variablesStoresTooltipOpen,
+    variablesStoresModalOpen,
     clickedElement,
     width,
     height,
@@ -138,7 +138,7 @@
 </script>
 
 <div
-  class="variablesStoresTooltip"
+  class="variablesStoresModal"
   style={$toolbarOpenStyle}
   transition:fly={{ duration: 75, y: -500 }}
 >
@@ -149,7 +149,7 @@
     </div>
     <button
       class="headerClose"
-      on:click={() => ($variablesStoresTooltipOpen = false)}
+      on:click={() => ($variablesStoresModalOpen = false)}
     >
       <i class="fa-solid fa-times" />
     </button>
@@ -368,7 +368,7 @@
 </div>
 
 <style>
-  .variablesStoresTooltip {
+  .variablesStoresModal {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -388,11 +388,11 @@
     opacity: 0.95;
   }
 
-  .variablesStoresTooltip::-webkit-scrollbar {
+  .variablesStoresModal::-webkit-scrollbar {
     width: 8px;
   }
 
-  .variablesStoresTooltip::-webkit-scrollbar-thumb {
+  .variablesStoresModal::-webkit-scrollbar-thumb {
     background: orange;
   }
   .header {

@@ -33,6 +33,6 @@ and before clicking on an in arrow for a grid function.*/
 
 /*color code the grid functions*/
 
-/*create a variable tooltip*/
+/*create a variable modal*/
 
 /*add a way to delete a variable*/

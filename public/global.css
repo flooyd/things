@@ -9,7 +9,7 @@
   --shadow-blue: #778da9ff;
   --platinum: #e0e1ddff;
   --cultured: hsla(0, 0%, 97%, 1);
-
+  box-sizing: border-box;
   user-select: none;
 }
 

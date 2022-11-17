@@ -10,13 +10,13 @@
     elements,
     elementHoveredInDOMVisualizer,
     visualizeDOM,
-    openedInDOM,
+    elementOpenedInDOM,
     elementUpdated,
   } from "../../stores/elements";
   import { cssObject, getId, updateElement } from "../../util";
   import Div from "./Div.svelte";
 
-  import { elementTooltipId, clickedElement } from "../../stores/globals";
+  import { clickedElement } from "../../stores/globals";
 
   export let element;
 
@@ -621,12 +621,10 @@
     on:dblclick={(e) => {
       if ($childAssignmentPending) return;
       e.stopPropagation();
-      $elementTooltipId = element._id;
       $clickedElement = element;
       $variablesFetched = false;
       $visualizeDOM = true;
-      $openedInDOM = element._id;
-      console.log(element._id);
+      $elementOpenedInDOM = element._id;
     }}
     on:click={async (e) => {
       e.stopPropagation();
@@ -663,9 +661,9 @@
       } else {
         $contextElement = element;
       }
-      if ($elementTooltipId) {
-        $clickedElement = element;
-        $elementTooltipId = element._id;
+      $clickedElement = element;
+      if ($visualizeDOM) {
+        $elementOpenedInDOM = $clickedElement._id;
       }
       $childAssignmentPending = false;
     }}

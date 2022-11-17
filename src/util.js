@@ -66,6 +66,7 @@ export const updateElement = async (element) => {
     },
     body: JSON.stringify(element),
   });
+
   updateLoading(false);
 };
 

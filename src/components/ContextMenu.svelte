@@ -40,14 +40,15 @@
         );
 
         $elements.find((el) => el._id === $contextElement._id).childOf = null;
-        await updateElement($contextElement);
+        await updateElement(
+          $elements.find((el) => el._id === $contextElement._id)
+        );
         await updateElement(parentElement);
         $elements = $elements;
         $contextElement = null;
         $elementUpdated++;
       }}>Remove as Child</button
     >
-    <button class="redButton">Delete</button>
   </div>
   <div class="info">
     {#if $contextElement}

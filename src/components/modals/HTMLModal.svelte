@@ -1,6 +1,6 @@
 <script>
   import { addElement } from "../../util";
-  import { toolbarOpenStyle, htmlTooltipOpen } from "../../stores/globals";
+  import { toolbarOpenStyle, htmlModalOpen } from "../../stores/globals";
   import { elementUpdated } from "../../stores/elements";
   import { fly } from "svelte/transition";
 
@@ -145,7 +145,8 @@
       left: "0px",
       width: "100px",
       height: "100px",
-      background: "black",
+      background: "white",
+      border: "3px solid brown",
       color: "white",
     };
     showOptions = true;
@@ -156,12 +157,12 @@
     $elementUpdated++;
     pendingTag = null;
     showOptions = false;
-    $htmlTooltipOpen = false;
+    $htmlModalOpen = false;
   };
 </script>
 
 <div
-  class="htmlTooltip"
+  class="htmlModal"
   style={$toolbarOpenStyle}
   transition:fly={{ duration: 75, y: -500 }}
 >
@@ -173,7 +174,7 @@
     <button
       class="headerClose"
       on:click={() => {
-        $htmlTooltipOpen = false;
+        $htmlModalOpen = false;
       }}
     >
       <i class="fa fa-times" />
@@ -368,7 +369,7 @@
 </div>
 
 <style>
-  .htmlTooltip {
+  .htmlModal {
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -384,11 +385,11 @@
     opacity: 0.95;
   }
 
-  .htmlTooltip::-webkit-scrollbar {
+  .htmlModal::-webkit-scrollbar {
     width: 8px;
   }
 
-  .htmlTooltip::-webkit-scrollbar-thumb {
+  .htmlModal::-webkit-scrollbar-thumb {
     background: lightgreen;
   }
 

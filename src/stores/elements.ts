@@ -5,9 +5,9 @@ export const workingElement = writable(null);
 export const elementsPendingUpdate = writable(false);
 export const elementUpdated = writable(1);
 export const visualizeDOM = writable(false);
-export const openedInDOM = writable([]);
+export const elementOpenedInDOM = writable(null);
 export const elementHoveredInDOMVisualizer = writable(null);
-export const DOMScrollToOnOpen = writable(0);
+export const DOMReadyToScroll = writable(1);
 
 //export update function for elements
 export function updateElements(newElements) {

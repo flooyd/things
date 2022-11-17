@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { afterUpdate, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { fetchElements } from "../util.js";
 
   import {
@@ -19,6 +19,7 @@
 
   onMount(async () => {
     $elements = $elements ? $elements : await getElements();
+    console.log($elements);
     ready = true;
   });
 

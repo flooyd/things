@@ -1,23 +1,12 @@
 <script lang="ts">
   import {
-    variablesStoresTooltipOpen,
-    functionsTooltipOpen,
+    variablesStoresModalOpen,
+    functionsModalOpen,
     clickedElement,
-    elementTooltipId,
-    htmlTooltipOpen,
+    htmlModalOpen,
     showGrid,
   } from "../stores/globals";
-  import {
-    visualizeDOM,
-    openedInDOM,
-    DOMScrollToOnOpen,
-  } from "../stores/elements";
-
-  const handleClickId = (e) => {
-    $elementTooltipId === $clickedElement._id
-      ? ($elementTooltipId = null)
-      : ($elementTooltipId = $clickedElement._id);
-  };
+  import { visualizeDOM, elementOpenedInDOM } from "../stores/elements";
 </script>
 
 <div class="toolbar">
@@ -25,25 +14,27 @@
   <div class="CODE">
     <button
       class="lightGreenButton"
-      on:click={() => ($htmlTooltipOpen = !$htmlTooltipOpen)}
+      on:click={() => ($htmlModalOpen = !$htmlModalOpen)}
     >
       HTML
     </button>
     <button class="redButton"> CSS </button>
     <button
-      on:mousedown={() => ($functionsTooltipOpen = !$functionsTooltipOpen)}
+      on:mousedown={() => ($functionsModalOpen = !$functionsModalOpen)}
       class="blueButton">Functions</button
     >
     <button
       on:mousedown={() =>
-        ($variablesStoresTooltipOpen = !$variablesStoresTooltipOpen)}
+        ($variablesStoresModalOpen = !$variablesStoresModalOpen)}
       class="orangeButton">Variables/Stores</button
     >
     {#if $clickedElement}
       <button
         class="id brownButton"
         on:mousedown={(e) => {
-          handleClickId(e);
+          e.stopPropagation();
+          $elementOpenedInDOM = $clickedElement._id;
+          $visualizeDOM = true;
         }}
       >
         {$clickedElement.name
@@ -54,8 +45,7 @@
     <button
       on:click={() => {
         $visualizeDOM = !$visualizeDOM;
-        $openedInDOM = null;
-        $DOMScrollToOnOpen = null;
+        $elementOpenedInDOM = null;
       }}
       class="threethreesbutton"
     >

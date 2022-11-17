@@ -3,7 +3,7 @@
   import {
     clickedElement,
     toolbarOpenStyle,
-    functionsTooltipOpen,
+    functionsModalOpen,
     width,
   } from "../../stores/globals";
   import { fly } from "svelte/transition";
@@ -50,7 +50,7 @@
 </script>
 
 <div
-  class="functionsTooltip"
+  class="functionsModal"
   style={$toolbarOpenStyle}
   transition:fly={{ duration: 75, y: -500 }}
 >
@@ -59,10 +59,7 @@
       <span>Functions</span>
       <i class="fa-solid fa-robot" />
     </div>
-    <button
-      class="headerClose"
-      on:click={() => ($functionsTooltipOpen = false)}
-    >
+    <button class="headerClose" on:click={() => ($functionsModalOpen = false)}>
       <i class="fa-solid fa-times" />
     </button>
     <div class="headerDivider" />
@@ -146,7 +143,7 @@
 </div>
 
 <style>
-  .functionsTooltip {
+  .functionsModal {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -166,11 +163,11 @@
     opacity: 0.95;
   }
 
-  .functionsTooltip::-webkit-scrollbar {
+  .functionsModal::-webkit-scrollbar {
     width: 8px;
   }
 
-  .functionsTooltip::-webkit-scrollbar-thumb {
+  .functionsModal::-webkit-scrollbar-thumb {
     background: blue;
   }
 

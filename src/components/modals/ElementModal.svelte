@@ -1,7 +1,6 @@
 <script>
   import {
     loading,
-    elementTooltipId,
     childPendingDeletion,
     parentOfChildPendingDeletion,
     showGrid,
@@ -15,14 +14,15 @@
   import {
     elements,
     elementUpdated,
-    DOMScrollToOnOpen,
+    DOMReadyToScroll,
+    elementOpenedInDOM,
   } from "../../stores/elements";
 
   export let element;
   export let fromTree;
   export let handleEdit;
   export let handleSave;
-  export let mouseInTooltip = null;
+  export let mouseInModal = null;
 
   let ready = false;
   let clientHeight;
@@ -33,8 +33,12 @@
     }, 25);
   });
 
-  $: clientHeight > 72 ? ($DOMScrollToOnOpen = element._id) : null;
-  $: console.log(clientHeight);
+  const handleCloseModal = () => {
+    $clickedElement = null;
+    $elementOpenedInDOM = null;
+  };
+
+  $: clientHeight > 72 ? $DOMReadyToScroll++ : null;
 </script>
 
 <div
@@ -42,18 +46,18 @@
   on:click={(e) => {
     e.stopPropagation();
   }}
-  class="elementTooltip"
+  class="elementModal"
   style={!fromTree ? $toolbarOpenStyle : ""}
   on:mouseenter={() => {
     if (fromTree) {
       console.log("mouse enter");
       $clickedElement = element;
-      mouseInTooltip(element._id);
+      mouseInModal(element._id);
     }
   }}
   on:mouseleave={() => {
     if (fromTree) {
-      mouseInTooltip(null);
+      mouseInModal(null);
     }
   }}
 >
@@ -62,19 +66,19 @@
       <span>Element</span>
       <i class="fa fa-code" />
     </div>
-    <button class="headerClose" on:click={() => ($elementTooltipId = null)}>
+    <button class="headerClose" on:click={handleCloseModal}>
       <i class="fa-solid fa-times" />
     </button>
     <div class="headerDivider" />
   </div>
-  {#if ready}
+  {#if ready && $clickedElement}
     <div in:fade={{ duration: 50 }} class="toolbar">
       <button class="blueButton" on:click={() => handleSave()}>Save</button>
       <button
         type="button"
         on:click={async (e) => {
           e.stopPropagation();
-          $elementTooltipId = null;
+          $clickedElement = null;
           const parentElement = $elements.find((el) =>
             el.parentOf.includes(element._id)
           );
@@ -176,19 +180,18 @@
 <style @charset="utf-8">
   @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap");
 
-  .elementTooltip {
+  .elementModal {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    width: calc(100% - 26px);
     background: white;
     font-size: 13px;
-    padding: 0px 13px;
     overflow-y: scroll;
     color: black;
     z-index: 200;
     pointer-events: all;
-    opacity: 0.95;
+    box-sizing: border-box;
+    margin-left: 6px;
   }
 
   .header {
@@ -225,11 +228,11 @@
     color: black;
   }
 
-  .elementTooltip::-webkit-scrollbar {
+  .elementModal::-webkit-scrollbar {
     width: 8px;
   }
 
-  .elementTooltip::-webkit-scrollbar-thumb {
+  .elementModal::-webkit-scrollbar-thumb {
     background: brown;
   }
 
@@ -276,6 +279,7 @@
 
   .cssEditor {
     margin-bottom: 10px;
+    width: 100%;
   }
 
   .attributes {
@@ -286,5 +290,6 @@
     background: brown;
     border-radius: 5px;
     padding: 8px;
+    width: 100%;
   }
 </style>

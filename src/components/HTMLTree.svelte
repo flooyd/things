@@ -3,11 +3,11 @@
     elements as elementsStore,
     elementUpdated,
     elementHoveredInDOMVisualizer,
-    openedInDOM,
-    DOMScrollToOnOpen,
+    elementOpenedInDOM,
+    DOMReadyToScroll,
   } from "../stores/elements";
   import { clickedElement, toolbarOpenStyle, width } from "../stores/globals";
-  import ElementTooltip from "./tooltips/ElementTooltip.svelte";
+  import ElementModal from "./modals/ElementModal.svelte";
   import { fly } from "svelte/transition";
 
   export let handleEdit;
@@ -15,11 +15,10 @@
   let tree = [];
   let thisElement = null;
   const levelObject = {};
-  let mouseInTooltip = null;
-  let clientHeight = 0;
+  let mouseInModal = null;
 
-  const updateMouseInTooltip = (id) => {
-    mouseInTooltip = id;
+  const updateMouseInModal = (id) => {
+    mouseInModal = id;
   };
 
   const updateDOMTreeVisualizer = () => {
@@ -48,6 +47,7 @@
   };
 
   const scrollToY = async (element) => {
+    console.log("scrolling to", element);
     thisElement.scrollTop = 0;
     let topOffset = $toolbarOpenStyle.length > 0 ? 49 : 0;
     thisElement.scrollTop =
@@ -55,7 +55,9 @@
       topOffset;
   };
   $: $elementUpdated ? updateDOMTreeVisualizer() : null;
-  $: $DOMScrollToOnOpen && thisElement ? scrollToY($DOMScrollToOnOpen) : null;
+  $: $DOMReadyToScroll && $elementOpenedInDOM && thisElement
+    ? scrollToY($elementOpenedInDOM)
+    : null;
 </script>
 
 <div
@@ -72,7 +74,7 @@
     <div
       id="saeDiv-{saeDiv._id}"
       class="line"
-      style={mouseInTooltip === saeDiv._id ||
+      style={mouseInModal === saeDiv._id ||
       $elementHoveredInDOMVisualizer === saeDiv._id
         ? "position: sticky; top: 0px"
         : ""}
@@ -84,7 +86,8 @@
       }}
       on:click={() => {
         $clickedElement = saeDiv;
-        $openedInDOM = saeDiv._id === $openedInDOM ? null : saeDiv._id;
+        $elementOpenedInDOM =
+          saeDiv._id === $elementOpenedInDOM ? null : saeDiv._id;
       }}
     >
       <span class="lineNumber">{index + 1}</span>
@@ -93,12 +96,12 @@
         ... /&gt;
       </div>
     </div>
-    {#if $openedInDOM === saeDiv._id}
-      <ElementTooltip
+    {#if $elementOpenedInDOM === saeDiv._id}
+      <ElementModal
         element={saeDiv}
         {handleEdit}
         fromTree={true}
-        mouseInTooltip={updateMouseInTooltip}
+        mouseInModal={updateMouseInModal}
       />
     {/if}
   {/each}
@@ -108,7 +111,7 @@
   .htmltree {
     border-left: 3px solid black;
     padding-left: 0px;
-    width: fit-content;
+    width: 550px;
     margin-left: auto;
     position: absolute;
     box-sizing: border-box;
@@ -118,6 +121,7 @@
     overflow-y: auto;
     padding-bottom: 20px;
     background: white;
+    opacity: 1;
   }
 
   .line {
@@ -126,11 +130,11 @@
     z-index: 9999;
     background: white;
     background: #f0f0f0;
-    padding-bottom: 8px;
-    padding-top: 8px;
-    padding-left: 8px;
+    padding: 8px;
+    word-wrap: break-word;
     background: #f0f0f0;
     margin-bottom: 3px;
+    font-size: 13px;
   }
 
   .line:hover {

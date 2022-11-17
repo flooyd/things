@@ -132,6 +132,7 @@
 <style>
   .cssEditor {
     display: flex;
+    box-sizing: border-box;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
