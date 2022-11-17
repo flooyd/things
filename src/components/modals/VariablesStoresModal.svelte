@@ -8,7 +8,7 @@
   import {
     toolbarOpenStyle,
     variablesStoresModalOpen,
-    clickedElement,
+    elementOnTheFrontBurner,
     width,
     height,
     variablesStore,
@@ -26,12 +26,15 @@
   });
 
   const addVariable = async (readonly = false) => {
-    const createdVariable = await addVariableForElement($clickedElement._id, {
-      name: getId(),
-      type: "string",
-      readonly,
-      value: "",
-    });
+    const createdVariable = await addVariableForElement(
+      $elementOnTheFrontBurner._id,
+      {
+        name: getId(),
+        type: "string",
+        readonly,
+        value: "",
+      }
+    );
 
     if (createdVariable) {
       $variablesStore.push(createdVariable);
@@ -42,7 +45,7 @@
   const createVariableFunction = async (variable) => {
     await saveVariables();
     let createdFunction = await addFunction(
-      $clickedElement._id,
+      $elementOnTheFrontBurner._id,
       variable.name,
       $width / 2,
       150,
@@ -53,7 +56,7 @@
       createdFunction = {
         _id: createdFunction._id,
         name: createdFunction.name,
-        elementId: $clickedElement._id,
+        elementId: $elementOnTheFrontBurner._id,
         rect: {
           x: createdFunction.rectX,
           y: createdFunction.rectY,
@@ -72,9 +75,9 @@
         variableId: createdFunction.variableId,
       };
 
-      $clickedElement.programmingGrid.functions.push(createdFunction);
-      $clickedElement.programmingGrid.functions =
-        $clickedElement.programmingGrid.functions;
+      $elementOnTheFrontBurner.programmingGrid.functions.push(createdFunction);
+      $elementOnTheFrontBurner.programmingGrid.functions =
+        $elementOnTheFrontBurner.programmingGrid.functions;
     }
   };
 
@@ -106,7 +109,7 @@
         readonly: v.readonly,
       };
     });
-    const elementId = $clickedElement._id;
+    const elementId = $elementOnTheFrontBurner._id;
     variablesToSave.forEach((variable) => {
       const updatedVariable = updateVariableForElement(elementId, variable);
       variable = updatedVariable;
@@ -163,7 +166,7 @@
       elements/components).
     </span>
   </div>
-  {#if $clickedElement}
+  {#if $elementOnTheFrontBurner}
     <div class="variablesStores">
       <div class="variable">
         <div class="variableTitle">

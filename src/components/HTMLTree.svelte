@@ -6,7 +6,11 @@
     elementOpenedInDOM,
     DOMReadyToScroll,
   } from "../stores/elements";
-  import { clickedElement, toolbarOpenStyle, width } from "../stores/globals";
+  import {
+    elementOnTheFrontBurner,
+    toolbarOpenStyle,
+    width,
+  } from "../stores/globals";
   import ElementModal from "./modals/ElementModal.svelte";
   import { fly } from "svelte/transition";
 
@@ -47,7 +51,6 @@
   };
 
   const scrollToY = async (element) => {
-    console.log("scrolling to", element);
     thisElement.scrollTop = 0;
     let topOffset = $toolbarOpenStyle.length > 0 ? 49 : 0;
     thisElement.scrollTop =
@@ -85,7 +88,7 @@
         $elementHoveredInDOMVisualizer = null;
       }}
       on:click={() => {
-        $clickedElement = saeDiv;
+        $elementOnTheFrontBurner = saeDiv;
         $elementOpenedInDOM =
           saeDiv._id === $elementOpenedInDOM ? null : saeDiv._id;
       }}

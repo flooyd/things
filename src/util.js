@@ -1,11 +1,15 @@
 import { v4 as uuidv4 } from "uuid";
 //import collection, addDoc
-import { updateLoading, clickedElement } from "./stores/globals";
+import { updateLoading, elementOnTheFrontBurner } from "./stores/globals";
 import { elements as elementsStore, updateElements } from "./stores/elements";
 import { get } from "svelte/store";
 
 export const getId = () => {
   return uuidv4();
+};
+
+export const randInRange = (min, max) => {
+  return Math.random() * (max - min) + min;
 };
 
 export const addElement = async (tag) => {
@@ -162,7 +166,7 @@ export const removeAllFunctions = async () => {
 
 export const saveFunction = async (functionId, pendingDelete) => {
   if (pendingDelete) return;
-  const functions = get(clickedElement).programmingGrid.functions;
+  const functions = get(elementOnTheFrontBurner).programmingGrid.functions;
   const functionToSave = functions.find((func) => func._id === functionId);
   const functionFlattend = {
     _id: functionToSave._id,

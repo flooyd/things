@@ -2,7 +2,7 @@
   import { onMount, tick } from "svelte";
   import { fade, fly } from "svelte/transition";
   import {
-    clickedElement,
+    elementOnTheFrontBurner,
     outArrowClicked,
     inArrowClicked,
     outVariableClicked,
@@ -22,6 +22,7 @@
     deleteAllConnectionsForFunction,
     deleteFunctionById,
     epicFunctions,
+    randInRange,
   } from "../util";
 
   export let gridFunction;
@@ -122,7 +123,7 @@
         19, // center point of height (37) of row (topName in this case)
     };
 
-    $clickedElement.programmingGrid.functions.find(
+    $elementOnTheFrontBurner.programmingGrid.functions.find(
       (f) => f._id === gridFunction._id
     ).rect = {
       x: rect.x,
@@ -207,8 +208,8 @@
   const removeConnections = async () => {
     const deleted = await deleteAllConnectionsForFunction(gridFunction._id);
     if (deleted) {
-      $clickedElement.programmingGrid.connections =
-        $clickedElement.programmingGrid.connections.filter((conn) => {
+      $elementOnTheFrontBurner.programmingGrid.connections =
+        $elementOnTheFrontBurner.programmingGrid.connections.filter((conn) => {
           return conn.in !== gridFunction._id && conn.out !== gridFunction._id;
         });
       $gridConnectionLocationsUpdatePending++;
@@ -227,8 +228,8 @@
     await removeConnections();
     const deleted = await deleteFunctionById(gridFunction._id);
     if (deleted) {
-      $clickedElement.programmingGrid.functions =
-        $clickedElement.programmingGrid.functions.filter(
+      $elementOnTheFrontBurner.programmingGrid.functions =
+        $elementOnTheFrontBurner.programmingGrid.functions.filter(
           (func) => func._id !== gridFunction._id
         );
     } else {
@@ -246,10 +247,6 @@
   } else {
     style = `top:${rect?.y || 0}px; left: ${rect?.x || 0}px;`;
   }
-
-  const randInRange = (min, max) => {
-    return Math.random() * (max - min) + min;
-  };
 </script>
 
 <svelte:window on:mousemove={move} />
@@ -285,7 +282,7 @@
     in:fly={{
       y: randInRange(-5000, 5000),
       x: randInRange(-5000, 5000),
-      duration: 500,
+      duration: 250,
     }}
   >
     {#if contextMenuOpen}
@@ -306,38 +303,6 @@
             on:click={() => (contextMenuOpen = false)}
             ><i class="fa fa-times" />
           </button>
-        </div>
-
-        <div class="locationInfo">
-          <div class="header">
-            <div class="name">{gridFunction.name}</div>
-            <div class="infoType">Location and Rectangle</div>
-          </div>
-          {#if gridFunction._id}
-            {#each Object.keys($clickedElement.programmingGrid.functions.find((f) => f._id === gridFunction._id)?.rect || {}) as key}
-              <div class="locationInfoItem">
-                <div class="locationInfoItemKey">{key}</div>
-                <div class="locationInfoItemValue">
-                  {#if typeof $clickedElement.programmingGrid.functions.find((f) => f._id === gridFunction._id).rect[key] === "object"}
-                    {#each Object.keys($clickedElement.programmingGrid.functions.find((f) => f._id === gridFunction._id)?.rect[key] || {}) as key2}
-                      <div class="locationInfoItem">
-                        <div class="locationInfoItemKey">{key2}</div>
-                        <div class="locationInfoItemValue">
-                          {$clickedElement.programmingGrid.functions.find(
-                            (f) => f._id === gridFunction._id
-                          ).rect[key][key2]}
-                        </div>
-                      </div>
-                    {/each}
-                  {:else}
-                    {$clickedElement.programmingGrid.functions.find(
-                      (f) => f._id === gridFunction._id
-                    ).rect[key]}
-                  {/if}
-                </div>
-              </div>
-            {/each}
-          {/if}
         </div>
       </div>
     {/if}

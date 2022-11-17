@@ -2,7 +2,7 @@
   import {
     variablesStoresModalOpen,
     functionsModalOpen,
-    clickedElement,
+    elementOnTheFrontBurner,
     htmlModalOpen,
     showGrid,
   } from "../stores/globals";
@@ -28,18 +28,18 @@
         ($variablesStoresModalOpen = !$variablesStoresModalOpen)}
       class="orangeButton">Variables/Stores</button
     >
-    {#if $clickedElement}
+    {#if $elementOnTheFrontBurner}
       <button
         class="id brownButton"
         on:mousedown={(e) => {
           e.stopPropagation();
-          $elementOpenedInDOM = $clickedElement._id;
+          $elementOpenedInDOM = $elementOnTheFrontBurner._id;
           $visualizeDOM = true;
         }}
       >
-        {$clickedElement.name
-          ? $clickedElement._id + " - " + $clickedElement.name
-          : $clickedElement._id}
+        {$elementOnTheFrontBurner.name
+          ? $elementOnTheFrontBurner._id + " - " + $elementOnTheFrontBurner.name
+          : $elementOnTheFrontBurner._id}
       </button>
     {/if}
     <button

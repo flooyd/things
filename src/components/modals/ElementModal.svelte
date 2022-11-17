@@ -5,7 +5,7 @@
     parentOfChildPendingDeletion,
     showGrid,
     toolbarOpenStyle,
-    clickedElement,
+    elementOnTheFrontBurner,
   } from "../../stores/globals";
   import { deleteElement, updateElement } from "../../util";
   import { fade } from "svelte/transition";
@@ -34,7 +34,7 @@
   });
 
   const handleCloseModal = () => {
-    $clickedElement = null;
+    $elementOnTheFrontBurner = null;
     $elementOpenedInDOM = null;
   };
 
@@ -50,8 +50,7 @@
   style={!fromTree ? $toolbarOpenStyle : ""}
   on:mouseenter={() => {
     if (fromTree) {
-      console.log("mouse enter");
-      $clickedElement = element;
+      $elementOnTheFrontBurner = element;
       mouseInModal(element._id);
     }
   }}
@@ -71,14 +70,14 @@
     </button>
     <div class="headerDivider" />
   </div>
-  {#if ready && $clickedElement}
+  {#if ready && $elementOnTheFrontBurner}
     <div in:fade={{ duration: 50 }} class="toolbar">
       <button class="blueButton" on:click={() => handleSave()}>Save</button>
       <button
         type="button"
         on:click={async (e) => {
           e.stopPropagation();
-          $clickedElement = null;
+          $elementOnTheFrontBurner = null;
           const parentElement = $elements.find((el) =>
             el.parentOf.includes(element._id)
           );
@@ -171,7 +170,7 @@
       </div>
     </div>
     <div class="cssEditor">
-      <CSSEditor element={$clickedElement} {handleEdit} />
+      <CSSEditor element={$elementOnTheFrontBurner} {handleEdit} />
     </div>
     <div class="placeholder" />
   {/if}

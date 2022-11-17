@@ -1,7 +1,7 @@
 <script>
   import { epicFunctions, addFunction } from "../../util";
   import {
-    clickedElement,
+    elementOnTheFrontBurner,
     toolbarOpenStyle,
     functionsModalOpen,
     width,
@@ -12,7 +12,7 @@
 
   const click = async (item) => {
     let createdFunction = await addFunction(
-      $clickedElement._id,
+      $elementOnTheFrontBurner._id,
       item,
       $width / 2,
       150
@@ -21,7 +21,7 @@
       createdFunction = {
         _id: createdFunction._id,
         name: createdFunction.name,
-        elementId: $clickedElement._id,
+        elementId: $elementOnTheFrontBurner._id,
         rect: {
           x: createdFunction.rectX,
           y: createdFunction.rectY,
@@ -38,9 +38,9 @@
         },
         isVariable: createdFunction.isVariable,
       };
-      $clickedElement.programmingGrid.functions.push(createdFunction);
-      $clickedElement.programmingGrid.functions =
-        $clickedElement.programmingGrid.functions;
+      $elementOnTheFrontBurner.programmingGrid.functions.push(createdFunction);
+      $elementOnTheFrontBurner.programmingGrid.functions =
+        $elementOnTheFrontBurner.programmingGrid.functions;
     }
   };
 

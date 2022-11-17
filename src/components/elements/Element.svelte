@@ -16,7 +16,7 @@
   import { cssObject, getId, updateElement } from "../../util";
   import Div from "./Div.svelte";
 
-  import { clickedElement } from "../../stores/globals";
+  import { elementOnTheFrontBurner } from "../../stores/globals";
 
   export let element;
 
@@ -75,15 +75,13 @@
       element[propCamel] = element[propCamel] ? element[propCamel] : "";
     });
 
-    element.width = element.width ? element.width : "10px";
-    element.height = element.height ? element.height : "10px";
     element.boxSizing = element.boxSizing ? element.boxSizing : "border-box";
 
     ready = true;
   });
 
-  $: if (element && $clickedElement?._id === element._id) {
-    element = $clickedElement;
+  $: if (element && $elementOnTheFrontBurner?._id === element._id) {
+    element = $elementOnTheFrontBurner;
   }
 
   $: if (!element) ready = false;
@@ -621,7 +619,7 @@
     on:dblclick={(e) => {
       if ($childAssignmentPending) return;
       e.stopPropagation();
-      $clickedElement = element;
+      $elementOnTheFrontBurner = element;
       $variablesFetched = false;
       $visualizeDOM = true;
       $elementOpenedInDOM = element._id;
@@ -661,9 +659,9 @@
       } else {
         $contextElement = element;
       }
-      $clickedElement = element;
+      $elementOnTheFrontBurner = element;
       if ($visualizeDOM) {
-        $elementOpenedInDOM = $clickedElement._id;
+        $elementOpenedInDOM = $elementOnTheFrontBurner._id;
       }
       $childAssignmentPending = false;
     }}

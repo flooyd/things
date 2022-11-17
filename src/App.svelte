@@ -9,7 +9,7 @@
     width,
     height,
     functionsModalOpen,
-    clickedElement,
+    elementOnTheFrontBurner,
     showGrid,
     showToolbar,
     toolbarOpenStyle,
@@ -26,7 +26,12 @@
   import { elements, elementUpdated, visualizeDOM } from "./stores/elements";
   import { onMount } from "svelte";
   import FunctionsModal from "./components/modals/FunctionsModal.svelte";
-  import { epicFunctions, getVariablesForElement, updateElement } from "./util";
+  import {
+    epicFunctions,
+    getVariablesForElement,
+    randInRange,
+    updateElement,
+  } from "./util";
   import HtmlModal from "./components/modals/HTMLModal.svelte";
   import VariablesStoresModal from "./components/modals/VariablesStoresModal.svelte";
   import { fade, fly } from "svelte/transition";
@@ -47,9 +52,9 @@
     }
     second = 5;
     property = property.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
-    $clickedElement[property] = value;
-    if (dirtyElements.indexOf($clickedElement._id) === -1) {
-      dirtyElements.push($clickedElement._id);
+    $elementOnTheFrontBurner[property] = value;
+    if (dirtyElements.indexOf($elementOnTheFrontBurner._id) === -1) {
+      dirtyElements.push($elementOnTheFrontBurner._id);
     }
     dirtyElements = dirtyElements;
     $elementUpdated++;
@@ -81,41 +86,44 @@
 
   const getConnectionLocations = () => {
     const connectionLocations = [];
-    $clickedElement.programmingGrid.connections.forEach((connection) => {
-      const inArrowLocation =
-        $clickedElement.programmingGrid.functions.find(
-          (f) => f._id === connection.in
-        ).rect.inArrowLocation || null;
+    $elementOnTheFrontBurner.programmingGrid.connections.forEach(
+      (connection) => {
+        const inArrowLocation =
+          $elementOnTheFrontBurner.programmingGrid.functions.find(
+            (f) => f._id === connection.in
+          ).rect.inArrowLocation || null;
 
-      const outArrowLocation =
-        $clickedElement.programmingGrid.functions.find(
-          (f) => f._id === connection.out
-        ).rect.outArrowLocation || null;
+        const outArrowLocation =
+          $elementOnTheFrontBurner.programmingGrid.functions.find(
+            (f) => f._id === connection.out
+          ).rect.outArrowLocation || null;
 
-      //get number of outpoints for in function
-      const inFunction = $clickedElement.programmingGrid.functions.find(
-        (f) => f._id === connection.in
-      );
+        //get number of outpoints for in function
+        const inFunction =
+          $elementOnTheFrontBurner.programmingGrid.functions.find(
+            (f) => f._id === connection.in
+          );
 
-      const numOutputs = epicFunctions[inFunction?.name]?.outputs.count || 0;
+        const numOutputs = epicFunctions[inFunction?.name]?.outputs.count || 0;
 
-      connectionLocations.push({
-        inArrowLocation,
-        outArrowLocation,
-        isVariable: connection.outVariableId ? true : false,
-        inputIndex: connection.inputIndex ? connection.inputIndex : null,
-        outputIndex: connection.outputIndex ? connection.outputIndex : null,
-        numOutputs,
-        key: `${connection.in}-${connection.out}-${connection.inputIndex}`,
-      });
-    });
+        connectionLocations.push({
+          inArrowLocation,
+          outArrowLocation,
+          isVariable: connection.outVariableId ? true : false,
+          inputIndex: connection.inputIndex ? connection.inputIndex : null,
+          outputIndex: connection.outputIndex ? connection.outputIndex : null,
+          numOutputs,
+          key: `${connection.in}-${connection.out}-${connection.inputIndex}`,
+        });
+      }
+    );
 
     $gridConnectionLocationsUpdatePending++;
     return connectionLocations;
   };
 
   const getVariables = async () => {
-    const elementId = $clickedElement._id;
+    const elementId = $elementOnTheFrontBurner._id;
     $variablesStore = await getVariablesForElement(elementId);
   };
 
@@ -127,13 +135,9 @@
     connectionLocations = getConnectionLocations();
   }
 
-  $: if ($clickedElement && !$variablesFetched) {
+  $: if ($elementOnTheFrontBurner && !$variablesFetched) {
     getVariables();
     $variablesFetched = true;
-  }
-
-  $: if (!$showGrid && $clickedElement?.programmingGrid) {
-    console.log($clickedElement);
   }
 
   setInterval(() => {
@@ -197,15 +201,19 @@
 {#if ready && $showGrid}
   <Grid />
 {/if}
-{#if ready && $clickedElement?.programmingGrid?.functions?.length > 0 && $showGrid}
-  {#each $clickedElement.programmingGrid.functions as item (item._id)}
+{#if ready && $elementOnTheFrontBurner?.programmingGrid?.functions?.length > 0 && $showGrid}
+  {#each $elementOnTheFrontBurner.programmingGrid.functions as item (item._id)}
     <div>
       <GridFunction gridFunction={item} />
     </div>
   {/each}
   {#each connectionLocations as connection (connection.key)}
     <svg
-      in:fade={{ duration: 100 }}
+      in:fly={{
+        duration: 250,
+        x: randInRange(-5000, 5000),
+        y: randInRange(-5000, 5000),
+      }}
       height="5000px"
       width="5000px"
       style="position: absolute; top: 0; left: 0; pointer-events: none;"
