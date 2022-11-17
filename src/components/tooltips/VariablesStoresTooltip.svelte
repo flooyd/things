@@ -72,8 +72,9 @@
         variableId: createdFunction.variableId,
       };
 
-      $clickedElement.grid.functions.push(createdFunction);
-      $clickedElement.grid.functions = $clickedElement.grid.functions;
+      $clickedElement.programmingGrid.functions.push(createdFunction);
+      $clickedElement.programmingGrid.functions =
+        $clickedElement.programmingGrid.functions;
     }
   };
 

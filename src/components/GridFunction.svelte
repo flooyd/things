@@ -122,7 +122,7 @@
         19, // center point of height (37) of row (topName in this case)
     };
 
-    $clickedElement.grid.functions.find(
+    $clickedElement.programmingGrid.functions.find(
       (f) => f._id === gridFunction._id
     ).rect = {
       x: rect.x,
@@ -207,8 +207,8 @@
   const removeConnections = async () => {
     const deleted = await deleteAllConnectionsForFunction(gridFunction._id);
     if (deleted) {
-      $clickedElement.grid.connections =
-        $clickedElement.grid.connections.filter((conn) => {
+      $clickedElement.programmingGrid.connections =
+        $clickedElement.programmingGrid.connections.filter((conn) => {
           return conn.in !== gridFunction._id && conn.out !== gridFunction._id;
         });
       $gridConnectionLocationsUpdatePending = true;
@@ -227,9 +227,10 @@
     await removeConnections();
     const deleted = await deleteFunctionById(gridFunction._id);
     if (deleted) {
-      $clickedElement.grid.functions = $clickedElement.grid.functions.filter(
-        (func) => func._id !== gridFunction._id
-      );
+      $clickedElement.programmingGrid.functions =
+        $clickedElement.programmingGrid.functions.filter(
+          (func) => func._id !== gridFunction._id
+        );
     } else {
       alert(
         "Something went wrong trying to remove this function. It wasn't removed from the element."
@@ -305,23 +306,23 @@
             <div class="infoType">Location and Rectangle</div>
           </div>
           {#if gridFunction._id}
-            {#each Object.keys($clickedElement.grid.functions.find((f) => f._id === gridFunction._id)?.rect || {}) as key}
+            {#each Object.keys($clickedElement.programmingGrid.functions.find((f) => f._id === gridFunction._id)?.rect || {}) as key}
               <div class="locationInfoItem">
                 <div class="locationInfoItemKey">{key}</div>
                 <div class="locationInfoItemValue">
-                  {#if typeof $clickedElement.grid.functions.find((f) => f._id === gridFunction._id).rect[key] === "object"}
-                    {#each Object.keys($clickedElement.grid.functions.find((f) => f._id === gridFunction._id)?.rect[key] || {}) as key2}
+                  {#if typeof $clickedElement.programmingGrid.functions.find((f) => f._id === gridFunction._id).rect[key] === "object"}
+                    {#each Object.keys($clickedElement.programmingGrid.functions.find((f) => f._id === gridFunction._id)?.rect[key] || {}) as key2}
                       <div class="locationInfoItem">
                         <div class="locationInfoItemKey">{key2}</div>
                         <div class="locationInfoItemValue">
-                          {$clickedElement.grid.functions.find(
+                          {$clickedElement.programmingGrid.functions.find(
                             (f) => f._id === gridFunction._id
                           ).rect[key][key2]}
                         </div>
                       </div>
                     {/each}
                   {:else}
-                    {$clickedElement.grid.functions.find(
+                    {$clickedElement.programmingGrid.functions.find(
                       (f) => f._id === gridFunction._id
                     ).rect[key]}
                   {/if}

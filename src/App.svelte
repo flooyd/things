@@ -134,7 +134,7 @@
   }
 
   $: if (!$showGrid && $clickedElement) {
-    $clickedElement.grid = null;
+    $clickedElement.programmingGrid = null;
   }
 
   setInterval(() => {
@@ -201,7 +201,7 @@
   <Grid />
 {/if}
 {#if ready && $clickedElement?.grid?.functions?.length > 0 && $showGrid}
-  {#each $clickedElement.grid.functions as item (item._id)}
+  {#each $clickedElement.programmingGrid.functions as item (item._id)}
     <div>
       <GridFunction gridFunction={item} />
     </div>
