@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 //import collection, addDoc
-import { updateLoading, elementOnTheFrontBurner } from "./stores/globals";
+import { elementOnTheFrontBurner } from "./stores/globals";
 import { elements as elementsStore, updateElements } from "./stores/elements";
 import { get } from "svelte/store";
 
@@ -13,7 +13,6 @@ export const randInRange = (min, max) => {
 };
 
 export const addElement = async (tag) => {
-  updateLoading(true);
   const elements = get(elementsStore);
   const addedDoc = await fetch("http://localhost:3000/things", {
     method: "POST",
@@ -26,42 +25,35 @@ export const addElement = async (tag) => {
     const addedDocJson = await addedDoc.json();
     let newElement = addedDocJson;
     updateElements([...elements, newElement]);
-    updateLoading(false);
   } else {
     return;
   }
 };
 
 export const fetchElements = async () => {
-  updateLoading(true);
   const elements = await fetch("http://localhost:3000/things");
   const elementsJson = await elements.json();
-  updateLoading(false);
+
   return elementsJson;
 };
 
 export const deleteElement = async (id) => {
-  updateLoading(true);
   const elements = get(elementsStore);
   const deletedDoc = await fetch("http://localhost:3000/things/" + id, {
     method: "DELETE",
   });
   updateElements(elements.filter((element) => element._id !== id));
-  updateLoading(false);
 };
 
 export const deleteAllElements = async () => {
-  updateLoading(true);
   const elements = get(elementsStore);
   const deletedDoc = await fetch("http://localhost:3000/things/deleteAll", {
     method: "DELETE",
   });
   updateElements([]);
-  updateLoading(false);
 };
 
 export const updateElement = async (element) => {
-  updateLoading(true);
   const elements = get(elementsStore);
   const updatedDoc = await fetch("http://localhost:3000/things/", {
     method: "PUT",
@@ -70,27 +62,23 @@ export const updateElement = async (element) => {
     },
     body: JSON.stringify(element),
   });
-
-  updateLoading(false);
 };
 
 //fetch all functions
 export const fetchFunctions = async () => {
-  updateLoading(true);
   const functions = await fetch("http://localhost:3000/functions");
   const functionsJson = await functions.json();
-  updateLoading(false);
+
   return functionsJson;
 };
 
 //fetchFunctions(id) /functions
 export const fetchFunctionsForElement = async (elementId) => {
-  updateLoading(true);
   const functions = await fetch(
     "http://localhost:3000/functions/forElement/" + elementId
   );
   const functionsJson = await functions.json();
-  updateLoading(false);
+
   return functionsJson;
 };
 
@@ -102,7 +90,6 @@ export const addFunction = async (
   isVariable = false,
   variableId = null
 ) => {
-  updateLoading(true);
   const functions = await fetch("http://localhost:3000/functions/", {
     method: "POST",
     headers: {
@@ -119,7 +106,7 @@ export const addFunction = async (
   });
   if (functions.ok) {
     const functionsJson = await functions.json();
-    updateLoading(false);
+
     return functionsJson;
   } else {
     return;
@@ -128,7 +115,6 @@ export const addFunction = async (
 
 //delete function by id
 export const deleteFunctionById = async (functionId) => {
-  updateLoading(true);
   try {
     const functions = await fetch(
       "http://localhost:3000/functions/" + functionId,
@@ -136,32 +122,27 @@ export const deleteFunctionById = async (functionId) => {
         method: "DELETE",
       }
     );
-    updateLoading(false);
+
     return true;
   } catch (error) {
-    updateLoading(false);
     return false;
   }
 };
 
 //delete all functions by id
 export const deleteAllFunctionsForElement = async (elementId) => {
-  updateLoading(true);
   const functions = await fetch(
     "http://localhost:3000/functions/" + elementId,
     {
       method: "DELETE",
     }
   );
-  updateLoading(false);
 };
 
 export const removeAllFunctions = async () => {
-  updateLoading(true);
   const functions = await fetch("http://localhost:3000/functions/all", {
     method: "DELETE",
   });
-  updateLoading(false);
 };
 
 export const saveFunction = async (functionId, pendingDelete) => {
@@ -192,52 +173,45 @@ export const saveFunction = async (functionId, pendingDelete) => {
 
 //get all connections for element
 export const getAllConnectionsForElement = async (elementId) => {
-  updateLoading(true);
   const connections = await fetch(
     "http://localhost:3000/connections/forElement/" + elementId
   );
   const connectionsJson = await connections.json();
-  updateLoading(false);
+
   return connectionsJson;
 };
 
 //get connection by id
 export const getConnectionById = async (connectionId) => {
-  updateLoading(true);
   const connections = await fetch(
     "http://localhost:3000/connections/" + connectionId
   );
   const connectionsJson = await connections.json();
-  updateLoading(false);
+
   return connectionsJson;
 };
 
 //delete connection by id
 export const deleteConnectionById = async (connectionId) => {
-  updateLoading(true);
   const connections = await fetch(
     "http://localhost:3000/connections/" + connectionId,
     {
       method: "DELETE",
     }
   );
-  updateLoading(false);
 };
 
 //delete all connections by element id
 export const deleteAllConnectionsForElement = async (elementId) => {
-  updateLoading(true);
   const connections = await fetch(
     "http://localhost:3000/connections/deleteAll/forElement/" + elementId,
     {
       method: "DELETE",
     }
   );
-  updateLoading(false);
 };
 
 export const deleteAllConnectionsForFunction = async (functionId) => {
-  updateLoading(true);
   try {
     const connections = await fetch(
       "http://localhost:3000/connections/deleteAll/forFunction/" + functionId,
@@ -245,27 +219,23 @@ export const deleteAllConnectionsForFunction = async (functionId) => {
         method: "DELETE",
       }
     );
-    updateLoading(false);
+
     return true;
   } catch (error) {
-    updateLoading(false);
     return false;
   }
 };
 
 //delete all connections
 export const deleteAllConnections = async () => {
-  updateLoading(true);
   const connections = await fetch("http://localhost:3000/connections/delete", {
     method: "DELETE",
   });
-  updateLoading(false);
 };
 
 //add connection
 //{in: functionId, out: functionId, elementId: elementId, inVariableId: variableId, outVariableId: variableId}
 export const addConnection = async (connection) => {
-  updateLoading(true);
   const createdConnection = await fetch("http://localhost:3000/connections/", {
     method: "POST",
     headers: {
@@ -275,7 +245,7 @@ export const addConnection = async (connection) => {
   });
   if (createdConnection.ok) {
     const connectionJson = await createdConnection.json();
-    updateLoading(false);
+
     return connectionJson;
   } else {
     return null;
@@ -283,18 +253,17 @@ export const addConnection = async (connection) => {
 };
 
 export const getVariablesForElement = async (elementId) => {
-  updateLoading(true);
   const variables = await fetch(
     "http://localhost:3000/function-vars/forElement/" + elementId
   );
   const variablesJson = await variables.json();
-  updateLoading(false);
+
   return variablesJson;
 };
 
 export const addVariableForElement = async (elementId, variable) => {
   variable.elementId = elementId;
-  updateLoading(true);
+
   const createdVariable = await fetch("http://localhost:3000/function-vars/", {
     method: "POST",
     headers: {
@@ -304,17 +273,16 @@ export const addVariableForElement = async (elementId, variable) => {
   });
   if (createdVariable.ok) {
     const variableJson = await createdVariable.json();
-    updateLoading(false);
+
     return variableJson;
   } else {
-    updateLoading(false);
     return null;
   }
 };
 
 export const updateVariableForElement = async (elementId, variable) => {
   variable.elementId = elementId;
-  updateLoading(true);
+
   const updatedVariable = await fetch(
     "http://localhost:3000/function-vars/" + variable._id,
     {
@@ -327,17 +295,15 @@ export const updateVariableForElement = async (elementId, variable) => {
   );
   if (updatedVariable.ok) {
     const variableJson = await updatedVariable.json();
-    updateLoading(false);
+
     return variableJson;
   } else {
-    updateLoading(false);
     return null;
   }
 };
 
 //function vars
 const createGridFunctionVar = async (body) => {
-  updateLoading(true);
   const addedDoc = await fetch("http://localhost:3000/function-vars", {
     method: "POST",
     headers: {
@@ -346,12 +312,11 @@ const createGridFunctionVar = async (body) => {
     body: JSON.stringify(body),
   });
   const addedDocJson = await addedDoc.json();
-  updateLoading(false);
+
   return addedDocJson;
 };
 
 const updateGridFunctionVar = async (id, body) => {
-  updateLoading(true);
   const updatedDoc = await fetch("http://localhost:3000/function-vars/id", {
     method: "PATCH",
     headers: {
@@ -360,12 +325,11 @@ const updateGridFunctionVar = async (id, body) => {
     body: JSON.stringify(body),
   });
   const updatedDocJson = await updatedDoc.json();
-  updateLoading(false);
+
   return updatedDocJson;
 };
 
 const deleteGridFunctionVar = async (id) => {
-  updateLoading(true);
   const deletedDoc = await fetch("http://localhost:3000/function-vars/" + id, {
     method: "DELETE",
     headers: {
@@ -373,13 +337,12 @@ const deleteGridFunctionVar = async (id) => {
     },
   });
   const deletedDocJson = await deletedDoc.json();
-  updateLoading(false);
+
   return deletedDocJson;
 };
 
 //delete grid function vars for element
 const deleteGridFunctionVarsForElement = async (elementId) => {
-  updateLoading(true);
   const deletedDocs = await fetch(
     "http://localhost:3000/function-vars/forElement/" + elementId,
     {
@@ -390,13 +353,12 @@ const deleteGridFunctionVarsForElement = async (elementId) => {
     }
   );
   const deletedDocsJson = await deletedDocs.json();
-  updateLoading(false);
+
   return deletedDocsJson;
 };
 
 //delete grid function vars for function
 const deleteGridFunctionVarsForFunction = async (functionId) => {
-  updateLoading(true);
   const deletedDocs = await fetch(
     "http://localhost:3000/function-vars/forFunction/" + functionId,
     {
@@ -407,12 +369,11 @@ const deleteGridFunctionVarsForFunction = async (functionId) => {
     }
   );
   const deletedDocsJson = await deletedDocs.json();
-  updateLoading(false);
+
   return deletedDocsJson;
 };
 
 const deleteAllGridFunctionVars = async () => {
-  updateLoading(true);
   const deletedDocs = await fetch("http://localhost:3000/function-vars", {
     method: "DELETE",
     headers: {
@@ -420,44 +381,40 @@ const deleteAllGridFunctionVars = async () => {
     },
   });
   const deletedDocJson = await deletedDocs.json();
-  updateLoading(false);
+
   return deletedDocJson;
 };
 
 const getAllGridFunctionVars = async () => {
-  updateLoading(true);
   const docs = await fetch("http://localhost:3000/function-vars");
   const docsJson = await docs.json();
-  updateLoading(false);
+
   return docsJson;
 };
 
 const getGridFunctionVarsForFunction = async (functionId) => {
-  updateLoading(true);
   const docs = await fetch(
     "http://localhost:3000/function-vars/forFunction/" + functionId
   );
   const docsJson = await docs.json();
-  updateLoading(false);
+
   return docsJson;
 };
 
 //for element
 const getAllGridFunctionVarsForElement = async (elementId) => {
-  updateLoading(true);
   const docs = await fetch(
     "http://localhost:3000/function-vars/forElement/" + elementId
   );
   const docsJson = await docs.json();
-  updateLoading(false);
+
   return docsJson;
 };
 
 const getGridFunctionVar = async (id) => {
-  updateLoading(true);
   const doc = await fetch("http://localhost:3000/function-vars/" + id);
   const docJson = await doc.json();
-  updateLoading(false);
+
   return docJson;
 };
 

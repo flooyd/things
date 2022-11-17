@@ -12,7 +12,6 @@
     inVariableClicked,
     outputClicked,
     usingSelectionTool,
-    mimic,
   } from "../stores/globals";
   import {
     addConnection,

@@ -1,6 +1,5 @@
 <script>
   import {
-    loading,
     childPendingDeletion,
     parentOfChildPendingDeletion,
     showGrid,
@@ -21,7 +20,6 @@
   export let element;
   export let fromTree;
   export let handleEdit;
-  export let handleSave;
   export let mouseInModal = null;
 
   let ready = false;
@@ -72,7 +70,6 @@
   </div>
   {#if ready && $elementOnTheFrontBurner}
     <div in:fade={{ duration: 50 }} class="toolbar">
-      <button class="blueButton" on:click={() => handleSave()}>Save</button>
       <button
         type="button"
         on:click={async (e) => {
@@ -92,7 +89,6 @@
           $childPendingDeletion = element._id;
           $parentOfChildPendingDeletion = element.childOf;
         }}
-        disabled={$loading}
         class="redButton">Delete Element</button
       >
       <button
