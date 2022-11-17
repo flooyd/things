@@ -11,6 +11,7 @@
     elementHoveredInDOMVisualizer,
     visualizeDOM,
     openedInDOM,
+    elementUpdated,
   } from "../../stores/elements";
   import { cssObject, getId, updateElement } from "../../util";
   import Div from "./Div.svelte";
@@ -651,6 +652,7 @@
         $childAssignmentPending = null;
         $contextElement = null;
         $elements = $elements;
+        $elementUpdated++;
       }
       handleClick(e);
     }}

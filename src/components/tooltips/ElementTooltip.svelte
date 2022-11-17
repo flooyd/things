@@ -44,11 +44,9 @@
   }}
   class="elementTooltip"
   style={!fromTree ? $toolbarOpenStyle : ""}
-  in:fade={{
-    duration: 100,
-  }}
   on:mouseenter={() => {
     if (fromTree) {
+      console.log("mouse enter");
       $clickedElement = element;
       mouseInTooltip(element._id);
     }
@@ -70,11 +68,7 @@
     <div class="headerDivider" />
   </div>
   {#if ready}
-    <div
-      in:fade={{ duration: 50 }}
-      out:fade={{ duration: 100 }}
-      class="toolbar"
-    >
+    <div in:fade={{ duration: 50 }} class="toolbar">
       <button class="blueButton" on:click={() => handleSave()}>Save</button>
       <button
         type="button"
@@ -105,11 +99,7 @@
         >{#if $showGrid}Close{:else}Open{/if} Grid</button
       >
     </div>
-    <div
-      in:fade={{ duration: 50, easing: (t) => t }}
-      out:fade={{ duration: 100 }}
-      class="attributes"
-    >
+    <div class="attributes">
       <div class="infoGroup">
         <label for="type" class="infoLabel">Element type</label>
         <input
@@ -176,12 +166,8 @@
         />
       </div>
     </div>
-    <div
-      in:fade={{ duration: 50, y: -500, easing: (t) => t }}
-      out:fade={{ duration: 100 }}
-      class="cssEditor"
-    >
-      <CSSEditor {element} {handleEdit} />
+    <div class="cssEditor">
+      <CSSEditor element={$clickedElement} {handleEdit} />
     </div>
     <div class="placeholder" />
   {/if}

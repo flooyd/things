@@ -45,6 +45,7 @@
         await updateElement(parentElement);
         $elements = $elements;
         $contextElement = null;
+        $elementUpdated++;
       }}>Remove as Child</button
     >
     <button class="redButton">Delete</button>

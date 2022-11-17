@@ -7,7 +7,9 @@
 
   let filter = "";
   let filtered = [];
+  let propsToShow = [];
   let clientHeight = null;
+  let hideEmpty = true;
 
   const properties = [...cssObject.css, ...cssObject.experimental]
     .filter(
@@ -25,14 +27,17 @@
       });
     });
 
-  $: filtered = filtered.length > 0 ? filtered : properties;
+  const setPropsToShow = () => {
+    if (filter.length > 0) {
+      return (propsToShow = filtered);
+    }
 
-  //sort properties alphabetically and put the ones that are not null at the top
-  properties.sort((a, b) => {
-    if (element[a] && !element[b]) return -1;
-    if (!element[a] && element[b]) return 1;
-    return a.localeCompare(b);
-  });
+    if (hideEmpty) {
+      return (propsToShow = properties.filter((prop) => element[prop] !== ""));
+    }
+
+    return (propsToShow = properties);
+  };
 
   const handleFilterInput = (e) => {
     filter = e.target.value;
@@ -47,7 +52,17 @@
             }) || prop.toLowerCase() === f.toLowerCase()
       );
     });
+
+    setPropsToShow();
   };
+
+  const refreshProps = () => {
+    filter = "";
+    filtered = [];
+    setPropsToShow();
+  };
+
+  setPropsToShow();
 </script>
 
 <div class="cssEditor" bind:clientHeight>
@@ -59,9 +74,41 @@
       value={filter}
       on:input={(e) => handleFilterInput(e)}
     />
+    {#if hideEmpty && filter.length === 0}
+      <button
+        class="threethreesbutton"
+        on:click={() => {
+          hideEmpty = false;
+          filtered = setPropsToShow();
+        }}
+      >
+        <i class="fa-solid fa-eye" />
+      </button>
+    {/if}
+    {#if !hideEmpty && filter.length === 0}
+      <button
+        class="threethreesbutton"
+        on:click={() => {
+          hideEmpty = true;
+          filtered = setPropsToShow();
+        }}
+      >
+        <i class="fa-solid fa-eye-slash" />
+      </button>
+    {/if}
+    {#if filter.length > 0 && filtered.length > 0}
+      <button on:click={() => refreshProps()}>
+        <i class="fas fa-refresh" />
+      </button>
+    {/if}
+    {#if filter.length === 0}
+      <button on:click={() => refreshProps()}>
+        <i class="fas fa-refresh" />
+      </button>
+    {/if}
   </div>
   <span class="style">&lt;style&gt;</span>
-  {#each filtered as property (property)}
+  {#each propsToShow as property (property)}
     <div class="property">
       <input type="text" class="propertyName" value={property} disabled />
       <span>:</span>

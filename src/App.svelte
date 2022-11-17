@@ -25,7 +25,7 @@
     contextElement,
     mimic,
   } from "./stores/globals";
-  import { elements } from "./stores/elements";
+  import { elements, elementUpdated } from "./stores/elements";
   import { onMount } from "svelte";
   import FunctionsTooltip from "./components/tooltips/FunctionsTooltip.svelte";
   import { epicFunctions, getVariablesForElement, updateElement } from "./util";
@@ -43,12 +43,10 @@
   });
 
   const handleEdit = (property, value, elementFromTree) => {
-    //remove ";" from value
     if (value.includes(";")) {
       value = value.replace(";", "");
       return;
     }
-
     second = 5;
     property = property.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
     $clickedElement[property] = value;
@@ -56,6 +54,7 @@
       dirtyElements.push($clickedElement._id);
     }
     dirtyElements = dirtyElements;
+    $elementUpdated++;
   };
 
   const handleSave = async () => {
