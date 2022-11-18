@@ -3,6 +3,7 @@
     variablesStoresModalOpen,
     functionsModalOpen,
     elementOnTheFrontBurner,
+    componentOnTheFrontBurner,
     htmlModalOpen,
     showGrid,
   } from "../stores/globals";
@@ -66,6 +67,9 @@
         class="threethreesbutton"
         on:click={() => {
           $visualizeDOM = false;
+          $componentOnTheFrontBurner = {
+            componentName: $elementOnTheFrontBurner.componentName,
+          };
           $showGrid = true;
         }}
       >

@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import {
-    elementOnTheFrontBurner,
+    componentOnTheFrontBurner,
     outArrowClicked,
     inArrowClicked,
     functionMoving,
@@ -17,7 +17,7 @@
     addConnection,
     deleteConnectionById,
     fetchFunctions,
-    getAllConnectionsForElement,
+    getAllConnectionsForComponent,
   } from "../util.js";
   import SelectionTool from "./SelectionTool.svelte";
 
@@ -28,17 +28,18 @@
   let selectionToolMousePosition = null;
 
   onMount(async () => {
-    if (!$elementOnTheFrontBurner) return;
-    if ($elementOnTheFrontBurner.programmingGrid) {
+    if (!$componentOnTheFrontBurner) return;
+    if ($componentOnTheFrontBurner.programmingGrid) {
       ready = true;
       return;
     }
-    let functionsForElement = await fetchFunctions(
-      $elementOnTheFrontBurner._id
+    console.log("fetch functions");
+    let functionsForComponent = await fetchFunctions(
+      $componentOnTheFrontBurner
     );
-    $elementOnTheFrontBurner.programmingGrid = [];
-    $elementOnTheFrontBurner.programmingGrid.connections = [];
-    functionsForElement = functionsForElement.map((func) => {
+    $componentOnTheFrontBurner.programmingGrid = [];
+    $componentOnTheFrontBurner.programmingGrid.connections = [];
+    functionsForComponent = functionsForComponent.map((func) => {
       return {
         blah: "5",
         name: func.name,
@@ -68,19 +69,20 @@
       };
     });
 
-    $elementOnTheFrontBurner.programmingGrid.functions = functionsForElement;
+    $componentOnTheFrontBurner.programmingGrid.functions =
+      functionsForComponent;
 
-    const connectionsForElement = await getAllConnectionsForElement(
-      $elementOnTheFrontBurner._id
+    const connectionsForComponent = await getAllConnectionsForComponent(
+      $componentOnTheFrontBurner.componentName
     );
 
-    if (connectionsForElement.length > 0) {
-      $elementOnTheFrontBurner.programmingGrid.connections =
-        connectionsForElement;
+    if (connectionsForComponent.length > 0) {
+      $componentOnTheFrontBurner.programmingGrid.connections =
+        connectionsForComponent;
     }
 
-    $elementOnTheFrontBurner.programmingGrid.connections =
-      connectionsForElement;
+    $componentOnTheFrontBurner.programmingGrid.connections =
+      connectionsForComponent;
     $gridConnectionLocationsUpdatePending++;
     ready = true;
   });
@@ -105,25 +107,25 @@
     let existingConnectionDeleted = null;
     for (
       let i = 0;
-      i < $elementOnTheFrontBurner.programmingGrid.connections.length;
+      i < $componentOnTheFrontBurner.programmingGrid.connections.length;
       i++
     ) {
       if (
-        $elementOnTheFrontBurner.programmingGrid.connections[i].in ===
+        $componentOnTheFrontBurner.programmingGrid.connections[i].in ===
           $inVariableClicked.functionId &&
-        $elementOnTheFrontBurner.programmingGrid.connections[i].inputIndex ===
+        $componentOnTheFrontBurner.programmingGrid.connections[i].inputIndex ===
           $inVariableClicked.inputIndex
       ) {
         await deleteConnectionById(
-          $elementOnTheFrontBurner.programmingGrid.connections[i]._id
+          $componentOnTheFrontBurner.programmingGrid.connections[i]._id
         );
         existingConnectionDeleted =
-          $elementOnTheFrontBurner.programmingGrid.connections[i]._id;
+          $componentOnTheFrontBurner.programmingGrid.connections[i]._id;
       }
 
       if (existingConnectionDeleted) {
-        $elementOnTheFrontBurner.programmingGrid.connections =
-          $elementOnTheFrontBurner.programmingGrid.connections.filter(
+        $componentOnTheFrontBurner.programmingGrid.connections =
+          $componentOnTheFrontBurner.programmingGrid.connections.filter(
             (conn) => conn._id != existingConnectionDeleted
           );
       }
@@ -134,17 +136,17 @@
     let connectionExists = false;
     for (
       let i = 0;
-      i < $elementOnTheFrontBurner.programmingGrid.connections.length;
+      i < $componentOnTheFrontBurner.programmingGrid.connections.length;
       i++
     ) {
       if (
-        $elementOnTheFrontBurner.programmingGrid.connections[i].outputIndex ===
-          $outputClicked.outputIndex &&
-        $elementOnTheFrontBurner.programmingGrid.connections[i].in ===
+        $componentOnTheFrontBurner.programmingGrid.connections[i]
+          .outputIndex === $outputClicked.outputIndex &&
+        $componentOnTheFrontBurner.programmingGrid.connections[i].in ===
           $inVariableClicked.functionId &&
-        $elementOnTheFrontBurner.programmingGrid.connections[i].inputIndex ===
+        $componentOnTheFrontBurner.programmingGrid.connections[i].inputIndex ===
           $inVariableClicked.inputIndex &&
-        $elementOnTheFrontBurner.programmingGrid.connections[i].out ===
+        $componentOnTheFrontBurner.programmingGrid.connections[i].out ===
           $outputClicked.functionId
       ) {
         connectionExists = true;
@@ -160,12 +162,12 @@
         in: $inVariableClicked.functionId,
         inputIndex: $inVariableClicked.inputIndex,
         out: $outputClicked.functionId,
-        elementId: $elementOnTheFrontBurner._id,
+        componentName: $componentOnTheFrontBurner.componentName,
       };
 
       const createdConnection = await addConnection(connection);
       if (createdConnection) {
-        $elementOnTheFrontBurner.programmingGrid.connections.push(
+        $componentOnTheFrontBurner.programmingGrid.connections.push(
           createdConnection
         );
         $gridConnectionLocationsUpdatePending++;
@@ -180,15 +182,15 @@
     let connectionExists = false;
     for (
       let i = 0;
-      i < $elementOnTheFrontBurner.programmingGrid.connections.length;
+      i < $componentOnTheFrontBurner.programmingGrid.connections.length;
       i++
     ) {
       if (
-        $elementOnTheFrontBurner.programmingGrid.connections[i].inputIndex ===
+        $componentOnTheFrontBurner.programmingGrid.connections[i].inputIndex ===
           $inVariableClicked.inputIndex &&
-        $elementOnTheFrontBurner.programmingGrid.connections[i].in ===
+        $componentOnTheFrontBurner.programmingGrid.connections[i].in ===
           $inVariableClicked.functionId &&
-        $elementOnTheFrontBurner.programmingGrid.connections[i]
+        $componentOnTheFrontBurner.programmingGrid.connections[i]
           .outVariableId === $outVariableClicked.variableId
       ) {
         connectionExists = true;
@@ -201,13 +203,13 @@
       const createdConnection = await addConnection({
         in: $inVariableClicked.functionId,
         out: $outVariableClicked.functionId,
-        elementId: $elementOnTheFrontBurner._id,
+        componentName: $componentOnTheFrontBurner.componentName,
         inputIndex: $inVariableClicked.inputIndex,
         outVariableId: $outVariableClicked.variableId,
       });
 
       if (createdConnection) {
-        $elementOnTheFrontBurner.programmingGrid.connections.push(
+        $componentOnTheFrontBurner.programmingGrid.connections.push(
           createdConnection
         );
         $gridConnectionLocationsUpdatePending++;
@@ -222,13 +224,13 @@
     let connectionExists = false;
     for (
       let i = 0;
-      i < $elementOnTheFrontBurner.programmingGrid.connections.length;
+      i < $componentOnTheFrontBurner.programmingGrid.connections.length;
       i++
     ) {
       if (
-        $elementOnTheFrontBurner.programmingGrid.connections[i].in ===
+        $componentOnTheFrontBurner.programmingGrid.connections[i].in ===
           $inArrowClicked &&
-        $elementOnTheFrontBurner.programmingGrid.connections[i].out ===
+        $componentOnTheFrontBurner.programmingGrid.connections[i].out ===
           $outArrowClicked
       ) {
         connectionExists = true;
@@ -240,11 +242,11 @@
       const createdConnection = await addConnection({
         in: $inArrowClicked,
         out: $outArrowClicked,
-        elementId: $elementOnTheFrontBurner._id,
+        componentName: $componentOnTheFrontBurner.componentName,
       });
 
       if (createdConnection) {
-        $elementOnTheFrontBurner.programmingGrid.connections.push(
+        $componentOnTheFrontBurner.programmingGrid.connections.push(
           createdConnection
         );
       }
@@ -281,21 +283,21 @@
     const selectedFunctionIds = [];
     for (
       let i = 0;
-      i < $elementOnTheFrontBurner.programmingGrid.functions.length;
+      i < $componentOnTheFrontBurner.programmingGrid.functions.length;
       i++
     ) {
       if (
-        $elementOnTheFrontBurner.programmingGrid.functions[i].rect.x >=
+        $componentOnTheFrontBurner.programmingGrid.functions[i].rect.x >=
           selectionToolStartLocation.x &&
-        $elementOnTheFrontBurner.programmingGrid.functions[i].rect.x <=
+        $componentOnTheFrontBurner.programmingGrid.functions[i].rect.x <=
           selectionToolMousePosition.x &&
-        $elementOnTheFrontBurner.programmingGrid.functions[i].rect.y >=
+        $componentOnTheFrontBurner.programmingGrid.functions[i].rect.y >=
           selectionToolStartLocation.y &&
-        $elementOnTheFrontBurner.programmingGrid.functions[i].rect.y <=
+        $componentOnTheFrontBurner.programmingGrid.functions[i].rect.y <=
           selectionToolMousePosition.y
       ) {
         selectedFunctionIds.push(
-          $elementOnTheFrontBurner.programmingGrid.functions[i]._id
+          $componentOnTheFrontBurner.programmingGrid.functions[i]._id
         );
       }
     }
@@ -315,7 +317,7 @@
     }
   }}
 />
-{#if !$elementOnTheFrontBurner}
+{#if !$componentOnTheFrontBurner}
   <div class="noElement">
     <div class="title">No Element Selected</div>
     <div class="hideGrid">

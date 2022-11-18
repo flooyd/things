@@ -23,7 +23,6 @@
   });
 
   const getElements = async () => {
-    //fetches all elements from the database
     const fetchedElements = await fetchElements();
     return fetchedElements;
   };

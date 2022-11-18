@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 //import collection, addDoc
-import { elementOnTheFrontBurner } from "./stores/globals";
+import { componentOnTheFrontBurner } from "./stores/globals";
 import { elements as elementsStore, updateElements } from "./stores/elements";
 import { get } from "svelte/store";
 
@@ -83,7 +83,7 @@ export const fetchFunctionsForElement = async (elementId) => {
 };
 
 export const addFunction = async (
-  elementId,
+  componentName,
   name,
   rectX,
   rectY,
@@ -97,7 +97,7 @@ export const addFunction = async (
     },
     body: JSON.stringify({
       name,
-      elementId,
+      componentName,
       rectX,
       rectY,
       isVariable,
@@ -147,7 +147,8 @@ export const removeAllFunctions = async () => {
 
 export const saveFunction = async (functionId, pendingDelete) => {
   if (pendingDelete) return;
-  const functions = get(elementOnTheFrontBurner).programmingGrid.functions;
+  const functions = get(componentOnTheFrontBurner).programmingGrid.functions;
+  console.log(functions);
   const functionToSave = functions.find((func) => func._id === functionId);
   const functionFlattend = {
     _id: functionToSave._id,
@@ -172,9 +173,9 @@ export const saveFunction = async (functionId, pendingDelete) => {
 };
 
 //get all connections for element
-export const getAllConnectionsForElement = async (elementId) => {
+export const getAllConnectionsForComponent = async (componentName) => {
   const connections = await fetch(
-    "http://localhost:3000/connections/forElement/" + elementId
+    "http://localhost:3000/connections/forComponent/" + componentName
   );
   const connectionsJson = await connections.json();
 
@@ -252,9 +253,9 @@ export const addConnection = async (connection) => {
   }
 };
 
-export const getVariablesForElement = async (elementId) => {
+export const getVariablesForComponent = async (componentName) => {
   const variables = await fetch(
-    "http://localhost:3000/function-vars/forElement/" + elementId
+    "http://localhost:3000/function-vars/forComponent/" + componentName
   );
   const variablesJson = await variables.json();
 

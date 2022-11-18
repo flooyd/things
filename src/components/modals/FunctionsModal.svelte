@@ -1,10 +1,10 @@
 <script>
   import { epicFunctions, addFunction } from "../../util";
   import {
-    elementOnTheFrontBurner,
     toolbarOpenStyle,
     functionsModalOpen,
     width,
+    componentOnTheFrontBurner,
   } from "../../stores/globals";
   import { fly } from "svelte/transition";
 
@@ -12,7 +12,7 @@
 
   const click = async (item) => {
     let createdFunction = await addFunction(
-      $elementOnTheFrontBurner._id,
+      $componentOnTheFrontBurner.componentName,
       item,
       $width / 2,
       150
@@ -21,7 +21,7 @@
       createdFunction = {
         _id: createdFunction._id,
         name: createdFunction.name,
-        elementId: $elementOnTheFrontBurner._id,
+        componentName: createdFunction.componentName,
         rect: {
           x: createdFunction.rectX,
           y: createdFunction.rectY,
@@ -38,9 +38,11 @@
         },
         isVariable: createdFunction.isVariable,
       };
-      $elementOnTheFrontBurner.programmingGrid.functions.push(createdFunction);
-      $elementOnTheFrontBurner.programmingGrid.functions =
-        $elementOnTheFrontBurner.programmingGrid.functions;
+      $componentOnTheFrontBurner.programmingGrid.functions.push(
+        createdFunction
+      );
+      $componentOnTheFrontBurner.programmingGrid.functions =
+        $componentOnTheFrontBurner.programmingGrid.functions;
     }
   };
 

@@ -2,7 +2,7 @@
   import { onMount, tick } from "svelte";
   import { fade, fly } from "svelte/transition";
   import {
-    elementOnTheFrontBurner,
+    componentOnTheFrontBurner,
     outArrowClicked,
     inArrowClicked,
     outVariableClicked,
@@ -123,7 +123,7 @@
         19, // center point of height (37) of row (topName in this case)
     };
 
-    $elementOnTheFrontBurner.programmingGrid.functions.find(
+    $componentOnTheFrontBurner.programmingGrid.functions.find(
       (f) => f._id === gridFunction._id
     ).rect = {
       x: rect.x,
@@ -208,10 +208,14 @@
   const removeConnections = async () => {
     const deleted = await deleteAllConnectionsForFunction(gridFunction._id);
     if (deleted) {
-      $elementOnTheFrontBurner.programmingGrid.connections =
-        $elementOnTheFrontBurner.programmingGrid.connections.filter((conn) => {
-          return conn.in !== gridFunction._id && conn.out !== gridFunction._id;
-        });
+      $componentOnTheFrontBurner.programmingGrid.connections =
+        $componentOnTheFrontBurner.programmingGrid.connections.filter(
+          (conn) => {
+            return (
+              conn.in !== gridFunction._id && conn.out !== gridFunction._id
+            );
+          }
+        );
       $gridConnectionLocationsUpdatePending++;
     } else {
       alert(
@@ -228,8 +232,8 @@
     await removeConnections();
     const deleted = await deleteFunctionById(gridFunction._id);
     if (deleted) {
-      $elementOnTheFrontBurner.programmingGrid.functions =
-        $elementOnTheFrontBurner.programmingGrid.functions.filter(
+      $componentOnTheFrontBurner.programmingGrid.functions =
+        $componentOnTheFrontBurner.programmingGrid.functions.filter(
           (func) => func._id !== gridFunction._id
         );
     } else {

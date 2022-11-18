@@ -5,6 +5,7 @@
     showGrid,
     toolbarOpenStyle,
     elementOnTheFrontBurner,
+    componentOnTheFrontBurner,
   } from "../../stores/globals";
   import { deleteElement, updateElement } from "../../util";
   import { fade } from "svelte/transition";
@@ -91,12 +92,19 @@
         }}
         class="redButton">Delete Element</button
       >
-      <button
-        on:click={() => ($showGrid = !$showGrid)}
-        class="blueButton"
-        type="button"
-        >{#if $showGrid}Close{:else}Open{/if} Grid</button
-      >
+      {#if element.componentName}
+        <button
+          on:click={() => {
+            $componentOnTheFrontBurner = {
+              componentName: element.componentName,
+            };
+            $showGrid = true;
+          }}
+          class="blueButton"
+          type="button"
+          >Open Component Grid
+        </button>
+      {/if}
     </div>
     <div class="attributes">
       <div class="infoGroup">
@@ -133,6 +141,28 @@
               return;
             }
             handleEdit("name", e.target.value);
+          }}
+        />
+      </div>
+      <div class="infoGroup">
+        <label for="componentName" class="infoLabel">Component Name</label>
+        <input
+          autocomplete="off"
+          name="componentName"
+          type="text"
+          class="infoInput"
+          value={element.componentName || ""}
+          on:input={(e) => {
+            if (e.target.value.includes(";")) {
+              e.target.value = e.target.value.replace(";", "");
+              return;
+            }
+            let value = e.target.value;
+            if (value !== "") {
+              //first letter must be capitalized
+              value = value[0].toUpperCase() + value.slice(1);
+            }
+            handleEdit("componentName", value);
           }}
         />
       </div>

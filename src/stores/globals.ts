@@ -35,6 +35,7 @@ export const mousePosition = writable({ x: 0, y: 0 });
 export const mouseDownStartedOnArrow = writable(false);
 
 //programmming grid
+export const componentOnTheFrontBurner = writable(null);
 export const functionMoving = writable(null);
 
 //programming grid connections

@@ -10,6 +10,7 @@
     height,
     functionsModalOpen,
     elementOnTheFrontBurner,
+    componentOnTheFrontBurner,
     showGrid,
     showToolbar,
     toolbarOpenStyle,
@@ -28,7 +29,7 @@
   import FunctionsModal from "./components/modals/FunctionsModal.svelte";
   import {
     epicFunctions,
-    getVariablesForElement,
+    getVariablesForComponent,
     randInRange,
     updateElement,
   } from "./util";
@@ -85,22 +86,23 @@
   };
 
   const getConnectionLocations = () => {
+    console.log($componentOnTheFrontBurner);
     const connectionLocations = [];
-    $elementOnTheFrontBurner.programmingGrid.connections.forEach(
+    $componentOnTheFrontBurner.programmingGrid.connections.forEach(
       (connection) => {
         const inArrowLocation =
-          $elementOnTheFrontBurner.programmingGrid.functions.find(
+          $componentOnTheFrontBurner.programmingGrid.functions.find(
             (f) => f._id === connection.in
           ).rect.inArrowLocation || null;
 
         const outArrowLocation =
-          $elementOnTheFrontBurner.programmingGrid.functions.find(
+          $componentOnTheFrontBurner.programmingGrid.functions.find(
             (f) => f._id === connection.out
           ).rect.outArrowLocation || null;
 
         //get number of outpoints for in function
         const inFunction =
-          $elementOnTheFrontBurner.programmingGrid.functions.find(
+          $componentOnTheFrontBurner.programmingGrid.functions.find(
             (f) => f._id === connection.in
           );
 
@@ -123,8 +125,9 @@
   };
 
   const getVariables = async () => {
-    const elementId = $elementOnTheFrontBurner._id;
-    $variablesStore = await getVariablesForElement(elementId);
+    $variablesStore = await getVariablesForComponent(
+      $componentOnTheFrontBurner.componentName
+    );
   };
 
   $: $showToolbar
@@ -135,7 +138,8 @@
     connectionLocations = getConnectionLocations();
   }
 
-  $: if ($elementOnTheFrontBurner && !$variablesFetched) {
+  $: if ($componentOnTheFrontBurner && !$variablesFetched) {
+    console.log("component on the front burner", $componentOnTheFrontBurner);
     getVariables();
     $variablesFetched = true;
   }
@@ -200,46 +204,46 @@
 
 {#if ready && $showGrid}
   <Grid />
-{/if}
-{#if ready && $elementOnTheFrontBurner?.programmingGrid?.functions?.length > 0 && $showGrid}
-  {#each $elementOnTheFrontBurner.programmingGrid.functions as item (item._id)}
-    <div>
-      <GridFunction gridFunction={item} />
-    </div>
-  {/each}
-  {#each connectionLocations as connection (connection.key)}
-    <svg
-      in:fly={{
-        duration: 250,
-        x: randInRange(-5000, 5000),
-        y: randInRange(-5000, 5000),
-      }}
-      height="5000px"
-      width="5000px"
-      style="position: absolute; top: 0; left: 0; pointer-events: none;"
-      ><line
-        x1={connection.inArrowLocation.x}
-        y1={connection.inputIndex
-          ? connection.inArrowLocation.y +
-            37 * connection.inputIndex +
-            connection.numOutputs * 37
-          : connection.inArrowLocation.y}
-        x2={connection.outArrowLocation.x}
-        y2={connection.isVariable
-          ? connection.outArrowLocation.y + 37
-          : connection.outputIndex
-          ? connection.outArrowLocation.y + 37 * connection.outputIndex
-          : connection.outArrowLocation.y}
-        stroke={connection.outputIndex
-          ? "grey"
-          : connection.inputIndex || connection.isVariable
-          ? "orange"
-          : "black"}
-        stroke-width="5"
-        stroke-linecap="round"
-      /></svg
-    >
-  {/each}
+  {#if $componentOnTheFrontBurner?.programmingGrid?.functions?.length > 0 && $showGrid}
+    {#each $componentOnTheFrontBurner.programmingGrid.functions as item (item._id)}
+      <div>
+        <GridFunction gridFunction={item} />
+      </div>
+    {/each}
+    {#each connectionLocations as connection (connection.key)}
+      <svg
+        in:fly={{
+          duration: 250,
+          x: randInRange(-5000, 5000),
+          y: randInRange(-5000, 5000),
+        }}
+        height="5000px"
+        width="5000px"
+        style="position: absolute; top: 0; left: 0; pointer-events: none;"
+        ><line
+          x1={connection.inArrowLocation.x}
+          y1={connection.inputIndex
+            ? connection.inArrowLocation.y +
+              37 * connection.inputIndex +
+              connection.numOutputs * 37
+            : connection.inArrowLocation.y}
+          x2={connection.outArrowLocation.x}
+          y2={connection.isVariable
+            ? connection.outArrowLocation.y + 37
+            : connection.outputIndex
+            ? connection.outArrowLocation.y + 37 * connection.outputIndex
+            : connection.outArrowLocation.y}
+          stroke={connection.outputIndex
+            ? "grey"
+            : connection.inputIndex || connection.isVariable
+            ? "orange"
+            : "black"}
+          stroke-width="5"
+          stroke-linecap="round"
+        /></svg
+      >
+    {/each}
+  {/if}
 {/if}
 {#if $contextElement}
   <div>
