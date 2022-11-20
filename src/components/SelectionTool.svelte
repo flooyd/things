@@ -34,7 +34,6 @@
   }
 </script>
 
-<!-- apply selectionRectStyle using string literal -->
 <div
   class="selection-tool"
   style={`left: ${selectionRectStyle.left}px; top: ${selectionRectStyle.top}px;
@@ -44,7 +43,6 @@ width: ${selectionRectStyle.width}px; height: ${selectionRectStyle.height}px; `}
 <style>
   .selection-tool {
     position: relative;
-    /* rgba for orange with .5 alpha */
     background-color: rgba(255, 165, 0, 0.33);
     border: 1px solid rgba(0, 0, 0, 0.3);
     z-index: 9000;

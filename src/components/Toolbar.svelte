@@ -27,7 +27,7 @@
     <button
       on:mousedown={() =>
         ($variablesStoresModalOpen = !$variablesStoresModalOpen)}
-      class="orangeButton">Variables/Stores</button
+      class="orangeButton">Variables/Stores/Components</button
     >
     {#if $elementOnTheFrontBurner}
       <button
@@ -58,6 +58,7 @@
         on:click={() => {
           $visualizeDOM = false;
           $showGrid = false;
+          $componentOnTheFrontBurner = null;
         }}
       >
         Close Grid

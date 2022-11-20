@@ -15,6 +15,8 @@
     variableUpdated,
     outputClicked,
     usingSelectionTool,
+    selectedFunctionIds,
+    movingMultipleFunctions,
   } from "../stores/globals";
   import {
     typeColors,
@@ -50,6 +52,7 @@
   let initialized = false;
   let variable = null;
   let variableTypeColor = null;
+  let className = "gridFunction";
 
   onMount(() => {
     numOutputs = epicFunctions[gridFunction.name]?.outputs.count || 0;
@@ -60,8 +63,18 @@
   });
 
   const move = (e) => {
-    if (pendingDelete || $usingSelectionTool || !$functionMoving) return;
-    if ($functionMoving === gridFunction._id) {
+    if (
+      pendingDelete ||
+      $usingSelectionTool ||
+      !$functionMoving ||
+      $mouseDownStartedOnArrow
+    )
+      return;
+    if (
+      $functionMoving === gridFunction._id ||
+      ($movingMultipleFunctions &&
+        $selectedFunctionIds.includes(gridFunction._id))
+    ) {
       setRect(
         e.movementX,
         e.movementY,
@@ -73,6 +86,8 @@
 
   const stop = async (e) => {
     await tick();
+    $mouseDownStartedOnArrow = false;
+    $movingMultipleFunctions = false;
     $functionMoving = null;
     functionDirty = true;
   };
@@ -137,6 +152,7 @@
 
   const handleClickArrow = async (type) => {
     $outVariableClicked = null;
+    $selectedFunctionIds = [];
     $mouseDownStartedOnArrow = true;
     await tick();
     if (type === "out") {
@@ -251,6 +267,16 @@
   } else {
     style = `top:${rect?.y || 0}px; left: ${rect?.x || 0}px;`;
   }
+
+  $: if (
+    ($selectedFunctionIds.includes(gridFunction._id) ||
+      $functionMoving === gridFunction._id) &&
+    !$mouseDownStartedOnArrow
+  ) {
+    className = "gridFunction selected";
+  } else {
+    className = "gridFunction";
+  }
 </script>
 
 <svelte:window on:mousemove={move} />
@@ -260,6 +286,12 @@
       e.stopPropagation();
       $lastInteractedWith = gridFunction._id;
       $functionMoving = gridFunction._id;
+      if (
+        $selectedFunctionIds.length > 1 &&
+        $selectedFunctionIds.includes(gridFunction._id)
+      ) {
+        $movingMultipleFunctions = true;
+      }
       start();
     }}
     on:mouseup={(e) => {
@@ -280,7 +312,7 @@
       e.preventDefault();
       contextMenuOpen = !contextMenuOpen;
     }}
-    class="gridFunction"
+    class={className}
     bind:this={element}
     {style}
     in:fly={{
@@ -409,6 +441,10 @@
     opacity: 0.95;
   }
 
+  .selected {
+    border: 3px solid orange;
+  }
+
   .contextMenu {
     position: absolute;
     min-width: 300px;
@@ -459,23 +495,6 @@
 
   .header .infoType {
     font-size: 10px;
-  }
-  .contextMenu .locationInfoItem {
-    display: flex;
-    justify-content: space-between;
-    padding: 4px;
-    align-items: center;
-    border: 1px solid black;
-    gap: 8px;
-    border-collapse: collapse;
-  }
-
-  .contextMenu .locationInfoItemKey {
-    font-weight: bold;
-  }
-
-  .contextMenu .locationInfoItemValue {
-    font-weight: normal;
   }
 
   .topName {

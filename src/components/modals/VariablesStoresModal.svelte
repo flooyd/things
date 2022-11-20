@@ -147,7 +147,7 @@
 >
   <div class="header">
     <div class="headerTitle">
-      <span>Variables and Stores</span>
+      <span>Variables, Stores, and Components</span>
       <i class="fa-solid fa-box" />
     </div>
     <button
@@ -162,8 +162,9 @@
     <span>
       Variables and stores are used to store data. Variables are used to store
       data that is only used in the current element/component. Stores are used
-      to store data that is used across the entire app (or multiple
-      elements/components).
+      to store data that is used across the entire app (or multiple components).
+      Components are reusable, programmable elements that can be used across the
+      app.
     </span>
   </div>
   {#if $elementOnTheFrontBurner}
@@ -176,7 +177,7 @@
         <div class="variableDescription">
           <span>
             Variables are used to store data that is only used in the current
-            element/component.
+            component.
           </span>
         </div>
         <div class="variableExample">
@@ -367,6 +368,27 @@
       </div>
     </div>
   {/if}
+  <div class="components">
+    <div class="componentsTitle">
+      <span>Components</span>
+      <i class="fa-solid fa-laptop-code" />
+    </div>
+    <div class="componentsDescription">
+      <span>
+        Components are reusable, programmable elements that can be used across
+        the app.
+      </span>
+    </div>
+
+    <button
+      class="orangeButton"
+      on:click={() => addVariable(false)}
+      disabled={error.length > 0}
+    >
+      <i class="fa fa-plus" />
+    </button>
+  </div>
+
   <div class="divider">Hello</div>
 </div>
 
@@ -451,7 +473,8 @@
     margin-bottom: 8px;
   }
 
-  .variablesStores {
+  .variablesStores,
+  .components {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -499,7 +522,8 @@
   }
 
   .variableTitle,
-  .storeTitle {
+  .storeTitle,
+  .componentsTitle {
     display: flex;
     gap: 8px;
     align-items: center;
@@ -509,7 +533,8 @@
   }
 
   .variableDescription,
-  .storeDescription {
+  .storeDescription,
+  .componentsDescription {
     font-size: 13px;
     line-height: 1.4;
   }

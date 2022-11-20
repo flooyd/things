@@ -33,10 +33,12 @@ export const contextElement = writable(null);
 export const usingSelectionTool = writable(false);
 export const mousePosition = writable({ x: 0, y: 0 });
 export const mouseDownStartedOnArrow = writable(false);
+export const selectedFunctionIds = writable([]);
 
 //programmming grid
 export const componentOnTheFrontBurner = writable(null);
 export const functionMoving = writable(null);
+export const movingMultipleFunctions = writable(false);
 
 //programming grid connections
 export const outArrowClicked = writable(null);

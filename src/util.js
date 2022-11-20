@@ -73,9 +73,9 @@ export const fetchFunctions = async () => {
 };
 
 //fetchFunctions(id) /functions
-export const fetchFunctionsForElement = async (elementId) => {
+export const fetchFunctionsForComponent = async (componentName) => {
   const functions = await fetch(
-    "http://localhost:3000/functions/forElement/" + elementId
+    "http://localhost:3000/functions/forComponent/" + componentName
   );
   const functionsJson = await functions.json();
 

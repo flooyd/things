@@ -6,17 +6,17 @@
     outArrowClicked,
     inArrowClicked,
     functionMoving,
-    mouseDownStartedOnArrow,
     gridConnectionLocationsUpdatePending,
     outVariableClicked,
     inVariableClicked,
     outputClicked,
     usingSelectionTool,
+    selectedFunctionIds,
   } from "../stores/globals";
   import {
     addConnection,
     deleteConnectionById,
-    fetchFunctions,
+    fetchFunctionsForComponent,
     getAllConnectionsForComponent,
   } from "../util.js";
   import SelectionTool from "./SelectionTool.svelte";
@@ -33,10 +33,13 @@
       ready = true;
       return;
     }
-    console.log("fetch functions");
-    let functionsForComponent = await fetchFunctions(
-      $componentOnTheFrontBurner
+
+    let functionsForComponent = await fetchFunctionsForComponent(
+      $componentOnTheFrontBurner.componentName
     );
+
+    console.log("hiiii");
+
     $componentOnTheFrontBurner.programmingGrid = [];
     $componentOnTheFrontBurner.programmingGrid.connections = [];
     functionsForComponent = functionsForComponent.map((func) => {
@@ -257,18 +260,16 @@
   };
 
   const updateSelectionToolProps = (e) => {
-    if (!$mouseDownStartedOnArrow) {
-      selectionToolStartLocation = {
-        x: e.clientX - rect.x,
-        y: e.clientY - rect.y,
-      };
-      selectionToolMousePosition = {
-        x: e.clientX - rect.x,
-        y: e.clientY - rect.y,
-      };
+    selectionToolStartLocation = {
+      x: e.clientX - rect.x,
+      y: e.clientY - rect.y,
+    };
+    selectionToolMousePosition = {
+      x: e.clientX - rect.x,
+      y: e.clientY - rect.y,
+    };
 
-      $usingSelectionTool = true;
-    }
+    $usingSelectionTool = true;
   };
 
   const updateMousePosition = (e) => {
@@ -280,7 +281,7 @@
 
   const finalizeSelectionTool = () => {
     $usingSelectionTool = false;
-    const selectedFunctionIds = [];
+    $selectedFunctionIds = [];
     for (
       let i = 0;
       i < $componentOnTheFrontBurner.programmingGrid.functions.length;
@@ -296,11 +297,13 @@
         $componentOnTheFrontBurner.programmingGrid.functions[i].rect.y <=
           selectionToolMousePosition.y
       ) {
-        selectedFunctionIds.push(
+        $selectedFunctionIds.push(
           $componentOnTheFrontBurner.programmingGrid.functions[i]._id
         );
+        $selectedFunctionIds = $selectedFunctionIds;
       }
     }
+    console.log($selectedFunctionIds);
   };
 </script>
 

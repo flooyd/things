@@ -64,7 +64,7 @@
 </script>
 
 <div
-  in:fly={{ x: $width + 500, duration: 100 }}
+  in:fly={{ y: -500, duration: 100 }}
   class="htmltree"
   style={$toolbarOpenStyle.length > 0
     ? $toolbarOpenStyle + "top: -49px;"

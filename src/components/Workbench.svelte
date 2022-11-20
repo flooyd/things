@@ -7,7 +7,11 @@
     elementsPendingUpdate,
     visualizeDOM,
   } from "../stores/elements";
-  import { toolbarOpenStyle } from "../stores/globals";
+  import {
+    toolbarOpenStyle,
+    showGrid,
+    componentOnTheFrontBurner,
+  } from "../stores/globals";
 
   import Element from "./elements/Element.svelte";
   import { fade } from "svelte/transition";
@@ -19,6 +23,8 @@
 
   onMount(async () => {
     $elements = $elements ? $elements : await getElements();
+    // $showGrid = true;
+    // $componentOnTheFrontBurner = { componentName: "Thing" };
     ready = true;
   });
 

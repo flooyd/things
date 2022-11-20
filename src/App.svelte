@@ -204,7 +204,7 @@
 
 {#if ready && $showGrid}
   <Grid />
-  {#if $componentOnTheFrontBurner?.programmingGrid?.functions?.length > 0 && $showGrid}
+  {#if $componentOnTheFrontBurner?.programmingGrid?.functions?.length > 0}
     {#each $componentOnTheFrontBurner.programmingGrid.functions as item (item._id)}
       <div>
         <GridFunction gridFunction={item} />
@@ -212,7 +212,7 @@
     {/each}
     {#each connectionLocations as connection (connection.key)}
       <svg
-        in:fly={{
+        in:fade={{
           duration: 250,
           x: randInRange(-5000, 5000),
           y: randInRange(-5000, 5000),
